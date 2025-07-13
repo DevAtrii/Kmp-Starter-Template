@@ -1,0 +1,635 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+
+# Jetpack Compose Development Rules  
+
+These rules must be **strictly followed** to maintain code quality, consistency, and best practices in Jetpack Compose development.  
+
+---
+
+## 1. Enum Handling  
+- Always use `Enum.entries` instead of `Enum.values()` when retrieving all entries of an enum.  
+- This ensures better performance and readability in newer versions of Kotlin.  
+
+---
+
+## 2. Design Guidelines  
+- **Material 3 Compliance**: All UI elements should strictly follow **Material 3** guidelines.  
+- **iOS Influence**: UI/UX should follow **iOS Cupertino design principles**, but must maintain a **Material 3 appearance**.  
+- **Consistency**: Maintain a **unified design language** throughout the app. Avoid mixing multiple styles.  
+
+---
+
+## 3. Animations  
+- **Always prefer `graphicsLayer`** when animating properties such as **scale, alpha, translation, rotation, or shadow**.  
+- Example: Instead of using `Modifier.scale()`, use:  
+  ```kotlin
+  Modifier.graphicsLayer(scaleX = scale, scaleY = scale)
+  ```
+- **Use `animate*AsState` where applicable** instead of handling animations manually.  
+- **Avoid excessive recompositions**: Store animation states in `remember { mutableStateOf(...) }` when needed.  
+- **Prefer `Crossfade`** for smooth UI transitions when switching between composables.  
+- **Use `AnimatedVisibility`** for enter/exit animations instead of manual show/hide logic.
+- **Implement spring animations** with `spring()` for natural motion effects.
+
+---
+
+## 4. Component Organization  
+- Every new UI component must have a **dedicated file inside the `components/` folder**.  
+- File naming convention: **`ExampleComponent.kt`**  
+- Always **include the package name** at the top of the file.  
+- Components should be:  
+  - **Reusable** across screens.  
+  - **Composable** functions without direct dependencies on ViewModels or business logic.  
+  - **Self-contained**, handling only UI-related tasks.  
+- **Create component previews** for all custom components to aid development.
+
+---
+
+## 5. Icons  
+- Do **not** use Material icons that do not exist in **Material 3**.  
+- If an icon is missing from Material 3, use its alternative icon from Material 3.
+- **Use vector drawables** for custom icons instead of bitmap images.
+- **Prefer `Icon` composable** over `Image` for icon rendering.
+
+---
+
+## 6. Screen Structure  
+Each screen must follow a **consistent structure**:  
+
+- **`ScreenNameScreenContent`**  
+  - Handles all UI elements for the screen.  
+  - **Does not handle state management** (except for bottom sheets, dialogs, and popups).  
+  - All parameters should be passed via the constructor.  
+- **`ScreenNameScreen`**  
+  - Wrapper composable that integrates **ViewModel, state management, and UI interactions**.  
+- **Preview Composable**  
+  - Must have `showSystemUi = true` to provide a full-screen preview in Android Studio.  
+  - Example:
+    ```kotlin
+    @Preview(showSystemUi = true)
+    @Composable
+    fun ScreenNameScreenPreview() {
+        ScreenNameScreen()
+    }
+    ```
+
+---
+
+## 7. Folder Structure (inside `ui_main/`)  
+All files should be **properly categorized** inside the `ui_main/` package of that presentation layer:  
+```plaintext
+ui_main/
+│── components/    # Reusable UI components  
+│── screens/       # Screens and UI logic  
+│── dialogs/       # Dialogs (alert, confirmation, input, etc.)  
+│── bottom_sheets/ # Bottom sheets for additional actions  
+│── layouts/       # Custom layout components  
+│── modifiers/     # Custom modifier extensions
+```  
+- **Place each file in the correct directory** based on its purpose.  
+- **Avoid keeping too many files in one folder**; refactor when necessary.  
+
+---
+
+## 8. Composables Best Practices  
+- **Responsive & Professional UI**  
+  - UI elements must **scale properly** across different screen sizes.  
+  - Prefer **weight-based layouts** (`Modifier.weight()`) over hardcoded dimensions.  
+  - **Test in different screen densities** (e.g., compact, normal, expanded).  
+  - **Use `WindowInsets` properly** for edge-to-edge layouts.
+
+- **Consistent Modifier Placement**  
+  - **Always** place `modifier` as the **first parameter** in composable functions.  
+  - Example:
+    ```kotlin
+    @Composable
+    fun CustomButton(
+        modifier: Modifier = Modifier,
+        text: String,
+        onClick: () -> Unit
+    ) { ... }
+    ```
+
+- **State Management Best Practices**  
+  - **`ScreenNameScreenContent` must not handle state management**.  
+  - **State should be lifted** to the parent (`ScreenNameScreen`).  
+  - **Use `rememberSaveable` instead of `remember`** where applicable to persist UI state across configuration changes.  
+
+---
+
+## 9. Performance Optimizations  
+- **Minimize recompositions**  
+  - Use `remember` and `rememberSaveable` to avoid unnecessary recompositions.  
+  - Example:
+    ```kotlin
+    val textFieldState = rememberSaveable { mutableStateOf("") }
+    ```
+- **Use `LazyColumn` instead of `Column` for large lists**.  
+- **Prefer `produceState`, `rememberCoroutineScope` or `LaunchedEffect` for side effects** instead of manual coroutine handling.  
+- **Use keys in Lazy lists** (`key = { item.id }`) to avoid recompositions when scrolling.  
+- **Use `derivedStateOf` for expensive computations** that depend on state changes.
+- **Implement `Stable` and `Immutable` annotations** for data classes used in Compose.
+
+---
+
+## 10. Navigation & Routing  
+- **Use Jetpack Navigation Compose** for screen transitions.  
+- **Pass only lightweight arguments** (avoid passing large data objects, prefer passing IDs).  
+- **Prefer `rememberNavController()` inside the main screen composable** instead of passing it through parameters.  
+- **Navigation must be centralized** in a `NavGraph` file to maintain clarity.  
+- **Use type-safe navigation** with `kotlinx.serialization` for complex arguments.
+
+---
+
+## 11. Dependency Injection (DI)  
+- Use **Koin** for dependency injection.  
+- Inject ViewModels using `koinViewModel()` instead of manually creating them.  
+- **Provide dependencies at the appropriate scope** (application, activity, fragment).
+
+---
+
+## 12. Theming & Dark Mode Support  
+- **Use a central `Theme.kt` file** to manage colors, typography, and shapes.  
+- **Dark mode must be fully supported** and tested.  
+- **Do not hardcode colors**; always use values from `MaterialTheme.colorScheme`.  
+- **Use `MaterialTheme.colorScheme.primary` instead of hardcoded colors** for consistency.
+- **Test both light and dark themes** in all UI components.
+
+---
+
+## 13. Code Formatting & Documentation  
+- **Follow Kotlin coding conventions**:  
+  - Use proper indentation and spacing.  
+  - Prefer **explicit types** in function parameters and return values.  
+- **Document all public composables and functions** using KDoc format:  
+  ```kotlin
+  /**
+   * Custom button component.
+   *
+   * @param modifier Modifier for styling.
+   * @param text Button text.
+   * @param onClick Click event callback.
+   */
+  @Composable
+  fun CustomButton(
+      modifier: Modifier = Modifier,
+      text: String,
+      onClick: () -> Unit
+  ) { ... }
+  ```
+
+---
+
+## 14. Testing  
+- **Write UI tests** using `composeTestRule`.  
+- **Use `assertIsDisplayed()` and `assertTextEquals()`** for UI validation.  
+- **Prefer `Espresso` for integration testing** when necessary.  
+- **Create preview tests** to catch UI regressions early.
+
+---
+
+## 15. Error Handling & Debugging  
+- **Log errors properly** using `Log.e(TAG, "message")` but remove them before production.  
+- **Create TAG constant**: If logging is inside a class or object that can have a companion object, create a `private const val TAG` inside the companion object and use it for logging.
+- **Avoid using try-catch blocks excessively in UI code**; handle errors at the ViewModel level.
+
+### Example: Proper TAG Usage
+```kotlin
+class UserViewModel : ViewModel() {
+    companion object {
+        private const val TAG = "UserViewModel"
+    }
+    
+    fun loadUser() {
+        try {
+            // Load user logic
+        } catch (e: Exception) {
+            Log.e(TAG, "Error loading user: ${e.message}")
+        }
+    }
+}
+
+// For objects without companion objects
+object NetworkUtils {
+    private const val TAG = "NetworkUtils"
+    
+    fun makeRequest() {
+        Log.d(TAG, "Making network request")
+    }
+}
+```
+
+---
+
+## 16. Scrolling Best Practices  
+- **If `CupertinoLazyColumn` is available in the project**, use it instead of `LazyColumn` for lists to ensure better iOS-style scrolling behavior while maintaining Material 3 design.  
+- **If `ScrollableColumn` is available in the project**, use it instead of applying `Modifier.verticalScroll()` to a `Column` for a more structured and optimized approach to scrolling.  
+- **Fallback**: If custom scrolling components are not available, use standard `LazyColumn` for lists and `Column` with `Modifier.verticalScroll(rememberScrollState())` for scrollable content.
+- Example usage with custom components:  
+  ```kotlin
+  // If CupertinoLazyColumn is available
+  CupertinoLazyColumn {
+      items(100) { index ->
+          Text("Item $index")
+      }
+  }
+
+  // If ScrollableColumn is available
+  ScrollableColumn {
+      Text("This is a scrollable column")
+  }
+  ```
+- Example usage with standard components:  
+  ```kotlin
+  // Standard LazyColumn fallback
+  LazyColumn {
+      items(100) { index ->
+          Text("Item $index")
+      }
+  }
+
+  // Standard Column with scroll fallback
+  Column(
+      modifier = Modifier.verticalScroll(rememberScrollState())
+  ) {
+      Text("This is a scrollable column")
+  }
+  ```
+
+---
+
+## 17. TextField Best Practices
+
+- **Always use `OutlinedTextField` instead of `TextField`** for a more structured and Material 3-compliant design.
+- **Use `animateContentSize()` modifier** on the parent container to animate supporting text and error messages smoothly.
+- **Clear focus when clicking outside the `TextField`** by applying `clickable` to the parent container (like Card) to improve user experience.
+- **Use `rememberSaveable` for state management** to persist text across configuration changes.
+- **Provide meaningful placeholders, labels, and error messages** to enhance accessibility.
+- **Limit the maximum length of input where necessary** using `visualTransformation` or `onValueChange`.
+- **Use a single source of truth** for managing the text state, preferably from the `ViewModel` when applicable.
+- **Always apply `keyboardOptions` and `keyboardActions`** for better input handling.
+- **Use `imeAction` strategically**:
+  - `ImeAction.Next` for fields that aren't the last in the form (to shift focus down)
+  - `ImeAction.Done` for the final input field (to remove focus and trigger form completion)
+- **Use trailing icons for clear actions** (e.g., show a clear button when text is entered).
+- **Ensure proper focus handling** using `FocusRequester` for focus navigation between fields.
+- **IME Padding**: Use IME padding to container where needed with `Modifier.imePadding()`.
+- **Form completion**: Pass an `onDone` lambda from parent composable for final form submission when last field is completed.
+
+### Example: OutlinedTextField with Proper Focus and Animation Handling
+```kotlin
+@Composable
+fun CustomTextField(
+    modifier: Modifier = Modifier,
+    text: String,
+    onTextChange: (String) -> Unit,
+    label: String,
+    placeholder: String,
+    isError: Boolean = false,
+    errorMessage: String? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    imeAction: ImeAction = ImeAction.Next,
+    isLastField: Boolean = false,
+    onDone: () -> Unit = {},
+    focusRequester: FocusRequester? = null,
+    nextFocusRequester: FocusRequester? = null,
+) {
+    val focusManager = LocalFocusManager.current
+
+    OutlinedTextField(
+        value = text,
+        onValueChange = onTextChange,
+        label = { Text(label) },
+        placeholder = { Text(placeholder) },
+        isError = isError,
+        supportingText = if (isError && errorMessage != null) {
+            { Text(errorMessage, color = MaterialTheme.colorScheme.error) }
+        } else null,
+        keyboardOptions = keyboardOptions.copy(imeAction = imeAction),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                nextFocusRequester?.requestFocus()
+            },
+            onDone = {
+                if (isLastField) {
+                    focusManager.clearFocus()
+                    onDone()
+                } else {
+                    focusManager.clearFocus()
+                }
+            }
+        ),
+        modifier = modifier
+            .fillMaxWidth()
+            .then(
+                if (focusRequester != null) {
+                    Modifier.focusRequester(focusRequester)
+                } else Modifier
+            )
+    )
+}
+
+// Usage in a Card with proper focus management
+@Composable
+fun LoginForm() {
+    val focusManager = LocalFocusManager.current
+    val emailFocusRequester = remember { FocusRequester() }
+    val passwordFocusRequester = remember { FocusRequester() }
+    
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .animateContentSize()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) {
+                focusManager.clearFocus()
+            }
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            CustomTextField(
+                text = email,
+                onTextChange = { email = it },
+                label = "Email",
+                placeholder = "Enter your email",
+                imeAction = ImeAction.Next,
+                focusRequester = emailFocusRequester,
+                nextFocusRequester = passwordFocusRequester
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            CustomTextField(
+                text = password,
+                onTextChange = { password = it },
+                label = "Password",
+                placeholder = "Enter your password",
+                imeAction = ImeAction.Done,
+                isLastField = true,
+                onDone = {
+                    // Handle form submission
+                    submitLogin(email, password)
+                },
+                focusRequester = passwordFocusRequester,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+            )
+        }
+    }
+}
+```
+
+---
+
+## 18. String Resources & Localization
+- **Always create string resources** when using text in UI components.
+- **Don't replace existing text in UI with strings** unless explicitly required for localization.
+- **Use `stringResource(R.string.example)` for all user-facing text**.
+- **Create meaningful string resource names** that describe the content.
+- **Group related strings** in the `strings.xml` file with comments.
+- **Avoid hardcoded strings** in production code.
+
+Example:
+```kotlin
+// ✅ Good
+Text(text = stringResource(R.string.welcome_message))
+
+// ❌ Bad
+Text(text = "Welcome to our app!")
+```
+
+---
+
+## 19. State Management & Side Effects
+
+- **Use appropriate state management APIs** based on the use case:
+  - `remember` for simple UI state that doesn't survive configuration changes
+  - `rememberSaveable` for UI state that should survive configuration changes
+  - `derivedStateOf` for computed state that depends on other state (don't use this too much for strings like if (true) "Loading" else "Get Started" etc)
+  - `produceState` for converting non-Compose state into Compose state
+
+- **Handle side effects properly**:
+  - `LaunchedEffect` for one-time or key-dependent side effects
+  - `DisposableEffect` for cleanup operations
+  - `SideEffect` for non-suspending side effects that should run on every recomposition
+
+- **Follow the single source of truth principle**:
+  - State should be owned by the lowest common ancestor
+  - Events should flow up, state should flow down
+  - Use `StateFlow`  in ViewModels for reactive state management
+
+- **Avoid common pitfalls**:
+  - Don't use `LaunchedEffect(true)` - use `LaunchedEffect(Unit)` instead
+  - Don't create new objects in composition without `remember`
+  - Don't use `GlobalScope` for coroutines in Compose
+  - Don't mutate state directly in `@Composable` functions
+
+### Example: Proper State Management
+```kotlin
+@Composable
+fun UserProfileScreen(
+    viewModel: UserProfileViewModel = getViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
+    
+    // ✅ Good: Using LaunchedEffect for one-time loading
+    LaunchedEffect(Unit) {
+        viewModel.loadUserProfile()
+    }
+    
+    // ✅ Good: Using remember for UI-only state
+    var isExpanded by remember { mutableStateOf(false) }
+    
+    
+    UserProfileContent(
+        uiState = uiState,
+        isExpanded = isExpanded,
+        onExpandedChange = { isExpanded = it },
+        onSaveClick = {
+            coroutineScope.launch {
+                viewModel.saveProfile()
+            }
+        }
+    )
+}
+```
+
+### Side Effects Guidelines:
+```kotlin
+// ✅ LaunchedEffect for API calls
+LaunchedEffect(userId) {
+    viewModel.loadUser(userId)
+}
+
+// ✅ DisposableEffect for cleanup
+DisposableEffect(lifecycleOwner) {
+    val observer = LifecycleEventObserver { _, event ->
+        // Handle lifecycle events
+    }
+    lifecycleOwner.lifecycle.addObserver(observer)
+    onDispose {
+        lifecycleOwner.lifecycle.removeObserver(observer)
+    }
+}
+
+// ✅ SideEffect for non-suspending operations
+SideEffect {
+    analytics.trackScreenView("UserProfile")
+}
+```
+
+---
+
+## 20. Screen UI Creation Workflow & Best Practices
+
+When creating screen or component UI, follow this comprehensive workflow to ensure consistency, reusability, and excellent user experience:
+
+### **1. Context Analysis & User Psychology**
+- **Study previous conversations** to understand the user's intent and requirements
+- **Analyze user psychology** for the specific screen type:
+  - **Login/Registration**: Focus on trust, security, and ease of use
+  - **Settings**: Emphasize organization, accessibility, and clear categorization
+  - **Dashboard**: Prioritize information hierarchy and quick access to key actions
+  - **Profile**: Balance personalization with functional utility
+  - **Shopping/E-commerce**: Optimize for conversion and seamless flow
+  - **Content Feed**: Maximize engagement and readability
+
+### **2. Visual Hierarchy Implementation**
+- **Follow visual hierarchy at all costs**:
+  - **Primary actions**: Most prominent (large, high contrast colors)
+  - **Secondary actions**: Moderate prominence (medium size, secondary colors)
+  - **Tertiary actions**: Subtle (small, low contrast)
+- **Use consistent spacing** following Material 3 guidelines (8dp grid system)
+- **Implement proper typography hierarchy** using Material 3 text styles
+- **Apply consistent color usage** from `MaterialTheme.colorScheme`
+
+### **3. Animation Consistency**
+- **Keep animations consistent** throughout all screens and components:
+  - **Entrance animations**: Use `AnimatedVisibility` with consistent timing
+  - **Exit animations**: Mirror entrance animations for coherent flow
+  - **State transitions**: Use `animateAsState` with consistent duration/easing
+  - **Loading states**: Standardize loading animations across all components
+  - **Gesture animations**: Consistent spring configurations for all interactions
+
+### **4. Code Reusability & Component Organization**
+- **Before creating new components**, check if similar functionality exists
+- **If reusable code exists**, extract it to a dedicated component
+- **Move reusable components** to the `components/` folder immediately
+- **Create organized packages** within `components/` based on functionality:
+  ```
+  components/
+  ├── buttons/
+  │   ├── cupertino_buttons/
+  │   │   ├── CupertinoButton.kt
+  │   │   └── CupertinoIconButton.kt
+  │   └── material_buttons/
+  │       ├── PrimaryButton.kt
+  │       └── SecondaryButton.kt
+  ├── sections/
+  │   ├── cupertino_sections/
+  │   │   ├── CupertinoSection.kt
+  │   │   └── CupertinoSectionRow.kt
+  │   └── material_sections/
+  │       └── MaterialSection.kt
+  ├── text_fields/
+  │   ├── CustomTextField.kt
+  │   ├── SearchTextField.kt
+  │   └── PasswordTextField.kt
+  ├── cards/
+  │   ├── ContentCard.kt
+  │   ├── ProductCard.kt
+  │   └── ProfileCard.kt
+  └── navigation/
+      ├── TabBar.kt
+      └── NavigationRail.kt
+  ```
+
+### **5. Screen Creation Workflow**
+1. **Analyze Requirements**:
+   - Understand the screen's primary purpose
+   - Identify required UI elements and interactions
+   - Determine the target user workflow
+
+2. **Plan Component Structure**:
+   - Break down the screen into logical components
+   - Identify reusable elements from existing components
+   - Plan the component hierarchy and data flow
+
+3. **Design with User Psychology**:
+   - Consider user expectations for this screen type
+   - Implement appropriate visual cues and feedback
+   - Ensure accessibility and usability standards
+
+4. **Implement with Consistency**:
+   - Use existing components where possible
+   - Follow established animation patterns
+   - Maintain consistent spacing and typography
+   - Apply proper state management practices
+
+5. **Test and Refine**:
+   - Test on different screen sizes and orientations
+   - Verify animations feel consistent with existing screens
+   - Validate accessibility with screen readers
+   - Ensure proper dark mode support
+
+### **6. Component Categorization Guidelines**
+- **Cupertino-style components**: iOS-inspired but Material 3 compliant
+- **Material components**: Pure Material 3 implementations  
+- **Functional components**: Utility components (loading, error states, etc.)
+- **Layout components**: Structural components (sections, containers, etc.)
+- **Input components**: All form-related components
+- **Navigation components**: Tab bars, navigation rails, etc.
+- **Content components**: Cards, lists, media components
+
+### **7. Consistency Checklist**
+Before completing any screen, ensure:
+- ✅ **Visual hierarchy** is clear and follows Material 3 guidelines
+- ✅ **Animations** match existing screen transitions and timings
+- ✅ **Components** are properly categorized and reusable
+- ✅ **Spacing** follows the 8dp grid system consistently
+- ✅ **Colors** use `MaterialTheme.colorScheme` values
+- ✅ **Typography** uses Material 3 text styles
+- ✅ **Accessibility** is implemented (content descriptions, semantic roles)
+- ✅ **Dark mode** is fully supported and tested
+- ✅ **Responsive design** works across different screen sizes
+
+### **8. User Psychology Considerations by Screen Type**
+
+**Authentication Screens** (Login/Register):
+- Minimize cognitive load with clear, single-purpose fields
+- Use progressive disclosure for complex forms
+- Implement trust signals (security icons, clear privacy info)
+- Provide immediate feedback for validation errors
+
+**Settings/Preferences Screens**:
+- Group related settings logically using sections
+- Use familiar iOS-style grouped sections for intuitive navigation
+- Implement immediate visual feedback for changes
+- Provide clear explanations for complex settings
+
+**Dashboard/Home Screens**:
+- Prioritize most important information above the fold
+- Use cards for logical content grouping
+- Implement pull-to-refresh and loading states
+- Balance information density with white space
+
+**Profile/Account Screens**:
+- Lead with personal information and avatar
+- Use progressive disclosure for detailed information
+- Implement easy editing capabilities
+- Provide clear action hierarchies
+
+---
+
+Following these rules will ensure **high-quality, maintainable, and scalable** Jetpack Compose applications. 🚀
