@@ -4,11 +4,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 data class SnackbarEvent(
     val message: String,
+    val dismissPrevious: Boolean = true,
     val action: SnackbarAction? = null,
 )
 
@@ -20,23 +23,26 @@ data class SnackbarAction(
 object SnackbarController {
 
     private val _events = Channel<SnackbarEvent>()
-    val events = _events.receiveAsFlow()
+    val events = _events.consumeAsFlow()
+
 
     suspend fun sendEvent(event: SnackbarEvent) {
         _events.send(event)
     }
 
-    suspend fun sendMessage(message: String?) {
+    suspend fun sendMessage(message: String?, dismissPrevious: Boolean = true) {
         message ?: return
         _events.send(
             SnackbarEvent(
-                message = message
+                message = message,
+                dismissPrevious = dismissPrevious
             )
         )
     }
 
     fun sendAlert(
         message: String?,
+        dismissPrevious: Boolean = true,
         scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
     ) {
         message ?: return
@@ -44,6 +50,7 @@ object SnackbarController {
             sendEvent(
                 event = SnackbarEvent(
                     message = message,
+                    dismissPrevious = dismissPrevious
                 )
             )
         }
@@ -51,13 +58,15 @@ object SnackbarController {
 
     suspend fun sendAlert(
         message: String?,
+        dismissPrevious: Boolean = true,
         actionName: String? = null,
         action: suspend () -> Unit = {},
-    ) {
-        message ?: return
+    ) = withContext(Dispatchers.IO) {
+        message ?: return@withContext
         sendEvent(
             event = SnackbarEvent(
                 message = message,
+                dismissPrevious = dismissPrevious,
                 action = actionName?.let {
                     SnackbarAction(
                         name = actionName,
@@ -66,6 +75,7 @@ object SnackbarController {
                 }
             )
         )
+
     }
 }
 

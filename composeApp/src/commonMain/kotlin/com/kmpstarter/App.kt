@@ -9,17 +9,22 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult.ActionPerformed
 import androidx.compose.material3.SnackbarResult.Dismissed
+import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.kmpstarter.core.events.ThemeEvents
 import com.kmpstarter.core.events.controllers.SnackbarController
 import com.kmpstarter.core.events.enums.ThemeMode
 import com.kmpstarter.core.navigation.ComposeNavigation
+import com.kmpstarter.core.utils.logging.Log
 import com.kmpstarter.theme.ApplicationTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Composable
@@ -49,6 +54,7 @@ private fun MainApp(
         dynamicColor = currentDynamicColor
     ) {
         Scaffold(
+
             snackbarHost = {
                 SnackbarHost(
                     hostState = snackbarHostState
@@ -63,18 +69,34 @@ private fun MainApp(
 }
 
 @Composable
-private fun GlobalSideEffects(snackbarHostState: SnackbarHostState) {
+private fun GlobalSideEffects(
+    snackbarHostState: SnackbarHostState,
+    scope: CoroutineScope = rememberCoroutineScope(),
+) {
     LaunchedEffect(Unit) {
         // observing snackbar events & sending to the ui
-        SnackbarController.events.collect {
-            val result = snackbarHostState.showSnackbar(
-                message = it.message,
-                actionLabel = it.action?.name,
-                duration = SnackbarDuration.Short
-            )
-            when (result) {
-                Dismissed -> Unit
-                ActionPerformed -> it.action?.action?.invoke()
+        SnackbarController.events.collect { snackbarEvent ->
+            // launching another scope inside launched effect for ui of snackbar
+            scope.launch {
+                Log.d(
+                    tag = "snackbar",
+                    message = snackbarEvent
+                )
+                if (snackbarEvent.dismissPrevious)
+                    snackbarHostState.currentSnackbarData?.dismiss()
+
+                val result = snackbarHostState.showSnackbar(
+                    message = snackbarEvent.message,
+                    actionLabel = snackbarEvent.action?.name,
+                    duration = SnackbarDuration.Short
+                )
+                when (result) {
+                    Dismissed -> Unit
+                    ActionPerformed -> {
+                        snackbarEvent.action?.action?.invoke()
+
+                    }
+                }
             }
         }
     }
