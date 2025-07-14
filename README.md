@@ -6,6 +6,15 @@ A modern, production-ready **Kotlin Multiplatform** starter template with Materi
 [![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-1.8.2-orange.svg)](https://www.jetbrains.com/lp/compose-multiplatform/)
 [![Material 3](https://img.shields.io/badge/Material%203-Latest-green.svg)](https://m3.material.io/)
 
+<div align="center">
+  <a href="https://buymeacoffee.com/devatrii" target="_blank">
+    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="150" />
+  </a>
+  <a href="https://www.youtube.com/@devatrii" target="_blank">
+    <img src="https://img.shields.io/badge/YouTube-DevAtrii-red?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube Channel" />
+  </a>
+</div>
+
 ## ✨ Features
 
 ### 🔐 **Authentication** ✅ 80% Complete

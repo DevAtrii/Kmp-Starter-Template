@@ -2,6 +2,7 @@ package com.kmpstarter.theme
 
 import androidx.compose.ui.graphics.Color
 
+/*Light Color Scheme*/
 val primaryLight = Color(0xFF3B82F6)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFDBEAFE)
@@ -38,6 +39,7 @@ val surfaceContainerLight = Color(0xFFEDEDF4)
 val surfaceContainerHighLight = Color(0xFFE7E8EE)
 val surfaceContainerHighestLight = Color(0xFFE2E2E9)
 
+/*Dark Color Scheme*/
 val primaryDark = Color(0xFF60A5FA)
 val onPrimaryDark = Color(0xFF1E3A8A)
 val primaryContainerDark = Color(0xFF2563EB)
@@ -75,4 +77,7 @@ val surfaceContainerHighDark = Color(0xFF282A2F)
 val surfaceContainerHighestDark = Color(0xFF33353A)
 
 
+/*Custom Light Color Scheme*/
+
+/*Custom Dark Color Scheme*/
 
