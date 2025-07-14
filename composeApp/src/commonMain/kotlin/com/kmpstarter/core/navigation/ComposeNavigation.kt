@@ -9,9 +9,7 @@ import com.kmpstarter.core.events.navigator.interfaces.Navigator
 import com.kmpstarter.core.events.navigator.utils.handleNavigationAction
 import com.kmpstarter.core.events.utils.ObserveAsEvents
 import com.kmpstarter.core.navigation.nav_graphs.appNavGraph
-import com.kmpstarter.core.navigation.screens.StarterScreens
-import com.kmpstarter.features.auth.presentation.ui_main.navigation.AuthScreens
-import com.mohamedrejeb.calf.core.PlatformContext
+import com.kmpstarter.starter_features.auth.presentation.ui_main.navigation.AuthScreens
 import org.koin.compose.koinInject
 
 

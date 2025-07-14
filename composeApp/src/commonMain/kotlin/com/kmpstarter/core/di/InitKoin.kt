@@ -1,6 +1,6 @@
 package com.kmpstarter.core.di
 
-import com.kmpstarter.features.auth.di.authModule
+import com.kmpstarter.starter_features.auth.di.authModule
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 

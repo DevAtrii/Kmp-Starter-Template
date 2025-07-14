@@ -27,13 +27,12 @@ A modern, production-ready **Kotlin Multiplatform** starter template with Materi
 - **Material 3 Design System** - Modern, adaptive design with dark mode support
 - **Compose Multiplatform** - Shared UI across Android & iOS
 - **Custom Components** - Reusable UI components with iOS-inspired design
-- **Responsive Layouts** - Adaptive layouts for different screen sizes
 - **Smooth Animations** - Spring animations and smooth transitions
 - **Theme Management** - Dynamic theme switching with persistence
 
 ### 🏗️ **Architecture & DI**
 - **Koin Dependency Injection** - Clean architecture with proper DI
-- **MVVM Pattern** - ViewModels with StateFlow for reactive UI
+- **MVVM+MVI Pattern** - ViewModels with StateFlow for reactive UI
 - **Repository Pattern** - Clean data layer separation
 - **Modular Structure** - Organized packages for scalability
 
@@ -46,18 +45,16 @@ A modern, production-ready **Kotlin Multiplatform** starter template with Materi
 ### 🎯 **Events & Navigation**
 - **Event System** - Centralized event management
 - **Snackbar Controller** - Global snackbar notifications
-- **Navigation** - Type-safe navigation with transitions
+- **Navigation** - Type-safe & Global navigation with transitions
 - **Theme Events** - Reactive theme management
 
 ### 💰 **Monetization**
 - **RevenueCat Integration** - In-app purchases and subscriptions
-- **Purchase Management** - Subscription handling and validation
 
 ### 🛠️ **Utilities & Tools**
 - **Platform Detection** - Cross-platform utilities
 - **Logging System** - Structured logging across platforms
-- **Time Utilities** - Date/time handling
-- **Network Utils** - HTTP request management
+- **Time Utilities** - timemillis handling
 - **Screen Size Detection** - Responsive design utilities
 
 ## 📁 Project Structure
@@ -90,6 +87,7 @@ composeApp/src/commonMain/kotlin/com/kmpstarter/
 │   │   └── platform/       # Platform-specific utils
 │   ├── purchases/          # RevenueCat integration
 │   └── AppConstants.kt     # App constants
+├── starter_feaures/        # Completed features implemented by StarterTemplate i.e auth etc
 ├── theme/                  # Material 3 theming
 └── App.kt                 # Main app entry point
 ```
@@ -101,12 +99,8 @@ composeApp/src/commonMain/kotlin/com/kmpstarter/
    git clone https://github.com/DevAtrii/Kmp-Starter-Template.git
    cd KMP-Starter-Template
    ```
-
-2. **Configure RevenueCat** (Optional)
-   - Update `AppConstants.kt` with your RevenueCat API key
-   - Configure products in RevenueCat dashboard
-
-3. **Run the app**
+ 
+2. **Run the app**
    ```bash
    # Android
    ./gradlew androidApp:assembleDebug
@@ -114,23 +108,7 @@ composeApp/src/commonMain/kotlin/com/kmpstarter/
    # iOS
    ./gradlew iosApp:assembleXCFramework
    ```
-
-## 🎨 Customization
-
-### **Adding New Screens**
-1. Create screen in `core/ui/screens/`
-2. Add navigation route in `core/events/navigator/`
-3. Update navigation graph
-
-### **Adding New Components**
-1. Create component in `core/ui/components/`
-2. Follow Material 3 design guidelines
-3. Add preview composable for development
-
-### **Database Operations**
-1. Add entities in `core/db/`
-2. Create DAOs for data access
-3. Update `DatabaseProvider.kt`
+ 
 
 ## 📱 Supported Platforms
 
@@ -163,4 +141,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built with ❤️ using Kotlin Multiplatform & Compose**
+**Built by DevAtrii with ❤️ using Kotlin Multiplatform & Compose**
