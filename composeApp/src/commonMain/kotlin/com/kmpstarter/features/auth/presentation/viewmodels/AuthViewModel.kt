@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.kmpstarter.core.events.controllers.SnackbarController
 import com.kmpstarter.core.events.controllers.SnackbarEvent
 import com.kmpstarter.core.events.navigator.interfaces.Navigator
+import com.kmpstarter.core.utils.logging.Log
 import com.kmpstarter.core.utils.network_utils.RequestState
 import com.kmpstarter.core.utils.network_utils.handleState
 import com.kmpstarter.features.auth.domain.enums.SignInMethod
@@ -120,6 +121,11 @@ class AuthViewModel(
             val isAlreadyExist = try {
                 repository.checkIfUserAlreadyExistInDatabase()
             } catch (e: Exception) {
+                _state.update {
+                    it.copy(
+                        isLoading = false
+                    )
+                }
                 SnackbarController.sendAlert(e.message)
                 return@launch
             }

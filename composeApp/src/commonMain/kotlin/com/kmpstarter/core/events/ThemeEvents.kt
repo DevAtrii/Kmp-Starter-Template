@@ -25,43 +25,39 @@ class ThemeEvents(
     companion object {
         private val PREF_THEME = stringPreferencesKey("theme_mode")
         private val PREF_DYNAMIC_COLORS = booleanPreferencesKey("dynamic_colors")
-        private val PREF_ONBOARDED = booleanPreferencesKey("onboarded")
+
+        val DEFAULT_THEME_MODE = ThemeMode.LIGHT
+        const val DEFAULT_DYNAMIC_COLOR_SCHEME = false
     }
 
     private val dataStore = appDataStore.dataStore
     private var editThemeJob: Job? = null
     private var editDynamicColorJob: Job? = null
-    private var editOnboardedJob: Job? = null
 
     val dynamicColor = dataStore.data.map {
-        it[PREF_DYNAMIC_COLORS] ?: false
-    }
-
-
-    val isOnboarded = dataStore.data.map {
-        it[PREF_ONBOARDED] ?: false
+        it[PREF_DYNAMIC_COLORS]   ?: DEFAULT_DYNAMIC_COLOR_SCHEME
     }
 
 
     val themeMode = dataStore.data.map { it: Preferences ->
-        ThemeMode.valueOf(it[PREF_THEME] ?: ThemeMode.LIGHT.name)
+        ThemeMode.valueOf(it[PREF_THEME] ?: DEFAULT_THEME_MODE.name)
     }
 
-
-    fun setIsOnboarded(value: Boolean) {
-        editOnboardedJob?.cancel()
-        editOnboardedJob = CoroutineScope(Dispatchers.IO).launch {
-            dataStore.edit {
-                it[PREF_ONBOARDED] = value
-            }
-        }
-    }
 
     fun setDynamicColor(value: Boolean) {
         editDynamicColorJob?.cancel()
         editDynamicColorJob = CoroutineScope(Dispatchers.IO).launch {
             dataStore.edit {
                 it[PREF_DYNAMIC_COLORS] = value
+            }
+        }
+    }
+
+    fun setOppositeDynamicColor() {
+        editDynamicColorJob?.cancel()
+        editDynamicColorJob = CoroutineScope(Dispatchers.IO).launch {
+            dataStore.edit {
+                it[PREF_DYNAMIC_COLORS] = !dynamicColor.first()
             }
         }
     }
@@ -74,11 +70,13 @@ class ThemeEvents(
             }
         }
     }
+
     fun setOppositeTheme() {
         editThemeJob?.cancel()
         editThemeJob = CoroutineScope(Dispatchers.IO).launch {
             dataStore.edit {
-                it[PREF_THEME] = if (themeMode.first() == ThemeMode.LIGHT) ThemeMode.DARK.name else ThemeMode.LIGHT.name
+                it[PREF_THEME] =
+                    if (themeMode.first() == ThemeMode.LIGHT) ThemeMode.DARK.name else ThemeMode.LIGHT.name
             }
         }
     }
@@ -89,7 +87,7 @@ fun isAppInDarkTheme(
     themeEvents: ThemeEvents = koinInject(),
 ): Boolean {
     val currentThemeMode by themeEvents.themeMode.collectAsState(
-        initial = ThemeMode.LIGHT
+        initial = ThemeEvents.DEFAULT_THEME_MODE
     )
     if (currentThemeMode == ThemeMode.SYSTEM && isSystemInDarkTheme())
         return true

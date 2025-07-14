@@ -3,13 +3,12 @@ package com.kmpstarter.features.auth.presentation.ui_main.navigation
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
-import com.kmpstarter.features.auth.presentation.ui_main.screens.MyAccountScreen
 import com.kmpstarter.features.auth.presentation.ui_main.screens.SignInScreen
 import com.kmpstarter.features.auth.presentation.ui_main.screens.SignUpScreen
 import com.kmpstarter.core.ui.utils.navigation.appNavComposable
 
 fun NavGraphBuilder.authNavGraph(
-    modifier: Modifier,
+    scaffoldModifier: Modifier,
 ) {
 
     navigation<AuthScreens.Root>(
@@ -17,19 +16,13 @@ fun NavGraphBuilder.authNavGraph(
     ) {
         appNavComposable<AuthScreens.SignIn> {
             SignInScreen(
-                modifier = modifier,
+                modifier = scaffoldModifier,
             )
         }
 
         appNavComposable<AuthScreens.SignUp> {
             SignUpScreen(
-                modifier = modifier,
-            )
-        }
-
-        appNavComposable<AuthScreens.MyAccount> {
-            MyAccountScreen(
-                modifier = modifier,
+                modifier = scaffoldModifier,
             )
         }
     }

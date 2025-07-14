@@ -51,6 +51,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -66,14 +67,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kmpstarter.core.events.ThemeEvents
+import com.kmpstarter.core.events.enums.ThemeMode
 import com.kmpstarter.core.events.isAppInDarkTheme
+import com.kmpstarter.core.utils.intents.IntentUtils
 import com.kmpstarter.theme.Dimens
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
 
 @Composable
-fun WelcomeScreen(modifier: Modifier = Modifier) {
+fun WelcomeScreen(
+    modifier: Modifier = Modifier,
+    intentUtils: IntentUtils = koinInject(),
+) {
     var showContent by remember { mutableStateOf(false) }
     var showBlur by remember { mutableStateOf(false) }
 
@@ -174,7 +180,13 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
                 ),
                 exit = slideOutVertically() + fadeOut()
             ) {
-                ModernActionButtons()
+                ModernActionButtons(
+                    onOpenDocsClick = {
+                        intentUtils.openUrl(
+                            url = "https://github.com/DevAtrii/Kmp-Starter-Template/tree/main"
+                        )
+                    }
+                )
             }
         }
     }
@@ -401,43 +413,21 @@ private fun ModernFeatureCard(feature: FeatureItem) {
 
 @Composable
 private fun ModernActionButtons(
-    themeEvents: ThemeEvents = koinInject()
+    themeEvents: ThemeEvents = koinInject(),
+    onOpenDocsClick: () -> Unit,
 ) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
     ) {
-        // Primary CTA Button with glassmorphism effect
-        Button(
-            onClick = { /* TODO: Navigate to main app */ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
-            ),
-            elevation = ButtonDefaults.buttonElevation(
-                defaultElevation = Dimens.elevationMedium
-            )
-        ) {
-            Icon(
-                imageVector = Icons.Default.PlayArrow,
-                contentDescription = null,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(Dimens.paddingSmall))
-            Text(
-                text = "Get Started",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-
-        Spacer(modifier = Modifier.height(Dimens.paddingMedium))
-
         // Secondary actions in a row
+        var clickCount by remember {
+            mutableIntStateOf(0)
+        }
+        var buttonText by remember {
+            mutableStateOf("Toggle")
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(Dimens.paddingMedium)
@@ -445,7 +435,29 @@ private fun ModernActionButtons(
             // Theme Toggle
             OutlinedButton(
                 onClick = {
-                    themeEvents.setOppositeTheme()
+                    val themeMode = when (clickCount) {
+                        0 -> {
+                            clickCount++
+                            buttonText = "Light"
+                            ThemeMode.LIGHT
+                        }
+
+                        1 -> {
+                            clickCount++
+                            buttonText = "Dark"
+                            ThemeMode.DARK
+                        }
+
+                        else -> {
+                            clickCount = 0
+                            buttonText = "System"
+                            ThemeMode.SYSTEM
+                        }
+                    }
+                    themeEvents.setThemeMode(
+                        themeMode = themeMode
+                    )
+
                 },
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(12.dp),
@@ -461,7 +473,7 @@ private fun ModernActionButtons(
                 )
                 Spacer(modifier = Modifier.width(Dimens.paddingSmall))
                 Text(
-                    text = "Theme",
+                    text = buttonText,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Medium
                 )
@@ -469,7 +481,7 @@ private fun ModernActionButtons(
 
             // Documentation
             OutlinedButton(
-                onClick = { /* TODO: Open documentation */ },
+                onClick = onOpenDocsClick,
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.outlinedButtonColors(

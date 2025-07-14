@@ -57,7 +57,12 @@ logging = "1.5.0"
 atomic-fu = "0.27.0"
 stately-common = "2.0.5"
 
+#Accompinist
+accompanist-system-ui-controller = "0.27.0"
+
 [libraries]
+# Accompinist
+accompanist-system-ui-controller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-system-ui-controller" }
 # Firebase & Authentication
 calf-file-picker = { module = "com.mohamedrejeb.calf:calf-file-picker", version.ref = "calfFilePicker" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }

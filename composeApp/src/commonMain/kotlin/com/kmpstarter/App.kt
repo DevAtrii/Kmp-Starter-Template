@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import com.kmpstarter.core.events.ThemeEvents
 import com.kmpstarter.core.events.controllers.SnackbarController
 import com.kmpstarter.core.events.enums.ThemeMode
-import com.kmpstarter.core.ui.screens.WelcomeScreen
+import com.kmpstarter.core.navigation.ComposeNavigation
 import com.kmpstarter.theme.ApplicationTheme
 import org.koin.compose.koinInject
 
@@ -39,10 +39,10 @@ private fun MainApp(
     themeEvents: ThemeEvents = koinInject(),
 ) {
     val currentThemeMode by themeEvents.themeMode.collectAsState(
-        initial = ThemeMode.LIGHT
+        initial = ThemeEvents.DEFAULT_THEME_MODE
     )
     val currentDynamicColor by themeEvents.dynamicColor.collectAsState(
-        initial = false
+        initial = ThemeEvents.DEFAULT_DYNAMIC_COLOR_SCHEME
     )
     ApplicationTheme(
         darkTheme = currentThemeMode.toComposableBoolean(isSystemInDarkTheme()),
@@ -55,11 +55,10 @@ private fun MainApp(
                 )
             }
         ) { innerPaddings: PaddingValues ->
-            WelcomeScreen(
-                modifier = Modifier.padding(innerPaddings)
+            ComposeNavigation(
+                scaffoldModifier = Modifier.padding(innerPaddings)
             )
         }
-
     }
 }
 
@@ -80,6 +79,8 @@ private fun GlobalSideEffects(snackbarHostState: SnackbarHostState) {
         }
     }
 }
+
+
 
 
 

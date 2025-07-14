@@ -8,8 +8,6 @@ sealed class AuthScreens {
     data object Root : AuthScreens()
 
 
-    @Serializable
-    data object MyAccount : AuthScreens()
 
 
     @Serializable

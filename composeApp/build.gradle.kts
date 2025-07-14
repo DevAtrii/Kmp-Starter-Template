@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -56,6 +57,9 @@ kotlin {
 
             // firebase
             implementation(project.dependencies.platform(libs.firebase.bom))
+
+            // accompanist
+            implementation(libs.accompanist.system.ui.controller)
 
         }
         commonMain.dependencies {

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1061850765240",
+    "project_id": "kmp-starter-70c51",
+    "storage_bucket": "kmp-starter-70c51.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1061850765240:android:f69686e0a0eabfcfe7214d",
+        "android_client_info": {
+          "package_name": "com.kmpstarter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1061850765240-bhph55orrvk1jp4sc7lfml4tpp464oqn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kmpstarter",
+            "certificate_hash": "f585e2fa916d29fc7d320bd4d47e4b301fbde13b"
+          }
+        },
+        {
+          "client_id": "1061850765240-35h84f96u3jdbmk2sqgi9d1jp28jsfif.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcwTQ9o8-lD2N47VMe1R0jragpM3PBays"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1061850765240-35h84f96u3jdbmk2sqgi9d1jp28jsfif.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
