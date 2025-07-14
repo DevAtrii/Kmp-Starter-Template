@@ -8,6 +8,12 @@ A modern, production-ready **Kotlin Multiplatform** starter template with Materi
 
 ## ✨ Features
 
+### 🔐 **Authentication** ✅ 80% Complete
+- **Google Sign-In** - OAuth 2.0 authentication with Google
+- **Email/Password** - Traditional authentication system
+- **Password Reset** - Email-based password recovery
+- **Account Deletion** - Email-based account deletion
+
 ### 🎨 **UI & Design**
 - **Material 3 Design System** - Modern, adaptive design with dark mode support
 - **Compose Multiplatform** - Shared UI across Android & iOS
@@ -83,8 +89,8 @@ composeApp/src/commonMain/kotlin/com/kmpstarter/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/DevAtrii/Kmp-Starter-Tempalte.git
-   cd KMP-Starter
+   git clone https://github.com/DevAtrii/Kmp-Starter-Template.git
+   cd KMP-Starter-Template
    ```
 
 2. **Configure RevenueCat** (Optional)

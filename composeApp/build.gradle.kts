@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
-    // alias(libs.plugins.google.services)
+    alias(libs.plugins.google.services)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.kotlin.serialization)
@@ -53,6 +53,9 @@ kotlin {
             // Google Play Services
             implementation(libs.play.app.update.ktx)
             implementation(libs.play.app.review.ktx)
+
+            // firebase
+            implementation(project.dependencies.platform(libs.firebase.bom))
 
         }
         commonMain.dependencies {
@@ -107,6 +110,15 @@ kotlin {
             // image libs
             implementation(libs.coil.compose)
             implementation(libs.calf.file.picker)
+
+            // firebase
+            implementation(libs.gitlive.firebase.firestore)
+            implementation(libs.gitlive.firebase.analytics)
+            implementation(libs.gitlive.firebase.auth)
+
+            // google sign in
+            implementation(libs.kmpauth.google)
+            implementation(libs.kmpauth.firebase)
         }
         commonTest.dependencies {
             // Testing Framework

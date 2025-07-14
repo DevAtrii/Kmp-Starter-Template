@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">KMP Starter</string>
+
+    <!-- Auth Screens -->
+    <string name="auth_welcome_back">Welcome Back</string>
+    <string name="auth_sign_in_to_continue">Sign in to continue</string>
+    <string name="auth_email_label">Email</string>
+    <string name="auth_password_label">Password</string>
+    <string name="auth_hide_password">Hide password</string>
+    <string name="auth_show_password">Show password</string>
+    <string name="auth_forgot_password">Forgot Password?</string>
+    <string name="auth_sign_in">Sign In</string>
+    <string name="auth_or">OR</string>
+    <string name="auth_no_account">Don't have an account? </string>
+    <string name="auth_sign_up">Sign Up</string>
+    <string name="auth_create_account">Create Account</string>
+    <string name="auth_already_have_account">Already have an account? </string>
+    <string name="auth_name_label">Full Name</string>
+    <string name="auth_confirm_password">Confirm Password</string>
+    <string name="auth_reset_password">Reset Password</string>
+    <string name="auth_reset_password_instructions">Enter your email address to receive password reset instructions</string>
+    <string name="auth_submit">Submit</string>
+    <string name="auth_cancel">Cancel</string>
+    <string name="auth_forgot_password_title">Forgot Password</string>
+    <string name="auth_forgot_password_desc">Enter your email address and we'll send you a link to reset your password</string>
+    <string name="auth_send_link">Send Link</string>
 </resources>

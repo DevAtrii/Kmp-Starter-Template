@@ -9,6 +9,6 @@ val coreModule = module {
     includes(
         utilsModule,
         databaseModule,
-        eventsModule
+        eventsModule,
     )
 }
