@@ -2,7 +2,7 @@
 
 ![KMP-Starter-Template](https://github.com/user-attachments/assets/bcf5bd62-9d5f-4d6c-9d2a-d8de6e76a3eb)
 
-A modern, production-ready **Kotlin Multiplatform** starter template with Material 3 design, comprehensive tooling, and enterprise-grade architecture.
+A modern, production-ready **Kotlin Multiplatform** starter template with Material 3 design, utils, and clean architecture.
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.2.0-blue.svg)](https://kotlinlang.org)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-1.8.2-orange.svg)](https://www.jetbrains.com/lp/compose-multiplatform/)
