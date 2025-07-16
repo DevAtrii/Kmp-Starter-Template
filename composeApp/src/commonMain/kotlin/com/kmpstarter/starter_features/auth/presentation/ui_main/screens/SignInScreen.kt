@@ -51,10 +51,20 @@ import com.kmpstarter.starter_features.auth.presentation.viewmodels.AuthViewMode
 import com.kmpstarter.theme.Dimens
 import dev.gitlive.firebase.auth.FirebaseUser
 import kmpstarter.composeapp.generated.resources.Res
-import org.koin.compose.koinInject
-import org.jetbrains.compose.resources.stringResource
+import kmpstarter.composeapp.generated.resources.auth_email_label
+import kmpstarter.composeapp.generated.resources.auth_forgot_password
+import kmpstarter.composeapp.generated.resources.auth_hide_password
+import kmpstarter.composeapp.generated.resources.auth_no_account
+import kmpstarter.composeapp.generated.resources.auth_or
+import kmpstarter.composeapp.generated.resources.auth_password_label
+import kmpstarter.composeapp.generated.resources.auth_show_password
+import kmpstarter.composeapp.generated.resources.auth_sign_in
+import kmpstarter.composeapp.generated.resources.auth_sign_in_to_continue
+import kmpstarter.composeapp.generated.resources.auth_sign_up
+import kmpstarter.composeapp.generated.resources.auth_welcome_back
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import kmpstarter.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 
 @Composable
 fun SignInScreen(

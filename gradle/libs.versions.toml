@@ -130,6 +130,7 @@ androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "a
 logging = { module = "org.lighthousegames:logging", version.ref = "logging" }
 atomic-fu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomic-fu" }
 stately-common = { module = "co.touchlab:stately-common", version.ref = "stately-common" }
+ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "compose-multiplatform" }
 
 [plugins]
 # Android Plugins

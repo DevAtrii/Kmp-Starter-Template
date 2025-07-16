@@ -7,8 +7,10 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -28,9 +30,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Bolt
@@ -71,28 +71,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kmpstarter.core.events.ThemeEvents
+import com.kmpstarter.core.datastore.theme.ThemeDataStore
+import com.kmpstarter.core.datastore.theme.isAppInDarkTheme
 import com.kmpstarter.core.events.controllers.SnackbarController
 import com.kmpstarter.core.events.enums.ThemeMode
-import com.kmpstarter.core.events.isAppInDarkTheme
+import com.kmpstarter.core.ui.layouts.lists.ScrollableColumn
 import com.kmpstarter.core.ui.utils.screen.ScreenSizeValue
 import com.kmpstarter.core.utils.intents.IntentUtils
-import com.kmpstarter.core.utils.platform.PlatformType
-import com.kmpstarter.core.utils.platform.platformType
+import com.kmpstarter.core.utils.platform.isDynamicColorSupported
 import com.kmpstarter.theme.Dimens
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
-import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.shrinkHorizontally
-import com.kmpstarter.core.events.navigator.interfaces.Navigator
-import com.kmpstarter.starter_features.auth.presentation.ui_main.navigation.AuthScreens
+
 
 @Composable
 fun WelcomeScreen(
     modifier: Modifier = Modifier,
+    onGetStartedClick: () -> Unit,
     intentUtils: IntentUtils = koinInject(),
-    themeEvents: ThemeEvents = koinInject(),
+    themeDataStore: ThemeDataStore = koinInject(),
 ) {
     var showContent by remember { mutableStateOf(false) }
     var showBlur by remember { mutableStateOf(false) }
@@ -225,9 +223,9 @@ fun WelcomeScreen(
                     ) {
                         ActionButtonsSection(
                             isCompact = false,
-                            themeEvents = themeEvents,
+                            onGetStartedClick = onGetStartedClick,
+                            themeDataStore = themeDataStore,
                             intentUtils = intentUtils,
-                            clickCount = clickCount,
                             buttonText = buttonText,
                             onThemeClick = {
                                 val themeMode = when (clickCount) {
@@ -249,7 +247,7 @@ fun WelcomeScreen(
                                         ThemeMode.SYSTEM
                                     }
                                 }
-                                themeEvents.setThemeMode(themeMode = themeMode)
+                                themeDataStore.setThemeMode(themeMode = themeMode)
                                 SnackbarController.sendAlert("Theme changed to ${themeMode.name.lowercase()}")
                             }
                         )
@@ -258,10 +256,9 @@ fun WelcomeScreen(
             }
         } else {
             // Mobile/Tablet portrait layout
-            Column(
+            ScrollableColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
                     .padding(
                         horizontal = if (isCompact) Dimens.paddingMedium else Dimens.paddingLarge,
                         vertical = Dimens.paddingLarge
@@ -316,9 +313,9 @@ fun WelcomeScreen(
                 ) {
                     ActionButtonsSection(
                         isCompact = isCompact,
-                        themeEvents = themeEvents,
+                        themeDataStore = themeDataStore,
                         intentUtils = intentUtils,
-                        clickCount = clickCount,
+                        onGetStartedClick = onGetStartedClick,
                         buttonText = buttonText,
                         onThemeClick = {
                             val themeMode = when (clickCount) {
@@ -340,7 +337,7 @@ fun WelcomeScreen(
                                     ThemeMode.SYSTEM
                                 }
                             }
-                            themeEvents.setThemeMode(themeMode = themeMode)
+                            themeDataStore.setThemeMode(themeMode = themeMode)
                             SnackbarController.sendAlert("Theme changed to ${themeMode.name.lowercase()}")
                         }
                     )
@@ -577,25 +574,25 @@ private fun ModernFeatureCard(
 @Composable
 private fun ActionButtonsSection(
     isCompact: Boolean,
-    themeEvents: ThemeEvents,
+    themeDataStore: ThemeDataStore,
     intentUtils: IntentUtils,
-    clickCount: Int,
     buttonText: String,
     onThemeClick: () -> Unit,
+    onGetStartedClick: () -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
     ) {
         // Dynamic color toggle (Android only) with custom animated toggle
-        if (platformType == PlatformType.ANDROID) {
+        if (isDynamicColorSupported) {
             AnimatedVisibility(
                 visible = true,
                 enter = fadeIn() + slideInVertically(),
                 exit = fadeOut() + slideOutVertically()
             ) {
                 DynamicColorToggle(
-                    themeEvents = themeEvents,
+                    themeDataStore = themeDataStore,
                     isCompact = isCompact
                 )
             }
@@ -667,10 +664,11 @@ private fun ActionButtonsSection(
             onClick = {
                 scope.launch {
                     SnackbarController.sendAlert(
-                        message = "Ready to start building?",
+                        message = "Navigate to dummy purchase screen?",
                         actionName = "Let's go!"
                     ) {
                         SnackbarController.sendMessage("🚀 Starting your KMP journey!")
+                        onGetStartedClick()
                     }
                 }
             },
@@ -697,7 +695,7 @@ private fun ActionButtonsSection(
 
 @Composable
 private fun DynamicColorToggle(
-    themeEvents: ThemeEvents,
+    themeDataStore: ThemeDataStore,
     isCompact: Boolean,
 ) {
     val scope = rememberCoroutineScope()
@@ -834,7 +832,7 @@ private fun DynamicColorToggle(
                             isDynamicColorEnabled = !isDynamicColorEnabled
 
                             scope.launch {
-                                themeEvents.setOppositeDynamicColor()
+                                themeDataStore.setOppositeDynamicColor()
                                 SnackbarController.sendAlert(
                                     if (isDynamicColorEnabled) "Dynamic colors enabled! 🎨"
                                     else "Dynamic colors disabled"

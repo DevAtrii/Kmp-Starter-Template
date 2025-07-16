@@ -2,11 +2,12 @@ package com.kmpstarter.core.ui.composition_locals
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation.NavHostController
 
-val LocalNavController = compositionLocalOf<NavHostController?> { null }
+val LocalNavController = staticCompositionLocalOf<NavHostController> {
+    error("Please provide nav controller")
+}
 
 
 @OptIn(ExperimentalMaterial3Api::class)

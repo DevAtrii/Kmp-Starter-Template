@@ -1,8 +1,8 @@
 package com.kmpstarter.starter_features.auth.domain.repository
 
+import com.kmpstarter.core.utils.network_utils.RequestState
 import com.kmpstarter.starter_features.auth.domain.enums.SignInMethod
 import com.kmpstarter.starter_features.auth.domain.models.UserData
-import com.kmpstarter.core.utils.network_utils.RequestState
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {

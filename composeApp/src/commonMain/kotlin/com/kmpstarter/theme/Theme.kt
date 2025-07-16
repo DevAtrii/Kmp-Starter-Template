@@ -109,6 +109,8 @@ val unspecified_scheme =
 @Composable
 expect fun getDynamicColorScheme(darkTheme: Boolean): ColorScheme?
 
+
+
 @Composable
 fun ApplicationTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

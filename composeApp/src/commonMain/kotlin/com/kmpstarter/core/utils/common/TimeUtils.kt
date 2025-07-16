@@ -1,6 +1,11 @@
 package com.kmpstarter.core.utils.common
 
-expect fun epochMillis(): Long
+import kotlinx.datetime.Clock
 
+fun epochMillis(): Long = currentMillis()
 
-fun hoursToMillis(hour:Int) = hour * 60 * 60 * 1000
+fun currentMillis() = Clock.System.now().toEpochMilliseconds()
+
+val currentMillis: Long get() = currentMillis()
+
+fun hoursToMillis(hour: Int) = hour * 60 * 60 * 1000

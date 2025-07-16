@@ -1,10 +1,7 @@
-package com.kmpstarter.core.events
+package com.kmpstarter.core.datastore.onboarding
 
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import com.kmpstarter.core.events.enums.ThemeMode
 import com.kmpstarter.core.utils.datastore.AppDataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,10 +10,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class OnBoardingEvents(
+class OnboardingDataStore(
     appDataStore: AppDataStore,
 ) {
-    companion object {
+    companion object Companion {
         private val PREF_ONBOARDED = booleanPreferencesKey("onboarded")
     }
 

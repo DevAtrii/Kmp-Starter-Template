@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -38,6 +37,19 @@ object SnackbarController {
                 dismissPrevious = dismissPrevious
             )
         )
+    }
+
+    fun dismiss(
+        scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
+    ) {
+        scope.launch {
+            sendEvent(
+                event = SnackbarEvent(
+                    message = "",
+                    dismissPrevious = true
+                )
+            )
+        }
     }
 
     fun sendAlert(

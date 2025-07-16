@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.implementation
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -123,6 +121,9 @@ kotlin {
             // google sign in
             implementation(libs.kmpauth.google)
             implementation(libs.kmpauth.firebase)
+
+            // backhandler
+            implementation(libs.ui.backhandler)
         }
         commonTest.dependencies {
             // Testing Framework

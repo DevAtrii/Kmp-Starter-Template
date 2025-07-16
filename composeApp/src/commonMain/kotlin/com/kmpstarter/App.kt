@@ -9,7 +9,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult.ActionPerformed
 import androidx.compose.material3.SnackbarResult.Dismissed
-import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -17,11 +16,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.kmpstarter.core.events.ThemeEvents
+import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
-import com.kmpstarter.core.events.enums.ThemeMode
 import com.kmpstarter.core.navigation.ComposeNavigation
-import com.kmpstarter.core.utils.logging.Log
 import com.kmpstarter.theme.ApplicationTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -41,20 +38,19 @@ fun App() {
 @Composable
 private fun MainApp(
     snackbarHostState: SnackbarHostState,
-    themeEvents: ThemeEvents = koinInject(),
+    themeDataStore: ThemeDataStore = koinInject(),
 ) {
-    val currentThemeMode by themeEvents.themeMode.collectAsState(
-        initial = ThemeEvents.DEFAULT_THEME_MODE
+    val currentThemeMode by themeDataStore.themeMode.collectAsState(
+        initial = ThemeDataStore.DEFAULT_THEME_MODE
     )
-    val currentDynamicColor by themeEvents.dynamicColor.collectAsState(
-        initial = ThemeEvents.DEFAULT_DYNAMIC_COLOR_SCHEME
+    val currentDynamicColor by themeDataStore.dynamicColor.collectAsState(
+        initial = ThemeDataStore.DEFAULT_DYNAMIC_COLOR_SCHEME
     )
     ApplicationTheme(
         darkTheme = currentThemeMode.toComposableBoolean(isSystemInDarkTheme()),
         dynamicColor = currentDynamicColor
     ) {
         Scaffold(
-
             snackbarHost = {
                 SnackbarHost(
                     hostState = snackbarHostState
@@ -78,12 +74,11 @@ private fun GlobalSideEffects(
         SnackbarController.events.collect { snackbarEvent ->
             // launching another scope inside launched effect for ui of snackbar
             scope.launch {
-                Log.d(
-                    tag = "snackbar",
-                    message = snackbarEvent
-                )
                 if (snackbarEvent.dismissPrevious)
                     snackbarHostState.currentSnackbarData?.dismiss()
+
+                if (snackbarEvent.message.isEmpty())
+                    return@launch
 
                 val result = snackbarHostState.showSnackbar(
                     message = snackbarEvent.message,
@@ -94,7 +89,6 @@ private fun GlobalSideEffects(
                     Dismissed -> Unit
                     ActionPerformed -> {
                         snackbarEvent.action?.action?.invoke()
-
                     }
                 }
             }

@@ -1,6 +1,7 @@
 package com.kmpstarter.core.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -10,7 +11,7 @@ import com.kmpstarter.core.events.navigator.utils.handleNavigationAction
 import com.kmpstarter.core.events.utils.ObserveAsEvents
 import com.kmpstarter.core.navigation.nav_graphs.appNavGraph
 import com.kmpstarter.core.navigation.screens.StarterScreens
-import com.kmpstarter.starter_features.auth.presentation.ui_main.navigation.AuthScreens
+import com.kmpstarter.core.ui.composition_locals.LocalNavController
 import org.koin.compose.koinInject
 
 
@@ -22,16 +23,18 @@ fun ComposeNavigation(
 ) {
     NavigationSideEffects(navigator, navController)
 
-    NavHost(
-        navController = navController,
-        startDestination = StarterScreens.Root
-    ) {
-        appNavGraph(
-            scaffoldModifier = scaffoldModifier
-        )
+    CompositionLocalProvider(LocalNavController provides navController) {
+        NavHost(
+            navController = navController,
+            startDestination = StarterScreens.Root
+        ) {
 
+            appNavGraph(
+                scaffoldModifier = scaffoldModifier
+            )
+
+        }
     }
-
 }
 
 @Composable

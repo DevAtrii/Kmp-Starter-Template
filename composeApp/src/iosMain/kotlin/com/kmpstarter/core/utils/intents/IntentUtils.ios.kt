@@ -4,7 +4,6 @@ import com.kmpstarter.core.APPSTORE_URL
 import com.kmpstarter.core.utils.logging.Log
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
-import platform.UIKit.UIApplicationOpenExternalURLOptionsKeyVar
 import platform.UIKit.UIApplicationOpenSettingsURLString
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")

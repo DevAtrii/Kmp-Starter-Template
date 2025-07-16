@@ -1,4 +1,4 @@
-package com.kmpstarter.core.events
+package com.kmpstarter.core.datastore.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
-class ThemeEvents(
+class ThemeDataStore(
     appDataStore: AppDataStore,
 ) {
     companion object {
@@ -35,7 +35,7 @@ class ThemeEvents(
     private var editDynamicColorJob: Job? = null
 
     val dynamicColor = dataStore.data.map {
-        it[PREF_DYNAMIC_COLORS]   ?: DEFAULT_DYNAMIC_COLOR_SCHEME
+        it[PREF_DYNAMIC_COLORS] ?: DEFAULT_DYNAMIC_COLOR_SCHEME
     }
 
 
@@ -84,10 +84,10 @@ class ThemeEvents(
 
 @Composable
 fun isAppInDarkTheme(
-    themeEvents: ThemeEvents = koinInject(),
+    themeDataStore: ThemeDataStore = koinInject(),
 ): Boolean {
-    val currentThemeMode by themeEvents.themeMode.collectAsState(
-        initial = ThemeEvents.DEFAULT_THEME_MODE
+    val currentThemeMode by themeDataStore.themeMode.collectAsState(
+        initial = ThemeDataStore.DEFAULT_THEME_MODE
     )
     if (currentThemeMode == ThemeMode.SYSTEM && isSystemInDarkTheme())
         return true

@@ -3,9 +3,9 @@ package com.kmpstarter.starter_features.auth.presentation.ui_main.navigation
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
+import com.kmpstarter.core.ui.utils.navigation.appNavComposable
 import com.kmpstarter.starter_features.auth.presentation.ui_main.screens.SignInScreen
 import com.kmpstarter.starter_features.auth.presentation.ui_main.screens.SignUpScreen
-import com.kmpstarter.core.ui.utils.navigation.appNavComposable
 
 fun NavGraphBuilder.authNavGraph(
     scaffoldModifier: Modifier,

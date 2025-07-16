@@ -9,11 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.kmpstarter.core.events.ThemeEvents
+import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.enums.ThemeMode
 import com.kmpstarter.core.events.utils.ObserveAsEvents
 import org.koin.compose.koinInject
@@ -34,15 +33,15 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun AndroidSideEffects(
-    themeEvents: ThemeEvents = koinInject(),
+    themeDataStore: ThemeDataStore = koinInject(),
     systemUiController: SystemUiController = rememberSystemUiController(),
 ) {
-    val currentThemeMode by themeEvents.themeMode.collectAsState(
-        initial = ThemeEvents.DEFAULT_THEME_MODE
+    val currentThemeMode by themeDataStore.themeMode.collectAsState(
+        initial = ThemeDataStore.DEFAULT_THEME_MODE
     )
     val isSystemInDarkTheme = isSystemInDarkTheme()
     ObserveAsEvents(
-        flow = themeEvents.themeMode
+        flow = themeDataStore.themeMode
     ) { themeMode ->
         val darkIcons = when (themeMode) {
             ThemeMode.LIGHT -> true
