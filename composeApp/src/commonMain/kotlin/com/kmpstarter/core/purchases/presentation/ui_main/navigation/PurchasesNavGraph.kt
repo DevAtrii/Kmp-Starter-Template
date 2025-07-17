@@ -4,6 +4,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
 import com.kmpstarter.core.purchases.presentation.ui_main.screens.PurchaseSubscriptionScreen
+import com.kmpstarter.core.purchases.presentation.ui_main.screens.SamplePurchaseScreen
 import com.kmpstarter.core.ui.composition_locals.LocalNavController
 import com.kmpstarter.core.ui.utils.navigation.appNavComposable
 
@@ -17,21 +18,21 @@ fun NavGraphBuilder.purchasesNavGraph(
             /*Todo Remove Dummy screen & uncomment the actual screen*/
             // for testing added dummy screen
             val navController = LocalNavController.current
-            /* SamplePurchaseScreen(
+             SamplePurchaseScreen(
                 modifier = scaffoldModifier,
                 onDismiss = {
                     navController.navigateUp()
                 }
-            )*/
+            )
 
-            PurchaseSubscriptionScreen(
+            /*PurchaseSubscriptionScreen(
                 modifier = scaffoldModifier,
                 features = listOf(),
                 subscriptionTerms = listOf(),
                 onDismiss = {
                     navController.navigateUp()
                 }
-            )
+            )*/
         }
     }
 }

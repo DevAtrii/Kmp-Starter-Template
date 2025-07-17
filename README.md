@@ -52,6 +52,7 @@ A modern, production-ready **Kotlin Multiplatform** starter template with Materi
 
 ### 💰 **Monetization**
 - **RevenueCat Integration** - In-app purchases and subscriptions
+  - [📖 RevenueCat Setup Guide](docs/revenue-cat.md) - Complete implementation guide
 
 ### 🛠️ **Utilities & Tools**
 - **Platform Detection** - Cross-platform utilities

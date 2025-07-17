@@ -67,12 +67,44 @@ import com.kmpstarter.core.utils.common.currentMillis
 import com.kmpstarter.theme.Dimens
 import com.revenuecat.purchases.kmp.models.StoreProduct
 import kotlinx.coroutines.delay
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
+/**
+ * Main subscription screen that displays available subscription plans and handles purchase flow.
+ * 
+ * This screen:
+ * - Shows available subscription products in a vertical card layout
+ * - Displays features included with each plan
+ * - Handles product selection and purchase initiation
+ * - Manages discount dialog display and timer functionality
+ * - Provides restore purchase functionality
+ * 
+ * The screen automatically loads products on initialization and manages the complete
+ * purchase flow including loading states, error handling, and success feedback.
+ * 
+ * Example usage:
+ * ```
+ * PurchaseSubscriptionScreen(
+ *     features = listOf(
+ *         PurchaseFeature(icon = Icons.Default.Star, label = "Premium Features"),
+ *         PurchaseFeature(icon = Icons.Default.Code, label = "Advanced Tools")
+ *     ),
+ *     subscriptionTerms = listOf("Auto-renewable subscription", "Cancel anytime"),
+ *     onDismiss = { /* Handle screen dismissal */ }
+ * )
+ * ```
+ * 
+ * @param modifier Modifier for styling and layout
+ * @param viewModel PurchaseViewModel for managing purchase state and operations
+ * @param features List of features included with subscription plans
+ * @param subscriptionTerms Terms and conditions for subscriptions
+ * @param onDismiss Callback when user dismisses the screen
+ */
 @Composable
 fun PurchaseSubscriptionScreen(
     modifier: Modifier = Modifier,
-    viewModel: PurchaseViewModel = koinViewModel(),
+    viewModel: PurchaseViewModel = koinInject(),
     features: List<PurchaseFeature>,
     subscriptionTerms: List<String> = listOf(),
     onDismiss: () -> Unit,
@@ -81,6 +113,11 @@ fun PurchaseSubscriptionScreen(
     if (state.isLoading) {
         LoadingLayout()
         return
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.clearPurchaseState()
+        viewModel.clearErrorState()
     }
 
     PurchaseSubscriptionScreenContent(
@@ -112,6 +149,48 @@ fun PurchaseSubscriptionScreen(
 }
 
 
+/**
+ * Content composable for the subscription screen with all UI elements and interactions.
+ * 
+ * This composable handles:
+ * - Product display in vertical card layout with highlighting
+ * - Timer-based cancel functionality with progress indicator
+ * - Discount dialog display with back handler integration
+ * - Responsive layout for different screen sizes
+ * - Floating action buttons for purchase and restore
+ * 
+ * The screen supports up to 3 products with automatic highlighting of the "best value" option.
+ * Includes a cancel timer that shows a progress indicator and reveals a cancel button.
+ * 
+ * Example usage:
+ * ```
+ * PurchaseSubscriptionScreenContent(
+ *     selectedProduct = currentProduct,
+ *     products = availableProducts,
+ *     features = subscriptionFeatures,
+ *     isLoading = false,
+ *     onDismiss = { /* Handle dismissal */ },
+ *     onPurchaseClick = { /* Handle purchase */ },
+ *     onRestoreClick = { /* Handle restore */ },
+ *     onProductSelected = { product -> /* Handle selection */ }
+ * )
+ * ```
+ * 
+ * @param modifier Modifier for styling and layout
+ * @param viewModel PurchaseDialogViewModel for dialog state management
+ * @param selectedProduct Currently selected subscription product
+ * @param features List of features included with subscriptions
+ * @param products Available subscription products (max 3)
+ * @param subscriptionTerms Terms and conditions text
+ * @param discountProduct Optional discount product for special offers
+ * @param discountPercentage Discount percentage for special offers
+ * @param cancelTimerTimeMillis Duration for cancel timer in milliseconds
+ * @param isLoading Whether a purchase operation is in progress
+ * @param onDismiss Callback when user dismisses the screen
+ * @param onRestoreClick Callback for restore purchase action
+ * @param onPurchaseClick Callback for purchase action
+ * @param onProductSelected Callback when user selects a product
+ */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PurchaseSubscriptionScreenContent(
@@ -167,18 +246,16 @@ fun PurchaseSubscriptionScreenContent(
     // Responsive breakpoints
     val screenWidth = ScreenSizeValue.width
     val isCompact = screenWidth < 600.dp
-    val isMedium = screenWidth in 600.dp..840.dp
-    val isExpanded = screenWidth > 840.dp
 
-    // Determine which product to highlight based on count
+    // Determine which product to highlight as "best value" based on count
     val highlightedProductIndex = when (products.size) {
         1 -> 0
-        2 -> 1 // Second product (index 1)
-        3 -> 1 // Center product (index 1)
+        2 -> 1 // Second product (index 1) - typically the better value
+        3 -> 1 // Center product (index 1) - middle tier is often best value
         else -> 0
     }
 
-    // Cancel timer effect
+    // Cancel timer effect - shows progress indicator and reveals cancel button
     LaunchedEffect(isTimerActive) {
         if (isTimerActive && cancelTimerTimeMillis > 0) {
             val startTime = currentMillis
@@ -187,7 +264,7 @@ fun PurchaseSubscriptionScreenContent(
             while (currentMillis < endTime) {
                 val elapsed = currentMillis - startTime
                 cancelTimerProgress = 1f - (elapsed.toFloat() / cancelTimerTimeMillis.toFloat())
-                delay(16) // ~60fps
+                delay(16) // ~60fps for smooth animation
             }
 
             cancelTimerProgress = 0f
@@ -297,7 +374,7 @@ fun PurchaseSubscriptionScreenContent(
                 }
             }
         }
-        // floating action buttons
+        // Floating action buttons with rounded top corners
         val shape = remember {
             RoundedCornerShape(
                 topStart = 16.dp,
@@ -323,18 +400,20 @@ fun PurchaseSubscriptionScreenContent(
         )
     }
 
-    // Discount Dialog
+    // Discount Dialog - shown when user cancels or back button is pressed
     if (showDiscountDialog && discountProduct != null && canShowDiscountDialog) {
         PurchaseDiscountDialog(
             discountProduct = discountProduct,
             discountPercentage = discountPercentage!!,
             onDismiss = {
+                // Reset to first product and dismiss
                 onProductSelected(products[0])
                 showDiscountDialog = false
                 onDismiss()
             },
             isLoading = isLoading,
             onAccept = {
+                // Select discount product and start purchase
                 onProductSelected(discountProduct)
                 onPurchaseClick()
             }
@@ -342,6 +421,11 @@ fun PurchaseSubscriptionScreenContent(
     }
 }
 
+/**
+ * Header section displaying the main title and subtitle for the subscription screen.
+ * 
+ * @param isCompact Whether to use compact layout for smaller screens
+ */
 @Composable
 private fun HeaderSection(isCompact: Boolean) {
     Column(
@@ -366,6 +450,18 @@ private fun HeaderSection(isCompact: Boolean) {
     }
 }
 
+/**
+ * Section displaying available subscription products in a vertical card layout.
+ * 
+ * Products are displayed as clickable cards with highlighting for the "best value" option.
+ * Each product shows title, description, period, and price with selection indicators.
+ * 
+ * @param products List of available subscription products
+ * @param selectedProduct Currently selected product
+ * @param highlightedProductIndex Index of the product to highlight as "best value"
+ * @param isCompact Whether to use compact layout for smaller screens
+ * @param onProductSelected Callback when user selects a product
+ */
 @Composable
 private fun ProductsSection(
     products: List<StoreProduct>,
@@ -391,6 +487,23 @@ private fun ProductsSection(
     }
 }
 
+/**
+ * Individual product card displaying subscription plan details.
+ * 
+ * Features:
+ * - Horizontal layout with product info on left, price on right
+ * - "Best Value" badge for highlighted products
+ * - Selection indicator with checkmark
+ * - Scale animation on selection
+ * - Responsive typography and spacing
+ * 
+ * @param product The subscription product to display
+ * @param isSelected Whether this product is currently selected
+ * @param isHighlighted Whether to show "Best Value" badge
+ * @param isCompact Whether to use compact layout for smaller screens
+ * @param modifier Modifier for styling and layout
+ * @param onClick Callback when user taps the card
+ */
 @Composable
 private fun ProductCard(
     product: StoreProduct,
@@ -598,6 +711,15 @@ private fun ProductCard(
     }
 }
 
+/**
+ * Section displaying features included with subscription plans.
+ * 
+ * Shows a list of features with icons and labels. Each feature is displayed
+ * in a row with an icon container and descriptive text.
+ * 
+ * @param features List of features to display
+ * @param isCompact Whether to use compact layout for smaller screens
+ */
 @Composable
 private fun FeaturesSection(
     features: List<PurchaseFeature>,
@@ -631,6 +753,12 @@ private fun FeaturesSection(
     }
 }
 
+/**
+ * Individual feature row displaying an icon and label.
+ * 
+ * @param feature The feature to display
+ * @param isCompact Whether to use compact layout for smaller screens
+ */
 @Composable
 private fun FeatureRow(
     feature: PurchaseFeature,
@@ -665,6 +793,20 @@ private fun FeatureRow(
     }
 }
 
+/**
+ * Floating action buttons section for purchase and restore actions.
+ * 
+ * Features:
+ * - Primary purchase button with loading state and progress indicator
+ * - Secondary restore button as text button
+ * - Buttons are disabled during loading operations
+ * - Responsive button text and loading feedback
+ * 
+ * @param modifier Modifier for styling and layout
+ * @param isLoading Whether a purchase operation is in progress
+ * @param onRestoreClick Callback for restore purchase action
+ * @param onPurchaseClick Callback for purchase action
+ */
 @Composable
 private fun ActionButtonsSection(
     modifier: Modifier,
@@ -717,6 +859,14 @@ private fun ActionButtonsSection(
     }
 }
 
+/**
+ * Section displaying subscription terms and conditions.
+ * 
+ * Shows a list of terms with bullet points. Only displayed if terms are provided.
+ * 
+ * @param terms List of terms and conditions to display
+ * @param isCompact Whether to use compact layout for smaller screens
+ */
 @Composable
 private fun TermsSection(
     terms: List<String>,
