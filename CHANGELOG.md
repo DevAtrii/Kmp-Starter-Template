@@ -5,7 +5,19 @@ All notable changes to the KMP Starter template will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.1] - 2025-07-17
+## [0.1.1] - 2025-07-21
+
+### 🎉 Added
+- **Cupertino UI Components** - Native iOS-style UI components for cross-platform development
+  - **CupertinoDropdownMenu** & **CupertinoDropdownItem** - Native dropdown menus
+  - **CupertinoSection** & **CupertinoSectionRow** - iOS-style section layouts
+  - **CupertinoSwitch** - Native iOS switch component
+  - **PillActionButton** & **PillActionsContainer** - iOS-style pill action buttons
+
+### 🔧 Fixed
+- **IntentUtils** - Improved cross-platform intent handling with better error handling and fallback mechanisms
+
+## [0.1.1-beta] - 2025-07-17
 
 ### 🎉 Added
 
