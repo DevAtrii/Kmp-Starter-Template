@@ -19,8 +19,9 @@ import androidx.compose.ui.unit.sp
  * iOS-style section container with header and grouped content.
  */
 @Composable
-  fun CupertinoSection(
+fun CupertinoSection(
     title: String,
+    description: String? = null,
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -52,6 +53,19 @@ import androidx.compose.ui.unit.sp
             Column {
                 content()
             }
+        }
+        if (description != null) {
+            Text(
+                text = description,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(
+                    alpha = 0.6f
+                ),
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    top = 8.dp
+                )
+            )
         }
     }
 }

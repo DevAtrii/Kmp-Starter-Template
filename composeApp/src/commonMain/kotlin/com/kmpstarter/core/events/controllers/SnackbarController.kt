@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -22,7 +23,7 @@ data class SnackbarAction(
 object SnackbarController {
 
     private val _events = Channel<SnackbarEvent>()
-    val events = _events.consumeAsFlow()
+    val events = _events.receiveAsFlow()
 
 
     suspend fun sendEvent(event: SnackbarEvent) {
@@ -39,20 +40,19 @@ object SnackbarController {
         )
     }
 
-    fun dismiss(
-        scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
+    suspend fun dismiss(
     ) {
-        scope.launch {
-            sendEvent(
-                event = SnackbarEvent(
-                    message = "",
-                    dismissPrevious = true
-                )
+
+        sendEvent(
+            event = SnackbarEvent(
+                message = "",
+                dismissPrevious = true
             )
-        }
+        )
+
     }
 
-    fun sendAlert(
+    suspend fun sendAlert(
         message: String?,
         dismissPrevious: Boolean = true,
         scope: CoroutineScope = CoroutineScope(Dispatchers.IO),

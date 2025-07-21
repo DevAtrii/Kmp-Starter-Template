@@ -12,7 +12,7 @@ val log = logging(
 
 object Log {
 
-    fun d(tag: String?, message: Any) {
+    fun d(tag: String?, message: Any?) {
         log.d(
             tag = tag ?: Logger.APP_TAG
         ) {
@@ -20,7 +20,7 @@ object Log {
         }
     }
 
-    fun d(tag: String?, vararg message: Any) {
+    fun d(tag: String?, vararg message: Any?) {
         log.d(
             tag = tag ?: Logger.APP_TAG
         ) {
@@ -31,7 +31,7 @@ object Log {
         }
     }
 
-    fun e(tag: String?, vararg message: Any) {
+    fun e(tag: String?, vararg message: Any?) {
         log.e(
             tag = tag ?: Logger.APP_TAG
         ) {
@@ -42,7 +42,7 @@ object Log {
         }
     }
 
-    fun i(tag: String?, message: Any) {
+    fun i(tag: String?, message: Any?) {
         log.i(
             tag = tag ?: Logger.APP_TAG
         ) {
@@ -51,7 +51,7 @@ object Log {
     }
 
 
-    fun i(tag: String?, vararg message: Any) {
+    fun i(tag: String?, vararg message: Any?) {
         log.i(
             tag = tag ?: Logger.APP_TAG
         ) {

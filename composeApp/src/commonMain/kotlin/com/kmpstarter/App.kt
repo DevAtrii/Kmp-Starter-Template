@@ -18,9 +18,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
+import com.kmpstarter.core.events.utils.ObserveAsEvents
 import com.kmpstarter.core.navigation.ComposeNavigation
 import com.kmpstarter.theme.ApplicationTheme
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -69,27 +71,30 @@ private fun GlobalSideEffects(
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope = rememberCoroutineScope(),
 ) {
-    LaunchedEffect(Unit) {
-        // observing snackbar events & sending to the ui
-        SnackbarController.events.collect { snackbarEvent ->
-            // launching another scope inside launched effect for ui of snackbar
-            scope.launch {
-                if (snackbarEvent.dismissPrevious)
-                    snackbarHostState.currentSnackbarData?.dismiss()
 
-                if (snackbarEvent.message.isEmpty())
-                    return@launch
+    ObserveAsEvents(
+        flow = SnackbarController.events,
+    ) { snackbarEvent ->
+        // launching another scope inside launched effect for ui of snackbar
 
-                val result = snackbarHostState.showSnackbar(
-                    message = snackbarEvent.message,
-                    actionLabel = snackbarEvent.action?.name,
-                    duration = SnackbarDuration.Short
-                )
-                when (result) {
-                    Dismissed -> Unit
-                    ActionPerformed -> {
-                        snackbarEvent.action?.action?.invoke()
-                    }
+        scope.launch {
+            if (snackbarEvent.dismissPrevious && snackbarHostState.currentSnackbarData != null) {
+                snackbarHostState.currentSnackbarData?.dismiss()
+                delay(100)
+            }
+
+            if (snackbarEvent.message.isEmpty())
+                return@launch
+
+            val result = snackbarHostState.showSnackbar(
+                message = snackbarEvent.message,
+                actionLabel = snackbarEvent.action?.name,
+                duration = SnackbarDuration.Short
+            )
+            when (result) {
+                Dismissed -> Unit
+                ActionPerformed -> {
+                    snackbarEvent.action?.action?.invoke()
                 }
             }
         }

@@ -25,7 +25,7 @@ class AuthViewModel(
     private val repository: AuthRepository,
     private val navigator: Navigator,
 
-) : ViewModel() {
+    ) : ViewModel() {
     companion object {
         private const val MIN_PASSWORD_LENGTH = 6
         private const val MIN_NAME_LENGTH = 5
@@ -87,9 +87,9 @@ class AuthViewModel(
                 _state.update {
                     it.copy(
                         user =
-                        UserData(
-                            method = SignInMethod.GOOGLE,
-                        ),
+                            UserData(
+                                method = SignInMethod.GOOGLE,
+                            ),
                     )
                 }
             }
@@ -102,7 +102,9 @@ class AuthViewModel(
 
     private fun onSignedWithGoogle(firebaseUser: FirebaseUser?) {
         if (firebaseUser == null) {
-            SnackbarController.sendAlert("Unable to login with Google")
+            viewModelScope.launch {
+                SnackbarController.sendAlert("Unable to login with Google")
+            }
             return
         }
 
@@ -180,9 +182,9 @@ class AuthViewModel(
         _state.update {
             it.copy(
                 user =
-                UserData(
-                    method = SignInMethod.EMAIL,
-                ),
+                    UserData(
+                        method = SignInMethod.EMAIL,
+                    ),
             )
         }
         signUpJob?.cancel()
@@ -291,9 +293,9 @@ class AuthViewModel(
         _state.update {
             it.copy(
                 user =
-                UserData(
-                    method = SignInMethod.EMAIL,
-                ),
+                    UserData(
+                        method = SignInMethod.EMAIL,
+                    ),
             )
         }
         signInJob?.cancel()

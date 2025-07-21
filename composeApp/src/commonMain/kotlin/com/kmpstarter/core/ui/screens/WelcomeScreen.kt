@@ -208,7 +208,7 @@ fun WelcomeScreen(
                     }
 
                     Spacer(modifier = Modifier.height(Dimens.paddingExtraLarge))
-
+                    val scope = rememberCoroutineScope()
                     AnimatedVisibility(
                         visible = showContent,
                         enter = slideInVertically(
@@ -248,7 +248,10 @@ fun WelcomeScreen(
                                     }
                                 }
                                 themeDataStore.setThemeMode(themeMode = themeMode)
-                                SnackbarController.sendAlert("Theme changed to ${themeMode.name.lowercase()}")
+                                scope.launch {
+                                    SnackbarController.sendAlert("Theme changed to ${themeMode.name.lowercase()}")
+
+                                }
                             }
                         )
                     }
@@ -311,6 +314,7 @@ fun WelcomeScreen(
                     ),
                     exit = slideOutVertically() + fadeOut()
                 ) {
+                    val scope = rememberCoroutineScope()
                     ActionButtonsSection(
                         isCompact = isCompact,
                         themeDataStore = themeDataStore,
@@ -338,7 +342,10 @@ fun WelcomeScreen(
                                 }
                             }
                             themeDataStore.setThemeMode(themeMode = themeMode)
-                            SnackbarController.sendAlert("Theme changed to ${themeMode.name.lowercase()}")
+                            scope.launch {
+                                SnackbarController.sendAlert("Theme changed to ${themeMode.name.lowercase()}")
+
+                            }
                         }
                     )
                 }
@@ -629,12 +636,15 @@ private fun ActionButtonsSection(
             }
 
             // Documentation
+            val scope = rememberCoroutineScope()
             OutlinedButton(
                 onClick = {
                     intentUtils.openUrl(
                         url = "https://github.com/DevAtrii/Kmp-Starter-Template"
                     )
-                    SnackbarController.sendAlert("Opening documentation...")
+                    scope.launch {
+                        SnackbarController.sendAlert("Opening documentation...")
+                    }
                 },
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(12.dp),

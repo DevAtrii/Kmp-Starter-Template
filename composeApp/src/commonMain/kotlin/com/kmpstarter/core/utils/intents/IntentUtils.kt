@@ -3,7 +3,8 @@ package com.kmpstarter.core.utils.intents
 /**
  * Utility functions for handling links and URLs across platforms.
  * Provides platform-specific implementations for common link operations.
- */ 
+ */
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 expect class IntentUtils {
     /**
      * Opens a URL in the default browser or appropriate app.
@@ -26,4 +27,11 @@ expect class IntentUtils {
      * @return true if the store page was successfully opened, false otherwise
      */
     fun openAccessibility(): Boolean
+
+    fun copyToClipboard(text: String)
+    fun shareText(text: String)
+
+    fun getClipboardText(): String?
+
+    fun sendEmail(email: String, subject: String, body: String)
 }
