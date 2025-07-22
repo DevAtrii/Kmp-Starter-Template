@@ -19,7 +19,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -32,7 +32,7 @@ kotlin {
             linkerOpts.add("-lsqlite3")
         }
     }
-    
+
     sourceSets {
 
         androidMain.dependencies {
@@ -56,6 +56,9 @@ kotlin {
             // firebase
             implementation(project.dependencies.platform(libs.firebase.bom))
 
+            // ktor
+            implementation(libs.ktor.client.okhttp)
+
             // accompanist
             implementation(libs.accompanist.system.ui.controller)
 
@@ -69,6 +72,13 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.materialIconsExtended)
+
+            // ktor
+            implementation(libs.ktor.client.core)
+            // ktor plugins
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.logging)
 
             // AndroidX Libraries
             implementation(libs.androidx.lifecycle.viewmodel)
@@ -132,7 +142,10 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-
+        iosMain.dependencies {
+            // ktor
+            implementation(libs.ktor.client.darwin)
+        }
         named { it.lowercase().startsWith("ios") }.configureEach {
             languageSettings {
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
@@ -181,10 +194,10 @@ dependencies {
     debugImplementation(compose.uiTooling)
 
     // Database
-    add("kspAndroid",libs.room.compiler)
-    add("kspIosX64",libs.room.compiler)
-    add("kspIosArm64",libs.room.compiler)
-    add("kspIosSimulatorArm64",libs.room.compiler)
+    add("kspAndroid", libs.room.compiler)
+    add("kspIosX64", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
 }
 
 room {
