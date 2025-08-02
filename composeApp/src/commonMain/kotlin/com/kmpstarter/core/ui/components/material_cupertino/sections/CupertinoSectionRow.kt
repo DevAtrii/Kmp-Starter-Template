@@ -34,6 +34,7 @@ import com.kmpstarter.theme.Dimens
 fun CupertinoSectionRow(
     modifier: Modifier = Modifier,
     label: String,
+    labelColor: Color = MaterialTheme.colorScheme.onSurface,
     value: String = "",
     icon: ImageVector,
     iconTint: Color = MaterialTheme.colorScheme.primary,
@@ -46,6 +47,7 @@ fun CupertinoSectionRow(
     CupertinoSectionRow(
         modifier = modifier,
         label = label,
+        labelColor = labelColor,
         value = value,
         icon = icon,
         iconTint = iconTint,
@@ -62,6 +64,7 @@ fun CupertinoSectionRow(
 fun CupertinoSectionRow(
     modifier: Modifier = Modifier,
     label: String,
+    labelColor: Color = MaterialTheme.colorScheme.onSurface,
     icon: ImageVector,
     iconTint: Color = MaterialTheme.colorScheme.primary,
     isLast: Boolean = false,
@@ -71,6 +74,7 @@ fun CupertinoSectionRow(
     CupertinoSectionRow(
         modifier = modifier,
         label = label,
+        labelColor = labelColor,
         icon = icon,
         iconTint = iconTint,
         isLast = isLast,
@@ -96,6 +100,7 @@ fun CupertinoSectionRow(
     onExpandedChange: (Boolean) -> Unit,
     onPopupShown: () -> Unit = {},
     label: String,
+    labelColor: Color = MaterialTheme.colorScheme.onSurface,
     value: String,
     valueColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     icon: ImageVector,
@@ -110,6 +115,7 @@ fun CupertinoSectionRow(
     ) {
         CupertinoSectionRow(
             label = label,
+            labelColor = labelColor,
             value = value,
             valueColor = valueColor,
             icon = icon,
@@ -150,6 +156,7 @@ private fun CupertinoSectionRow(
     isSwitchChecked: Boolean = false,
     onSwitchChange: (Boolean) -> Unit = {},
     showSwitch: Boolean = false,
+    labelColor: Color = MaterialTheme.colorScheme.onSurface,
     valueColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     onClick: () -> Unit = {},
 ) {
@@ -186,7 +193,7 @@ private fun CupertinoSectionRow(
             Text(
                 text = label,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = labelColor,
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
