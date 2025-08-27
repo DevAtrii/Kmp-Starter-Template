@@ -54,6 +54,9 @@ A modern, production-ready **Kotlin Multiplatform** starter template with Materi
 - **RevenueCat Integration** - In-app purchases and subscriptions
   - [📖 RevenueCat Setup Guide](docs/revenue-cat.md) - Complete implementation guide
 
+### 🧩 Example Apps
+- SubFox — Subscription manager built with this template. [Website](https://subfox.app/)
+
 ### 📚 **UI Components Docs**
 - [BaseDialog](docs/ui-base-dialog.md)
 - [BaseBottomSheet](docs/ui-base-bottom-sheet.md)
