@@ -1,7 +1,23 @@
+/*
+ *
+ *  *
+ *  *  * Copyright (c) 2025
+ *  *  *
+ *  *  * Author: Athar Gul
+ *  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
+ *  *  * YouTube: https://www.youtube.com/@devatrii/videos
+ *  *  *
+ *  *  * All rights reserved.
+ *  *
+ *  *
+ *
+ */
+
 package com.kmpstarter.core.ui.layouts.lists
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyListState
@@ -20,7 +36,7 @@ fun ScrollableColumn(
     verticalArrangement: Arrangement.Vertical =
         if (!reverseLayout) Arrangement.Top else Arrangement.Bottom,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
-    content: @Composable () -> Unit = {},
+    content: @Composable ColumnScope.() -> Unit = {},
 ) {
     CupertinoLazyColumn(
         state = state,

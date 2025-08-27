@@ -1,7 +1,22 @@
+/*
+ *
+ *  *
+ *  *  * Copyright (c) 2025
+ *  *  *
+ *  *  * Author: Athar Gul
+ *  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
+ *  *  * YouTube: https://www.youtube.com/@devatrii/videos
+ *  *  *
+ *  *  * All rights reserved.
+ *  *
+ *  *
+ *
+ */
+
 package com.kmpstarter.core.utils.intents
 
+import com.kmpstarter.bindings.SwiftIntentUtils
 import com.kmpstarter.core.APPSTORE_URL
-import com.kmpstarter.core.utils.logging.Log
 import platform.Foundation.NSError
 import platform.Foundation.NSURL
 import platform.MessageUI.MFMailComposeResult
@@ -29,23 +44,8 @@ class MailDelegate : NSObject(), MFMailComposeViewControllerDelegateProtocol {
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class IntentUtils {
     actual fun openUrl(url: String): Boolean {
-        return try {
-            val nsUrl = NSURL(string = url)
-            val application = UIApplication.sharedApplication
-            if (application.canOpenURL(nsUrl)) {
-                application.openURL(nsUrl)
-                true
-            } else {
-                Log.e(
-                    tag = null,
-                    "Cannot Open the Url"
-                )
-                false
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
+        SwiftIntentUtils.openUrlWithStr(str = url)
+        return true
     }
 
     actual fun openAppStore(): Boolean {

@@ -1,3 +1,18 @@
+/*
+ *
+ *  *
+ *  *  * Copyright (c) 2025
+ *  *  *
+ *  *  * Author: Athar Gul
+ *  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
+ *  *  * YouTube: https://www.youtube.com/@devatrii/videos
+ *  *  *
+ *  *  * All rights reserved.
+ *  *
+ *  *
+ *
+ */
+
 package com.kmpstarter.core.ui.utils.color
 
 import androidx.compose.ui.graphics.Color
@@ -64,3 +79,41 @@ fun Color.toHexString(): String? {
     )
     return hex
 }
+
+fun Color.toHexStringWithDefault(defaultColor: String = "#FFFFFF"): String {
+    return toHexString() ?: defaultColor
+}
+
+fun Color.complimentaryColor(): Color {
+    return Color(
+        red = 1 - red,
+        green = 1 - green,
+        blue = 1 - blue,
+        alpha = 1f
+    )
+}
+
+
+fun Color.brightness() : Float {
+    return (0.299f * this.red + 0.587f * this.green + 0.114f * this.blue)
+        .coerceIn(0f, 1f)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

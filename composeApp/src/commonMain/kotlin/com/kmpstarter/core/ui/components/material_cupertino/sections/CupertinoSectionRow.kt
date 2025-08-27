@@ -1,3 +1,18 @@
+/*
+ *
+ *  *
+ *  *  * Copyright (c) 2025
+ *  *  *
+ *  *  * Author: Athar Gul
+ *  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
+ *  *  * YouTube: https://www.youtube.com/@devatrii/videos
+ *  *  *
+ *  *  * All rights reserved.
+ *  *
+ *  *
+ *
+ */
+
 package com.kmpstarter.core.ui.components.material_cupertino.sections
 
 import androidx.compose.foundation.clickable
@@ -30,6 +45,7 @@ import com.kmpstarter.core.ui.components.material_cupertino.dropdown.CupertinoDr
 import com.kmpstarter.core.ui.components.material_cupertino.switchs.CupertinoSwitch
 import com.kmpstarter.theme.Dimens
 
+
 @Composable
 fun CupertinoSectionRow(
     modifier: Modifier = Modifier,
@@ -39,11 +55,14 @@ fun CupertinoSectionRow(
     icon: ImageVector,
     iconTint: Color = MaterialTheme.colorScheme.primary,
     isLast: Boolean = false,
+    skipIfNotValue: Boolean = false,
     isClickable: Boolean = false,
     showChevron: Boolean = false,
     valueColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     onClick: () -> Unit = {},
 ) {
+    if (skipIfNotValue && value.trim().isEmpty())
+        return
     CupertinoSectionRow(
         modifier = modifier,
         label = label,
@@ -194,45 +213,47 @@ private fun CupertinoSectionRow(
                 text = label,
                 style = MaterialTheme.typography.bodyMedium,
                 color = labelColor,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(2f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
 
-            Spacer(modifier = Modifier.width(12.dp))
+            if (value.isNotEmpty() || showSwitch || showChevron) {
+                Spacer(modifier = Modifier.width(12.dp))
+                Row(
+                    modifier = Modifier.weight(1f),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                )
+                {
+                    if (value.isNotEmpty())
+                        Text(
+                            text = value,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = valueColor,
+                            textAlign = TextAlign.End,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
 
-            Row(
-                modifier = Modifier.weight(1f),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (value.isNotEmpty())
-                    Text(
-                        text = value,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = valueColor,
-                        textAlign = TextAlign.End,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    if (showSwitch) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        CupertinoSwitch(
+                            checked = isSwitchChecked,
+                            onCheckedChange = onSwitchChange
+                        )
+                    }
 
-                if (showSwitch) {
-                    Spacer(modifier = Modifier.width(8.dp))
-                    CupertinoSwitch(
-                        checked = isSwitchChecked,
-                        onCheckedChange = onSwitchChange
-                    )
-                }
-
-                // Chevron for clickable rows
-                if (showChevron) {
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Icon(
-                        imageVector = Icons.Default.ChevronRight,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                        modifier = Modifier.size(16.dp)
-                    )
+                    // Chevron for clickable rows
+                    if (showChevron) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(
+                            imageVector = Icons.Default.ChevronRight,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
                 }
             }
         }

@@ -1,3 +1,18 @@
+/*
+ *
+ *  *
+ *  *  * Copyright (c) 2025
+ *  *  *
+ *  *  * Author: Athar Gul
+ *  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
+ *  *  * YouTube: https://www.youtube.com/@devatrii/videos
+ *  *  *
+ *  *  * All rights reserved.
+ *  *
+ *  *
+ *
+ */
+
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -10,6 +25,20 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.swift.klib)
+}
+
+private object SwiftBindings{
+    const val BINDINGS_NAME ="SwiftBindings"
+    const val FOLDER_PATH = "../iosApp/iosApp/Bindings"
+    const val PACKAGE_NAME = "com.kmpstarter.bindings"
+}
+
+swiftklib {
+    create(SwiftBindings.BINDINGS_NAME) {
+        path = file(SwiftBindings.FOLDER_PATH)
+        packageName(SwiftBindings.PACKAGE_NAME)
+    }
 }
 
 kotlin {
@@ -30,6 +59,13 @@ kotlin {
             isStatic = true
             // Required when using NativeSQLiteDriver
             linkerOpts.add("-lsqlite3")
+        }
+        iosTarget.compilations {
+            val main by getting {
+                cinterops {
+                    create(SwiftBindings.BINDINGS_NAME)
+                }
+            }
         }
     }
 

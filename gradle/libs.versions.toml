@@ -60,6 +60,8 @@ stately-common = "2.0.5"
 #Accompinist
 accompanist-system-ui-controller = "0.27.0"
 
+swift-klib = "0.6.4"
+
 [libraries]
 # Accompinist
 accompanist-system-ui-controller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-system-ui-controller" }
@@ -151,3 +153,6 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 
 # Google Services Plugins
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+
+swift-klib = {id = "io.github.ttypic.swiftklib",version.ref="swift-klib"}
+

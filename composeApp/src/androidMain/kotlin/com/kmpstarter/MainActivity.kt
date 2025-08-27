@@ -1,3 +1,18 @@
+/*
+ *
+ *  *
+ *  *  * Copyright (c) 2025
+ *  *  *
+ *  *  * Author: Athar Gul
+ *  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
+ *  *  * YouTube: https://www.youtube.com/@devatrii/videos
+ *  *  *
+ *  *  * All rights reserved.
+ *  *
+ *  *
+ *
+ */
+
 package com.kmpstarter
 
 import android.os.Bundle
@@ -36,9 +51,6 @@ private fun AndroidSideEffects(
     themeDataStore: ThemeDataStore = koinInject(),
     systemUiController: SystemUiController = rememberSystemUiController(),
 ) {
-    val currentThemeMode by themeDataStore.themeMode.collectAsState(
-        initial = ThemeDataStore.DEFAULT_THEME_MODE
-    )
     val isSystemInDarkTheme = isSystemInDarkTheme()
     ObserveAsEvents(
         flow = themeDataStore.themeMode

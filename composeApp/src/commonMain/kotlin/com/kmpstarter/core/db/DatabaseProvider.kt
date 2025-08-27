@@ -1,3 +1,18 @@
+/*
+ *
+ *  *
+ *  *  * Copyright (c) 2025
+ *  *  *
+ *  *  * Author: Athar Gul
+ *  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
+ *  *  * YouTube: https://www.youtube.com/@devatrii/videos
+ *  *  *
+ *  *  * All rights reserved.
+ *  *
+ *  *
+ *
+ */
+
 package com.kmpstarter.core.db
 
 import androidx.room.RoomDatabase
@@ -15,7 +30,7 @@ fun getKmpDatabase(
 ): KmpStarterDatabase {
     val builder = databaseProvider.getDatabase()
     return builder
-//        .addMigrations(MIGRATIONS)
+        .addMigrations(*KmpStarterDatabaseMigrations.SUPPORTED_MIGRATIONS)
 //        .fallbackToDestructiveMigrationOnDowngrade()
         .setDriver(BundledSQLiteDriver())
         .setQueryCoroutineContext(Dispatchers.IO)
