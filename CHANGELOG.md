@@ -5,6 +5,20 @@ All notable changes to the KMP Starter template will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2025-08-27
+
+### 🎉 Added
+- New UI components (dialogs, lists, chips, animations, bottom sheets)
+- New utils (images, dates, state flows, byte/string helpers, enums)
+- iOS Swift bindings (swift-interop) with `SwiftBindings` and `SwiftIntentUtils`
+- App-wide side effects: navigation and snackbar handling; `LaunchOnce` helper
+
+### 🧰 Changed
+- Updated copyright headers to 2025 across source files
+
+### 🔧 Fixed
+- Minor stability and intent handling improvements on iOS via bindings
+
 ## [0.1.1] - 2025-07-21
 
 ### 🎉 Added
