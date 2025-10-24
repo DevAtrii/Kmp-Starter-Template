@@ -21,10 +21,18 @@ enum class PlatformType {
 }
 
 
-expect val platformType:PlatformType
+expect val platformType: PlatformType
 
 
 val PlatformType.isIos: Boolean
     get() = this == PlatformType.IOS
 val PlatformType.isAndroid: Boolean
     get() = this == PlatformType.ANDROID
+
+inline fun PlatformType.ifAndroid(crossinline action: () -> Unit) {
+    if (this.isAndroid) action()
+}
+
+inline fun PlatformType.ifIos(crossinline action: () -> Unit) {
+    if (this.isIos) action()
+}

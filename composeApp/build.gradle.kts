@@ -16,6 +16,21 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+// helper function for version
+private fun getVersionCode(): Int {
+    val versionMajor = libs.versions.app.version.major.get().toInt()
+    val versionMinor = libs.versions.app.version.minor.get().toInt()
+    val versionPatch = libs.versions.app.version.patch.get().toInt()
+    return versionMajor * 10000 + versionMinor * 100 + versionPatch
+}
+
+private fun getVersionName(): String {
+    val versionMajor = libs.versions.app.version.major.get().toInt()
+    val versionMinor = libs.versions.app.version.minor.get().toInt()
+    val versionPatch = libs.versions.app.version.patch.get().toInt()
+    return "$versionMajor.$versionMinor.$versionPatch"
+}
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.application)
@@ -26,6 +41,7 @@ plugins {
     alias(libs.plugins.room)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.swift.klib)
+    alias(libs.plugins.kotlin.cocoapods)
 }
 
 private object SwiftBindings{
@@ -42,6 +58,9 @@ swiftklib {
 }
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
@@ -49,8 +68,25 @@ kotlin {
         }
     }
 
+    // cocoapods
+    cocoapods {
+        summary = "Shared module using cocoapods gradle plugin"
+        homepage = "link"
+        version = "1.0"
+        ios.deploymentTarget = "18.6"
+        podfile = project.file("../iosApp/Podfile")
+        framework {
+            baseName = "ComposeApp"
+            isStatic = true
+        }
+
+        pod("Mixpanel") {
+            version = "5.0.8"
+            extraOpts += listOf("-compiler-option", "-fmodules")
+        }
+    }
+
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -97,6 +133,9 @@ kotlin {
 
             // accompanist
             implementation(libs.accompanist.system.ui.controller)
+
+            // mix panel
+            implementation(libs.mixpanel.android)
 
         }
         commonMain.dependencies {
@@ -170,6 +209,9 @@ kotlin {
 
             // backhandler
             implementation(libs.ui.backhandler)
+
+            // notifications
+            implementation(libs.alarmee)
         }
         commonTest.dependencies {
             // Testing Framework
@@ -231,7 +273,6 @@ dependencies {
 
     // Database
     add("kspAndroid", libs.room.compiler)
-    add("kspIosX64", libs.room.compiler)
     add("kspIosArm64", libs.room.compiler)
     add("kspIosSimulatorArm64", libs.room.compiler)
 }

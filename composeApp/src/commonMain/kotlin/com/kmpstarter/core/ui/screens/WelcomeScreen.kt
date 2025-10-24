@@ -262,10 +262,9 @@ fun WelcomeScreen(
                                         ThemeMode.SYSTEM
                                     }
                                 }
-                                themeDataStore.setThemeMode(themeMode = themeMode)
                                 scope.launch {
+                                    themeDataStore.setThemeMode(themeMode = themeMode)
                                     SnackbarController.sendAlert("Theme changed to ${themeMode.name.lowercase()}")
-
                                 }
                             }
                         )
@@ -356,10 +355,9 @@ fun WelcomeScreen(
                                     ThemeMode.SYSTEM
                                 }
                             }
-                            themeDataStore.setThemeMode(themeMode = themeMode)
                             scope.launch {
+                                themeDataStore.setThemeMode(themeMode = themeMode)
                                 SnackbarController.sendAlert("Theme changed to ${themeMode.name.lowercase()}")
-
                             }
                         }
                     )

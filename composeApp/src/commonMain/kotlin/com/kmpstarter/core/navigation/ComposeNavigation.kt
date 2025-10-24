@@ -17,6 +17,7 @@ package com.kmpstarter.core.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -36,8 +37,9 @@ fun ComposeNavigation(
     navigator: Navigator = koinInject(),
     navController: NavHostController = rememberNavController(),
 ) {
-    NavigationSideEffects(navigator, navController)
+    val scope = rememberCoroutineScope()
 
+    NavigationSideEffects(navigator, navController)
     CompositionLocalProvider(LocalNavController provides navController) {
         NavHost(
             navController = navController,
@@ -45,7 +47,9 @@ fun ComposeNavigation(
         ) {
 
             appNavGraph(
-                scaffoldModifier = scaffoldModifier
+                scaffoldModifier = scaffoldModifier,
+                navigator = navigator,
+                scope = scope
             )
 
         }

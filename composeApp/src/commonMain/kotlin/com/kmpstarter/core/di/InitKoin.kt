@@ -15,6 +15,7 @@
 
 package com.kmpstarter.core.di
 
+import com.kmpstarter.starter_features.analytics.di.analyticsModule
 import com.kmpstarter.starter_features.auth.di.authModule
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
@@ -25,6 +26,7 @@ fun initKoin(config: KoinAppDeclaration? = null) {
         modules(
             coreModule,
             authModule,
+            analyticsModule
             /*Todo add modules here*/
         )
     }

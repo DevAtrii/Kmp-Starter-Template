@@ -13,13 +13,16 @@
  *
  */
 
-package com.kmpstarter.core.utils.kotlinx_datetime
+@file:OptIn(ExperimentalTime::class)
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+package com.kmpstarter.core.utils.kotlinx_datetime
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+
 
 fun Clock.System.localDateTime(
     timeZone: TimeZone = TimeZone.currentSystemDefault(),
@@ -27,4 +30,10 @@ fun Clock.System.localDateTime(
     val millis = Clock.System.now().toEpochMilliseconds()
     val instant = Instant.fromEpochMilliseconds(millis)
     return instant.toLocalDateTime(timeZone)
+}
+
+fun Clock.System.currentInstant(
+): Instant {
+    val millis = Clock.System.now().toEpochMilliseconds()
+    return Instant.fromEpochMilliseconds(millis)
 }

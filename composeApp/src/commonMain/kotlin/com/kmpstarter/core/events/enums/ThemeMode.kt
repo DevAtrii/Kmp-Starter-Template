@@ -15,7 +15,10 @@
 
 package com.kmpstarter.core.events.enums;
 
-enum class ThemeMode (val displayName: String){
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.compositionLocalOf
+
+enum class ThemeMode(val displayName: String) {
     LIGHT("Light"),
     DARK("Dark"),
     SYSTEM("System");
@@ -27,3 +30,7 @@ enum class ThemeMode (val displayName: String){
             SYSTEM -> isSystemInDarkTheme
         }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+val LocalThemeMode = compositionLocalOf { ThemeMode.SYSTEM }
+

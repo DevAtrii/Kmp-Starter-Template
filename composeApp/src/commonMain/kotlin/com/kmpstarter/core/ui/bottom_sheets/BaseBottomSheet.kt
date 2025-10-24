@@ -58,6 +58,22 @@ fun SheetState.hideProperly(
     }
 }
 
+/** Util for hiding the bottom sheet properly. **/
+@OptIn(ExperimentalMaterial3Api::class)
+context(scope: CoroutineScope)
+fun SheetState.hideProperly(
+    onHidden: () -> Unit,
+) {
+    scope.launch {
+        hide()
+    }.invokeOnCompletion {
+        if (!isVisible) {
+            onHidden()
+        }
+    }
+}
+
+
 /** only set bool var to false in onDismiss */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable

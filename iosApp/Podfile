@@ -1,0 +1,15 @@
+# Uncomment the next line to define a global platform for your project
+platform :ios, '18.6'
+
+target 'iosApp' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for iosApp
+  pod 'composeApp', :path => '../composeApp'
+  # you can add objective-c libraries here & in cocoapods block in gradle
+  # to use them in kotlin code
+  pod 'Mixpanel', '5.0.8'
+end
+
+

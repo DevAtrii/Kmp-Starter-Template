@@ -25,6 +25,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult.ActionPerformed
 import androidx.compose.material3.SnackbarResult.Dismissed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,6 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
+import com.kmpstarter.core.events.enums.LocalThemeMode
 import com.kmpstarter.core.events.utils.ObserveAsEvents
 import com.kmpstarter.core.navigation.ComposeNavigation
 import com.kmpstarter.theme.ApplicationTheme
@@ -63,20 +65,22 @@ private fun MainApp(
     val currentDynamicColor by themeDataStore.dynamicColor.collectAsState(
         initial = ThemeDataStore.DEFAULT_DYNAMIC_COLOR_SCHEME
     )
-    ApplicationTheme(
-        darkTheme = currentThemeMode.toComposableBoolean(isSystemInDarkTheme()),
-        dynamicColor = currentDynamicColor
-    ) {
-        Scaffold(
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState
+    CompositionLocalProvider(LocalThemeMode provides currentThemeMode) {
+        ApplicationTheme(
+            darkTheme = currentThemeMode.toComposableBoolean(isSystemInDarkTheme()),
+            dynamicColor = currentDynamicColor
+        ) {
+            Scaffold(
+                snackbarHost = {
+                    SnackbarHost(
+                        hostState = snackbarHostState
+                    )
+                }
+            ) { innerPaddings: PaddingValues ->
+                ComposeNavigation(
+                    scaffoldModifier = Modifier.padding(innerPaddings)
                 )
             }
-        ) { innerPaddings: PaddingValues ->
-            ComposeNavigation(
-                scaffoldModifier = Modifier.padding(innerPaddings)
-            )
         }
     }
 }

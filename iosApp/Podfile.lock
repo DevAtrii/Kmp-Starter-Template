@@ -1,0 +1,24 @@
+PODS:
+  - composeApp (1.0):
+    - Mixpanel (= 5.0.8)
+  - Mixpanel (5.0.8)
+
+DEPENDENCIES:
+  - composeApp (from `../composeApp`)
+  - Mixpanel (= 5.0.8)
+
+SPEC REPOS:
+  trunk:
+    - Mixpanel
+
+EXTERNAL SOURCES:
+  composeApp:
+    :path: "../composeApp"
+
+SPEC CHECKSUMS:
+  composeApp: df89633abaf6447cae24c6224b44e9148292ef97
+  Mixpanel: 9337782610693ef36b8f6ab531493201825f1dd6
+
+PODFILE CHECKSUM: 7aa103e6a33061279b52f2f7f0775b69a8bf8d5e
+
+COCOAPODS: 1.16.2

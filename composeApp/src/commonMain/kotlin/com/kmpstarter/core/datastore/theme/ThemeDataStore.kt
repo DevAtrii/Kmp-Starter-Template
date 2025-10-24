@@ -46,8 +46,6 @@ class ThemeDataStore(
     }
 
     private val dataStore = appDataStore.dataStore
-    private var editThemeJob: Job? = null
-    private var editDynamicColorJob: Job? = null
 
     val dynamicColor = dataStore.data.map {
         it[PREF_DYNAMIC_COLORS] ?: DEFAULT_DYNAMIC_COLOR_SCHEME
@@ -59,40 +57,28 @@ class ThemeDataStore(
     }
 
 
-    fun setDynamicColor(value: Boolean) {
-        editDynamicColorJob?.cancel()
-        editDynamicColorJob = CoroutineScope(Dispatchers.IO).launch {
-            dataStore.edit {
-                it[PREF_DYNAMIC_COLORS] = value
-            }
+    suspend fun setDynamicColor(value: Boolean) {
+        dataStore.edit {
+            it[PREF_DYNAMIC_COLORS] = value
         }
     }
 
-    fun setOppositeDynamicColor() {
-        editDynamicColorJob?.cancel()
-        editDynamicColorJob = CoroutineScope(Dispatchers.IO).launch {
-            dataStore.edit {
-                it[PREF_DYNAMIC_COLORS] = !dynamicColor.first()
-            }
+    suspend fun setOppositeDynamicColor() {
+        dataStore.edit {
+            it[PREF_DYNAMIC_COLORS] = !dynamicColor.first()
         }
     }
 
-    fun setThemeMode(themeMode: ThemeMode) {
-        editThemeJob?.cancel()
-        editThemeJob = CoroutineScope(Dispatchers.IO).launch {
-            dataStore.edit {
-                it[PREF_THEME] = themeMode.name
-            }
+    suspend fun setThemeMode(themeMode: ThemeMode) {
+        dataStore.edit {
+            it[PREF_THEME] = themeMode.name
         }
     }
 
-    fun setOppositeTheme() {
-        editThemeJob?.cancel()
-        editThemeJob = CoroutineScope(Dispatchers.IO).launch {
-            dataStore.edit {
-                it[PREF_THEME] =
-                    if (themeMode.first() == ThemeMode.LIGHT) ThemeMode.DARK.name else ThemeMode.LIGHT.name
-            }
+    suspend fun setOppositeTheme() {
+        dataStore.edit {
+            it[PREF_THEME] =
+                if (themeMode.first() == ThemeMode.LIGHT) ThemeMode.DARK.name else ThemeMode.LIGHT.name
         }
     }
 }

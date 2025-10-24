@@ -1,19 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ /*
-  ~  *
-  ~  *  * Copyright (c) 2025
-  ~  *  *
-  ~  *  * Author: Athar Gul
-  ~  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
-  ~  *  * YouTube: https://www.youtube.com/@devatrii/videos
-  ~  *  *
-  ~  *  * All rights reserved.
-  ~  *
-  ~  *
-  ~  */
-  -->
-
 <Scheme
    LastUpgradeVersion = "1640"
    version = "1.7">
@@ -31,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B9DA97B02DC1472C00A4DA20"
-               BuildableName = "KmpStarter.app"
+               BuildableName = ".app"
                BlueprintName = "iosApp"
                ReferencedContainer = "container:iosApp.xcodeproj">
             </BuildableReference>
@@ -60,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B9DA97B02DC1472C00A4DA20"
-            BuildableName = "KmpStarter.app"
+            BuildableName = ".app"
             BlueprintName = "iosApp"
             ReferencedContainer = "container:iosApp.xcodeproj">
          </BuildableReference>
@@ -77,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B9DA97B02DC1472C00A4DA20"
-            BuildableName = "KmpStarter.app"
+            BuildableName = ".app"
             BlueprintName = "iosApp"
             ReferencedContainer = "container:iosApp.xcodeproj">
          </BuildableReference>

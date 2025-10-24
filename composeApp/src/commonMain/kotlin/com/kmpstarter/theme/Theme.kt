@@ -144,49 +144,49 @@ fun ApplicationTheme(
     val appTypography =
         Typography(
             displayLarge = baselineTypography.displayLarge.copy(
-                fontFamily = getPoppinsFontFamily()
+                fontFamily = getAppFontFamily()
             ),
             displayMedium = baselineTypography.displayMedium.copy(
-                fontFamily = getPoppinsFontFamily()
+                fontFamily = getAppFontFamily()
             ),
             displaySmall = baselineTypography.displaySmall.copy(
-                fontFamily = getPoppinsFontFamily()
+                fontFamily = getAppFontFamily()
             ),
             headlineLarge = baselineTypography.headlineLarge.copy(
-                fontFamily = getPoppinsFontFamily()
+                fontFamily = getAppFontFamily()
             ),
             headlineMedium = baselineTypography.headlineMedium.copy(
-                fontFamily = getPoppinsFontFamily()
+                fontFamily = getAppFontFamily()
             ),
             headlineSmall = baselineTypography.headlineSmall.copy(
-                fontFamily = getPoppinsFontFamily()
+                fontFamily = getAppFontFamily()
             ),
             titleLarge = baselineTypography.titleLarge.copy(
-                fontFamily = getPoppinsFontFamily()
+                fontFamily = getAppFontFamily()
             ),
             titleMedium = baselineTypography.titleMedium.copy(
-                fontFamily = getPoppinsFontFamily()
+                fontFamily = getAppFontFamily()
             ),
             titleSmall = baselineTypography.titleSmall.copy(
-                fontFamily = getPoppinsFontFamily()
+                fontFamily = getAppFontFamily()
             ),
             bodyLarge = baselineTypography.bodyLarge.copy(
-                fontFamily = getPoppinsFontFamily()
+                fontFamily = getAppFontFamily()
             ),
             bodyMedium = baselineTypography.bodyMedium.copy(
-                fontFamily = getPoppinsFontFamily()
+                fontFamily = getAppFontFamily()
             ),
             bodySmall = baselineTypography.bodySmall.copy(
-                fontFamily = getPoppinsFontFamily()
+                fontFamily = getAppFontFamily()
             ),
             labelLarge = baselineTypography.labelLarge.copy(
-                fontFamily = getPoppinsFontFamily()
+                fontFamily = getAppFontFamily()
             ),
             labelMedium = baselineTypography.labelMedium.copy(
-                fontFamily = getPoppinsFontFamily()
+                fontFamily = getAppFontFamily()
             ),
             labelSmall = baselineTypography.labelSmall.copy(
-                fontFamily = getPoppinsFontFamily()
+                fontFamily = getAppFontFamily()
             ),
         )
     MaterialTheme(

@@ -13,7 +13,7 @@
  *
  */
 
-package com.kmpstarter.core.utils.`var`
+package com.kmpstarter.core.utils.variables
 
 infix fun <T> T?.elze(value: T): T =
     this ?: value

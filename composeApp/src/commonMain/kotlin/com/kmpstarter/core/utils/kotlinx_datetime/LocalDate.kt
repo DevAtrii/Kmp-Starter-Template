@@ -15,8 +15,6 @@
 
 package com.kmpstarter.core.utils.kotlinx_datetime
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
@@ -24,7 +22,11 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 fun LocalDate.Companion.fromLong(
     timestamp: Long,
     timeZone: TimeZone = TimeZone.currentSystemDefault(),
@@ -35,10 +37,12 @@ fun LocalDate.Companion.fromLong(
 }
 
 
+@OptIn(ExperimentalTime::class)
 fun LocalDate.millis(
     timeZone: TimeZone = TimeZone.currentSystemDefault(),
 ) = this.toLocalDateTime().toInstant(timeZone).toEpochMilliseconds()
 
+@OptIn(ExperimentalTime::class)
 fun LocalDate.Companion.today(
     timeZone: TimeZone = TimeZone.currentSystemDefault(),
 ) = Clock.System.now()
@@ -46,6 +50,7 @@ fun LocalDate.Companion.today(
     .date
 
 
+@OptIn(ExperimentalTime::class)
 fun LocalDate.toLocalDateTime(
     hour: Int = Clock.System.localDateTime().hour,
     minute: Int = Clock.System.localDateTime().minute,
@@ -54,11 +59,11 @@ fun LocalDate.toLocalDateTime(
 ) = LocalDateTime(
     year = year,
     month = month,
-    dayOfMonth = dayOfMonth,
+    day = day,
     hour = hour,
     minute = minute,
     second = second,
-    nanosecond = nanosecond,
+    nanosecond = nanosecond
 )
 
 
@@ -72,17 +77,6 @@ fun Month.length(year: Int): Int {
         else -> throw IllegalArgumentException("Invalid month: $monthNumber")
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

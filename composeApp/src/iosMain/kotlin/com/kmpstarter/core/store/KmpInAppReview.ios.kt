@@ -13,8 +13,12 @@
  *
  */
 
-package com.kmpstarter.core.utils.`var`
+package com.kmpstarter.core.store
 
-infix fun <T> Boolean.ifTrue(value: T): T? = if (this) value else null
-infix fun <T> Boolean.ifFalse(value: T): T? = if (!this) value else null
+import platform.StoreKit.SKStoreReviewController
 
+actual class KmpInAppReview {
+    actual suspend fun askForReview() {
+        SKStoreReviewController.requestReview()
+    }
+}

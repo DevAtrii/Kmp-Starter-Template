@@ -17,11 +17,15 @@ package com.kmpstarter.core.navigation.nav_graphs
 
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
+import com.kmpstarter.core.events.navigator.interfaces.Navigator
 import com.kmpstarter.core.purchases.presentation.ui_main.navigation.purchasesNavGraph
 import com.kmpstarter.starter_features.auth.presentation.ui_main.navigation.authNavGraph
+import kotlinx.coroutines.CoroutineScope
 
 fun NavGraphBuilder.appNavGraph(
     scaffoldModifier: Modifier,
+    navigator: Navigator,
+    scope: CoroutineScope,
 ) {
     authNavGraph(
         scaffoldModifier = scaffoldModifier

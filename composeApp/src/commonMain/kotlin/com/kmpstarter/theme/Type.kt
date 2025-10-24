@@ -25,7 +25,7 @@ import kmpstarter.composeapp.generated.resources.poppins_thin
 import org.jetbrains.compose.resources.Font
 
 @Composable
-fun getPoppinsFontFamily() = FontFamily(
+fun getAppFontFamily() = FontFamily(
     Font(
         resource = Res.font.poppins_thin,
         weight = FontWeight.Thin
