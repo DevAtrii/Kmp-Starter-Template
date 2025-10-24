@@ -16,3 +16,9 @@ captures
 !*.xcodeproj/project.xcworkspace/
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
+# CocoaPods
+Pods/
+*.xcuserdatad
+*.xcuserdata
+DerivedData/
+composeApp/release/
