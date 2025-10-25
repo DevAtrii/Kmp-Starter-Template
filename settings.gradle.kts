@@ -43,4 +43,15 @@ dependencyResolutionManagement {
     }
 }
 
+includeBuild("build-logic")
 include(":composeApp")
+include(":starter:core")
+include(":starter:core_db")
+include(":starter:utils")
+include(":starter:native:bindings")
+include(":starter:ui:utils")
+include(":starter:notifications")
+include(":starter:ui:components")
+include(":starter:ui:layouts")
+include(":starter:features:analytics")
+include(":starter:features:purchases")

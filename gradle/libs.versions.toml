@@ -1,6 +1,6 @@
 [versions]
 # Android Build Tools & SDK
-agp = "8.11.2"
+agp = "8.13.0"
 android-compileSdk = "36"
 android-minSdk = "24"
 #noinspection EditedTargetSdkVersion
@@ -8,21 +8,25 @@ android-targetSdk = "36"
 # app universal
 app-version-major = "1"
 app-version-minor = "0"
-app-version-patch = "10"
+app-version-patch = "0"
+
+# cocoapods
+cocoapods-fw = "1.0"
+cocoapods-ios = "18.6"
 
 # Kotlin Ecosystem
 calfFilePicker = "0.8.0"
 coilCompose = "3.3.0"
-kotlin = "2.2.20"
+kotlin = "2.2.21"
 kotlinx-datetime = "0.7.1"
 kotlinx-serialization-json = "1.9.0"
 coroutines = "1.10.2"
 
 # Compose & UI
-compose-multiplatform = "1.10.0-alpha01"
+compose-multiplatform = "1.10.0-alpha02"
 androidx-activity-compose = "1.11.0"
 androidx-lifecycle = "2.9.5"
-navigation-compose = "2.9.1"
+navigation-compose = "2.9.0"
 
 
 # Firebase & Authentication
@@ -71,9 +75,13 @@ swift-klib = "0.6.4"
 alarmee = "2.5.0"
 
 mixpanel-android = "8.2.4"
+kotlinStdlib = "2.2.20"
+runner = "1.5.2"
+core = "1.5.0"
 
 [libraries]
 # Mix panel
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }
 mixpanel-android = { module = "com.mixpanel.android:mixpanel-android", version.ref = "mixpanel-android" }
 # notifications
 alarmee = { group = "io.github.tweener", name = "alarmee", version.ref = "alarmee" }
@@ -125,11 +133,11 @@ purchases-core = { module = "com.revenuecat.purchases:purchases-kmp-core", versi
 
 # Google Play Services
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "play-services-ads" }
-play-app-review-ktx = { module = "com.google.android.play:review-ktx",version.ref = "play-review-ktx" }
-play-app-update-ktx = { module = "com.google.android.play:app-update-ktx",version.ref = "play-update-ktx" }
+play-app-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "play-review-ktx" }
+play-app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "play-update-ktx" }
 
 # Data Storage
-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "data-store"}
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "data-store" }
 
 # Database
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
@@ -147,7 +155,12 @@ logging = { module = "org.lighthousegames:logging", version.ref = "logging" }
 atomic-fu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomic-fu" }
 stately-common = { module = "co.touchlab:stately-common", version.ref = "stately-common" }
 ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "compose-multiplatform" }
-
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
+androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
+androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
+# Plugins
+kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+compose-multiplatform-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-multiplatform" }
 [plugins]
 # Android Plugins
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -169,5 +182,18 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 # Google Services Plugins
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 
-swift-klib = {id = "io.github.ttypic.swiftklib",version.ref="swift-klib"}
+swift-klib = { id = "io.github.ttypic.swiftklib", version.ref = "swift-klib" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+android-lint = { id = "com.android.lint", version.ref = "agp" }
 
+# custom
+build-compose-multiplatform = { id = "com.kmpstarter.plugins.composemultiplatform" }
+build-koin-core = { id = "com.kmpstarter.plugins.koin" }
+build-koin-compose = { id = "com.kmpstarter.plugins.koincompose" }
+build-common = { id = "com.kmpstarter.plugins.common" }
+
+[bundles]
+gradle-plugins = [
+    "kotlin-plugin",
+    "compose-multiplatform-plugin",
+]

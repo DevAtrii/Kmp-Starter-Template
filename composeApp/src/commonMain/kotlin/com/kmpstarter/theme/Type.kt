@@ -34,17 +34,7 @@ fun getAppFontFamily() = FontFamily(
         resource = Res.font.poppins_regular,
         weight = FontWeight.Normal
     ),
-   /*
-    Remove poppins medium & bold because they look ugly on the app
-    but you can change them if you want
-    Font(
-        resource = Res.font.poppins_medium,
-        weight = FontWeight.Medium
-    ),
-    Font(
-        resource = Res.font.poppins_bold,
-        weight = FontWeight.Bold
-    )*/
+
 )
 
 

@@ -18,16 +18,16 @@ package com.kmpstarter
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.window.ComposeUIViewController
 import com.kmpstarter.core.di.initKoin
-import com.kmpstarter.core.firebase.auth.AuthUtils
-import com.kmpstarter.core.purchases.initRevenueCat
+import com.kmpstarter.core.initKmpApp
+import com.kmpstarter.feature_purchases.initRevenueCat
 import com.kmpstarter.core.store.KmpInAppReview
-import com.kmpstarter.core.store.LocalInAppReview
+import com.kmpstarter.ui_utils.composition_locals.LocalInAppReview
 
 private val kmpInAppReview = KmpInAppReview()
 
 fun mainViewController() = ComposeUIViewController(
     configure = {
-        AuthUtils.initGoogleAuthProvider()
+        initKmpApp()
         initKoin()
         initRevenueCat()
     }

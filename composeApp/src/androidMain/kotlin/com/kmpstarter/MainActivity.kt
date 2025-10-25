@@ -22,8 +22,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.systemuicontroller.SystemUiController
@@ -31,9 +29,9 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.enums.ThemeMode
-import com.kmpstarter.core.events.utils.ObserveAsEvents
+import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
 import com.kmpstarter.core.store.KmpInAppReview
-import com.kmpstarter.core.store.LocalInAppReview
+import com.kmpstarter.ui_utils.composition_locals.LocalInAppReview
 import org.koin.compose.koinInject
 
 class MainActivity : ComponentActivity() {

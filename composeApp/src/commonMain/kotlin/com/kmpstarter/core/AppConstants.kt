@@ -16,13 +16,14 @@
 package com.kmpstarter.core
 
 object AppConstants {
-    const val IS_DEBUG = true // todo set false in prod
+    val IS_DEBUG = isPlatformBuildDebug
     const val REVENUE_CAT_API_KEY = "goog"
-    const val GOOGLE_WEB_CLIENT_ID = "1061850765240-35h84f96u3jdbmk2sqgi9d1jp28jsfif.apps.googleusercontent.com"
-
+    const val GOOGLE_WEB_CLIENT_ID =
+        "1061850765240-35h84f96u3jdbmk2sqgi9d1jp28jsfif.apps.googleusercontent.com"
 
     const val MIXPANEL_API_TOKEN = "add-your-mixpanel-token-here"
 }
 
 
-expect val APPSTORE_URL: String
+// always false on ios
+expect val isPlatformBuildDebug: Boolean

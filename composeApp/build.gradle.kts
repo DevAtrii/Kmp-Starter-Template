@@ -37,34 +37,20 @@ plugins {
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.services)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.swift.klib)
     alias(libs.plugins.kotlin.cocoapods)
+    alias(libs.plugins.kotlin.serialization)
+    id(libs.plugins.build.common.get().pluginId)
 }
 
-private object SwiftBindings{
-    const val BINDINGS_NAME ="SwiftBindings"
-    const val FOLDER_PATH = "../iosApp/iosApp/Bindings"
-    const val PACKAGE_NAME = "com.kmpstarter.bindings"
-}
 
-swiftklib {
-    create(SwiftBindings.BINDINGS_NAME) {
-        path = file(SwiftBindings.FOLDER_PATH)
-        packageName(SwiftBindings.PACKAGE_NAME)
-    }
-}
 
 kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-parameters")
     }
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
+            jvmTarget.set(CommonPlugin.JVM_VERSION)
         }
     }
 
@@ -72,17 +58,12 @@ kotlin {
     cocoapods {
         summary = "Shared module using cocoapods gradle plugin"
         homepage = "link"
-        version = "1.0"
-        ios.deploymentTarget = "18.6"
+        version = libs.versions.cocoapods.fw.get()
+        ios.deploymentTarget = libs.versions.cocoapods.ios.get()
         podfile = project.file("../iosApp/Podfile")
         framework {
             baseName = "ComposeApp"
             isStatic = true
-        }
-
-        pod("Mixpanel") {
-            version = "5.0.8"
-            extraOpts += listOf("-compiler-option", "-fmodules")
         }
     }
 
@@ -95,13 +76,6 @@ kotlin {
             isStatic = true
             // Required when using NativeSQLiteDriver
             linkerOpts.add("-lsqlite3")
-        }
-        iosTarget.compilations {
-            val main by getting {
-                cinterops {
-                    create(SwiftBindings.BINDINGS_NAME)
-                }
-            }
         }
     }
 
@@ -124,9 +98,8 @@ kotlin {
             // Google Play Services
             implementation(libs.play.app.update.ktx)
             implementation(libs.play.app.review.ktx)
+            implementation(libs.kotlinx.coroutines.play.services)
 
-            // firebase
-            implementation(project.dependencies.platform(libs.firebase.bom))
 
             // ktor
             implementation(libs.ktor.client.okhttp)
@@ -139,6 +112,20 @@ kotlin {
 
         }
         commonMain.dependencies {
+            // local modules
+            implementation(projects.starter.core)
+            implementation(projects.starter.coreDb)
+            // ui
+            implementation(projects.starter.ui.utils)
+            implementation(projects.starter.ui.components)
+            implementation(projects.starter.ui.layouts)
+            // features
+            implementation(projects.starter.features.analytics)
+            implementation(projects.starter.features.purchases)
+            // notifications
+            implementation(projects.starter.notifications)
+
+
             // Compose Core UI
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -162,8 +149,6 @@ kotlin {
             // Navigation
             implementation(libs.navigation.compose)
 
-            // Serialization
-            implementation(libs.kotlinx.serialization.json)
 
 
             // Coroutines
@@ -187,25 +172,12 @@ kotlin {
             implementation(libs.stately.common)
             implementation(libs.atomic.fu)
 
-            // Database
-            implementation(libs.room.runtime)
-            implementation(libs.sqlite.bundled)
-
             // Logging
             api(libs.logging)
 
             // image libs
             implementation(libs.coil.compose)
             implementation(libs.calf.file.picker)
-
-            // firebase
-            implementation(libs.gitlive.firebase.firestore)
-            implementation(libs.gitlive.firebase.analytics)
-            implementation(libs.gitlive.firebase.auth)
-
-            // google sign in
-            implementation(libs.kmpauth.google)
-            implementation(libs.kmpauth.firebase)
 
             // backhandler
             implementation(libs.ui.backhandler)
@@ -243,8 +215,11 @@ android {
         applicationId = "com.kmpstarter"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = getVersionCode()
+        versionName = getVersionName()
+
+        val buildMessage = "versionCode: $versionCode, versionName: $versionName"
+        println(buildMessage)
     }
     packaging {
         resources {
@@ -271,12 +246,4 @@ dependencies {
     // Debug Tools
     debugImplementation(compose.uiTooling)
 
-    // Database
-    add("kspAndroid", libs.room.compiler)
-    add("kspIosArm64", libs.room.compiler)
-    add("kspIosSimulatorArm64", libs.room.compiler)
-}
-
-room {
-    schemaDirectory("$projectDir/schemas")
 }

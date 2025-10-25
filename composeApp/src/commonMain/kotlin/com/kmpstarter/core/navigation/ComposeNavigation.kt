@@ -24,10 +24,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.kmpstarter.core.events.navigator.interfaces.Navigator
 import com.kmpstarter.core.events.navigator.utils.handleNavigationAction
-import com.kmpstarter.core.events.utils.ObserveAsEvents
+import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
 import com.kmpstarter.core.navigation.nav_graphs.appNavGraph
 import com.kmpstarter.core.navigation.screens.StarterScreens
-import com.kmpstarter.core.ui.composition_locals.LocalNavController
+import com.kmpstarter.ui_utils.composition_locals.LocalNavController
 import org.koin.compose.koinInject
 
 
@@ -45,7 +45,6 @@ fun ComposeNavigation(
             navController = navController,
             startDestination = StarterScreens.Root
         ) {
-
             appNavGraph(
                 scaffoldModifier = scaffoldModifier,
                 navigator = navigator,

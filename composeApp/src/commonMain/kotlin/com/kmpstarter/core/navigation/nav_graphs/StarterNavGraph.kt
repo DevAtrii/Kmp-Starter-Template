@@ -19,10 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
 import com.kmpstarter.core.navigation.screens.StarterScreens
-import com.kmpstarter.core.purchases.presentation.ui_main.navigation.PurchasesScreens
-import com.kmpstarter.core.ui.composition_locals.LocalNavController
 import com.kmpstarter.core.ui.screens.WelcomeScreen
-import com.kmpstarter.core.ui.utils.navigation.appNavComposable
+import com.kmpstarter.feature_purchases.presentation.ui_main.navigation.PurchasesScreens
+import com.kmpstarter.ui_utils.composition_locals.LocalNavController
+import com.kmpstarter.ui_utils.navigation.appNavComposable
 
 fun NavGraphBuilder.starterNavGraph(
     scaffoldModifier: Modifier,

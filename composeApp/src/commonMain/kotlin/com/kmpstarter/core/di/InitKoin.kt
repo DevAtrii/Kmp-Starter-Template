@@ -15,8 +15,13 @@
 
 package com.kmpstarter.core.di
 
-import com.kmpstarter.starter_features.analytics.di.analyticsModule
-import com.kmpstarter.starter_features.auth.di.authModule
+import com.kmpstarter.core.datastore.di.dataStoreModule
+import com.kmpstarter.core.events.di.eventsModule
+import com.kmpstarter.core.ktor.di.ktorModule
+import com.kmpstarter.core_db.di.databaseModule
+import com.kmpstarter.feature_purchases.di.purchasesModule
+import com.kmpstarter.notifications.di.notificationsModule
+import com.kmpstarter.utils.di.utilsModule
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 
@@ -24,9 +29,13 @@ fun initKoin(config: KoinAppDeclaration? = null) {
     startKoin {
         config?.invoke(this)
         modules(
-            coreModule,
-            authModule,
-            analyticsModule
+            utilsModule,
+            databaseModule,
+            eventsModule,
+            dataStoreModule,
+            purchasesModule,
+            ktorModule,
+            notificationsModule
             /*Todo add modules here*/
         )
     }

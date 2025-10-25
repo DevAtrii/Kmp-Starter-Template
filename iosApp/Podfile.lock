@@ -1,6 +1,5 @@
 PODS:
-  - composeApp (1.0):
-    - Mixpanel (= 5.0.8)
+  - composeApp (1.0)
   - Mixpanel (5.0.8)
 
 DEPENDENCIES:
@@ -16,7 +15,7 @@ EXTERNAL SOURCES:
     :path: "../composeApp"
 
 SPEC CHECKSUMS:
-  composeApp: df89633abaf6447cae24c6224b44e9148292ef97
+  composeApp: 4c615fc9baa2686b8026607cac8f4e46a1c89f20
   Mixpanel: 9337782610693ef36b8f6ab531493201825f1dd6
 
 PODFILE CHECKSUM: 7aa103e6a33061279b52f2f7f0775b69a8bf8d5e
