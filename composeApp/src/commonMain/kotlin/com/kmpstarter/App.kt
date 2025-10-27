@@ -33,21 +33,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
-import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
 import com.kmpstarter.core.navigation.ComposeNavigation
-import com.kmpstarter.core.ui.side_effects.LaunchOnce
 import com.kmpstarter.theme.ApplicationTheme
 import com.kmpstarter.ui_utils.composition_locals.LocalThemeMode
-import com.kmpstarter.utils.logging.Log
+import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import org.koin.compose.koinInject
 
 @Composable
 fun App() {
+
     val snackbarHostState = remember {
         SnackbarHostState()
     }

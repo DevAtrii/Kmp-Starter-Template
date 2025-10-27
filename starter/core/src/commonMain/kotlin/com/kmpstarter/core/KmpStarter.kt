@@ -24,6 +24,7 @@ data class KmpConfig(
     // keys
     val revenueCatApiKey: String,
     val mixPanelApiKey: String,
+    val platformHost: Any = Unit,
 )
 
 object KmpStarter {
@@ -54,6 +55,12 @@ object KmpStarter {
             return config.isDebug
         }
 
+    val PLATFORM_HOST: Any
+        get() {
+            if (!isInitialized)
+                throw IllegalStateException("Please call KmpStarter.initApp(...) from app entry")
+            return config.platformHost
+        }
 
     fun initApp(
         isDebug: Boolean,
@@ -70,6 +77,12 @@ object KmpStarter {
                 mixPanelApiKey = mixPanelApiKey
             )
             isInitialized = true
+        }
+    }
+
+    fun bindPlatformHost(host: Any) {
+        synchronized(lock) {
+            config = config.copy(platformHost = host)
         }
     }
 

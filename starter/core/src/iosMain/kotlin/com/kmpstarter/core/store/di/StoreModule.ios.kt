@@ -13,13 +13,14 @@
  *
  */
 
-package com.kmpstarter.core.store
+package com.kmpstarter.core.store.di
 
-import platform.StoreKit.SKStoreReviewController
+import com.kmpstarter.core.store.KmpInAppReview
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-actual class KmpInAppReview {
-    @Throws(exceptionClasses = [Exception::class])
-    actual suspend fun askForReview() {
-        SKStoreReviewController.requestReview()
+actual val platformStoreModule: Module = module {
+    single {
+        KmpInAppReview()
     }
 }

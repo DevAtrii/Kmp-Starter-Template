@@ -21,38 +21,28 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.play.core.review.ReviewManagerFactory
+import com.kmpstarter.core.KmpStarter
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.enums.ThemeMode
 import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
-import com.kmpstarter.core.store.KmpInAppReview
-import com.kmpstarter.ui_utils.composition_locals.LocalInAppReview
 import org.koin.compose.koinInject
 
 class MainActivity : ComponentActivity() {
 
-    private val manager by lazy {
-        ReviewManagerFactory.create(applicationContext)
-    }
-    private val kmpInAppReview by lazy {
-        KmpInAppReview(activity = activity, manager = manager)
-    }
     private val activity = this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
+        KmpStarter.bindPlatformHost(host = activity)
         setContent {
-            CompositionLocalProvider(LocalInAppReview provides kmpInAppReview) {
-                AndroidSideEffects()
-                App()
-            }
+            AndroidSideEffects()
+            App()
         }
     }
 

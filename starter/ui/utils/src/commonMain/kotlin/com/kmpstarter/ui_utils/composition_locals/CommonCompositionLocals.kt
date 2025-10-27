@@ -29,4 +29,4 @@ val LocalNavController = staticCompositionLocalOf<NavHostController> {
 @OptIn(ExperimentalMaterial3Api::class)
 val LocalThemeMode = compositionLocalOf { ThemeMode.SYSTEM }
 
-val LocalInAppReview = compositionLocalOf<KmpInAppReview> { error("Provide KMP In App Review") }
+//val LocalInAppReview = compositionLocalOf<KmpInAppReview> { error("Provide KMP In App Review") }

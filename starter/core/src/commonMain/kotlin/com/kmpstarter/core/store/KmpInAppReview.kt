@@ -16,6 +16,7 @@ package com.kmpstarter.core.store
 
 expect class KmpInAppReview {
     /** on android it throws exception & for ios it skips*/
+    @Throws(exceptionClasses = [Exception::class])
     suspend fun askForReview()
 }
 

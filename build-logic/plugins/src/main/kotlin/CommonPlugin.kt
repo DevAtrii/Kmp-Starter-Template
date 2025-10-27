@@ -22,9 +22,10 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 
 class CommonPlugin : Plugin<Project> {
-    companion object{
-          val JVM_VERSION  = JvmTarget.JVM_17
+    companion object {
+        val JVM_VERSION = JvmTarget.JVM_17
     }
+
     override fun apply(target: Project) {
         with(target) {
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
@@ -34,12 +35,16 @@ class CommonPlugin : Plugin<Project> {
 //                apply("org.jetbrains.kotlin.plugin.serialization:$version")
 //            }
             with(kmp) {
-
+                sourceSets.all {
+                    languageSettings.optIn(
+                        "EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING"
+                    )
+                }
                 with(sourceSets) {
                     commonMain {
                         dependencies {
                             // Dependency Injection (Koin)
-                           implementation(libs.findLibrary("kotlinx-serialization-json").get())
+                            implementation(libs.findLibrary("kotlinx-serialization-json").get())
                         }
                     }
                 }

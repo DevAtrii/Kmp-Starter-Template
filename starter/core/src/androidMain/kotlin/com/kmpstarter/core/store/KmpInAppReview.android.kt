@@ -23,6 +23,7 @@ actual class KmpInAppReview(
     private val activity: Activity,
     private val manager: ReviewManager,
 ) {
+    @Throws(exceptionClasses = [Exception::class])
     actual suspend fun askForReview() {
         val request = manager.requestReviewFlow()
         val reviewInfo = request.await()
