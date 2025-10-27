@@ -19,7 +19,7 @@ kotlin {
         }
     }
 
-   androidLibrary {
+    androidLibrary {
         namespace = "com.kmpstarter.feature_analytics"
         compileSdk = 36
         minSdk = 24
@@ -32,23 +32,18 @@ kotlin {
     // A step-by-step guide on how to include this library in an XCode
     // project can be found here:
     // https://developer.android.com/kotlin/multiplatform/migrate
-    val xcfName = "starter:features:analyticsKit"
+    val xcfName = "AnalyticsKit"
+    val bundleId = "com.kmpstarter.featureanalytics.analyticskit"
 
-
-
-    iosArm64 {
-        binaries.framework {
+    listOf(iosArm64(), iosSimulatorArm64()).forEach { target ->
+        target.binaries.framework {
             baseName = xcfName
+            freeCompilerArgs += "-Xbinary=bundleId=$bundleId"
         }
     }
 
-    iosSimulatorArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
 
-     sourceSets {
+    sourceSets {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)

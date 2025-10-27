@@ -13,8 +13,12 @@
 
 package com.kmpstarter.feature_analytics.domain.services
 
+import kotlin.experimental.ExperimentalObjCName
+import kotlin.native.ObjCName
 
 
+@OptIn(ExperimentalObjCName::class)
+@ObjCName("EventsTracker", exact = true)
 interface EventsTracker {
 
     val isEnabled: Boolean

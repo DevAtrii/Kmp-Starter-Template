@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		142A62F2E12955C5C9174951 /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A8EF0B9E049DC76AB168C4E /* Pods_iosApp.framework */; };
 		3E38ACDA2E252CF1004805A2 /* PurchasesHybridCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 3E38ACD92E252CF1004805A2 /* PurchasesHybridCommon */; };
 		3E38ACDC2E252CF1004805A2 /* PurchasesHybridCommonUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3E38ACDB2E252CF1004805A2 /* PurchasesHybridCommonUI */; };
 		3E38ACDF2E252D36004805A2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 3E38ACDE2E252D36004805A2 /* FirebaseAnalytics */; };
@@ -16,22 +15,24 @@
 		3E38ACE52E252D36004805A2 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3E38ACE42E252D36004805A2 /* FirebaseFirestore */; };
 		3E38ACE82E252D73004805A2 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 3E38ACE72E252D73004805A2 /* GoogleSignIn */; };
 		3E38ACEA2E252D73004805A2 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3E38ACE92E252D73004805A2 /* GoogleSignInSwift */; };
+		3EE453012EAFFC0300AB021E /* Mixpanel in Frameworks */ = {isa = PBXBuildFile; productRef = 3EE453002EAFFC0300AB021E /* Mixpanel */; };
+		732E05DD9154A36AF94E9A6E /* Pods_KmpIosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 307068B800AD5ADD5D614A18 /* Pods_KmpIosApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		794CAA7620C0370C8BFDB845 /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
-		7A8EF0B9E049DC76AB168C4E /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B0A5A9042E88148D9870A284 /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
+		2E0407D8DDD5DD11B66376F0 /* Pods-KmpIosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KmpIosApp.debug.xcconfig"; path = "Target Support Files/Pods-KmpIosApp/Pods-KmpIosApp.debug.xcconfig"; sourceTree = "<group>"; };
+		307068B800AD5ADD5D614A18 /* Pods_KmpIosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_KmpIosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		587C7B6E788607A201886473 /* Pods-KmpIosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KmpIosApp.release.xcconfig"; path = "Target Support Files/Pods-KmpIosApp/Pods-KmpIosApp.release.xcconfig"; sourceTree = "<group>"; };
 		B9DA97B12DC1472C00A4DA20 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		B99700CA2DC9B8D800C7335B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		B99700CA2DC9B8D800C7335B /* Exceptions for "iosApp" folder in "KmpIosApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = B9DA97B02DC1472C00A4DA20 /* iosApp */;
+			target = B9DA97B02DC1472C00A4DA20 /* KmpIosApp */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -39,7 +40,7 @@
 		B9DA97B32DC1472C00A4DA20 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				B99700CA2DC9B8D800C7335B /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+				B99700CA2DC9B8D800C7335B /* Exceptions for "iosApp" folder in "KmpIosApp" target */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -64,19 +65,30 @@
 				3E38ACEA2E252D73004805A2 /* GoogleSignInSwift in Frameworks */,
 				3E38ACDF2E252D36004805A2 /* FirebaseAnalytics in Frameworks */,
 				3E38ACE12E252D36004805A2 /* FirebaseAuth in Frameworks */,
+				3EE453012EAFFC0300AB021E /* Mixpanel in Frameworks */,
 				3E38ACE52E252D36004805A2 /* FirebaseFirestore in Frameworks */,
 				3E38ACE82E252D73004805A2 /* GoogleSignIn in Frameworks */,
-				142A62F2E12955C5C9174951 /* Pods_iosApp.framework in Frameworks */,
+				732E05DD9154A36AF94E9A6E /* Pods_KmpIosApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		9C44444EA9675B95B9E344E5 /* Frameworks */ = {
+		0278B9D62134949C7E35D6C4 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				7A8EF0B9E049DC76AB168C4E /* Pods_iosApp.framework */,
+				2E0407D8DDD5DD11B66376F0 /* Pods-KmpIosApp.debug.xcconfig */,
+				587C7B6E788607A201886473 /* Pods-KmpIosApp.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		3EE452FC2EAFFAAF00AB021E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				307068B800AD5ADD5D614A18 /* Pods_KmpIosApp.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -86,9 +98,9 @@
 			children = (
 				B9DA98002DC14AA900A4DA20 /* Configuration */,
 				B9DA97B32DC1472C00A4DA20 /* iosApp */,
+				3EE452FC2EAFFAAF00AB021E /* Frameworks */,
 				B9DA97B22DC1472C00A4DA20 /* Products */,
-				C6AFB25B69ACFD3CD39F42AF /* Pods */,
-				9C44444EA9675B95B9E344E5 /* Frameworks */,
+				0278B9D62134949C7E35D6C4 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -100,29 +112,21 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		C6AFB25B69ACFD3CD39F42AF /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				B0A5A9042E88148D9870A284 /* Pods-iosApp.debug.xcconfig */,
-				794CAA7620C0370C8BFDB845 /* Pods-iosApp.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B9DA97B02DC1472C00A4DA20 /* iosApp */ = {
+		B9DA97B02DC1472C00A4DA20 /* KmpIosApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B9DA97BF2DC1472D00A4DA20 /* Build configuration list for PBXNativeTarget "iosApp" */;
+			buildConfigurationList = B9DA97BF2DC1472D00A4DA20 /* Build configuration list for PBXNativeTarget "KmpIosApp" */;
 			buildPhases = (
-				535F9F0E25BE7926078F928B /* [CP] Check Pods Manifest.lock */,
+				750399086EB3800FE9B4168F /* [CP] Check Pods Manifest.lock */,
+				BA925E06546B48DDE8852327 /* Compile Kotlin */,
 				B9DA97F42DC1497100A4DA20 /* Compile Kotlin Framework */,
 				B9DA97AD2DC1472C00A4DA20 /* Sources */,
 				B9DA97AE2DC1472C00A4DA20 /* Frameworks */,
 				B9DA97AF2DC1472C00A4DA20 /* Resources */,
-				38094713E7AC66C22752051B /* [CP] Copy Pods Resources */,
-				497907CF253C0B5154890EBB /* [CP] Embed Pods Frameworks */,
+				3BDAF576344D2A9F8F29BA2E /* [CP] Embed Pods Frameworks */,
+				BE72B81DF453C60BDD30E6BF /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -131,7 +135,7 @@
 			fileSystemSynchronizedGroups = (
 				B9DA97B32DC1472C00A4DA20 /* iosApp */,
 			);
-			name = iosApp;
+			name = KmpIosApp;
 			packageProductDependencies = (
 				3E38ACD92E252CF1004805A2 /* PurchasesHybridCommon */,
 				3E38ACDB2E252CF1004805A2 /* PurchasesHybridCommonUI */,
@@ -141,6 +145,7 @@
 				3E38ACE42E252D36004805A2 /* FirebaseFirestore */,
 				3E38ACE72E252D73004805A2 /* GoogleSignIn */,
 				3E38ACE92E252D73004805A2 /* GoogleSignInSwift */,
+				3EE453002EAFFC0300AB021E /* Mixpanel */,
 			);
 			productName = iosApp;
 			productReference = B9DA97B12DC1472C00A4DA20 /* iosApp.app */;
@@ -154,7 +159,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					B9DA97B02DC1472C00A4DA20 = {
 						CreatedOnToolsVersion = 16.2;
@@ -174,13 +179,14 @@
 				3E38ACD82E252CF1004805A2 /* XCRemoteSwiftPackageReference "purchases-hybrid-common" */,
 				3E38ACDD2E252D36004805A2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				3E38ACE62E252D73004805A2 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				3EE452FF2EAFFC0300AB021E /* XCRemoteSwiftPackageReference "mixpanel-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B9DA97B22DC1472C00A4DA20 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B9DA97B02DC1472C00A4DA20 /* iosApp */,
+				B9DA97B02DC1472C00A4DA20 /* KmpIosApp */,
 			);
 		};
 /* End PBXProject section */
@@ -196,41 +202,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		38094713E7AC66C22752051B /* [CP] Copy Pods Resources */ = {
+		3BDAF576344D2A9F8F29BA2E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		497907CF253C0B5154890EBB /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-KmpIosApp/Pods-KmpIosApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-KmpIosApp/Pods-KmpIosApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-KmpIosApp/Pods-KmpIosApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		535F9F0E25BE7926078F928B /* [CP] Check Pods Manifest.lock */ = {
+		750399086EB3800FE9B4168F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -245,7 +234,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-iosApp-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-KmpIosApp-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -270,6 +259,37 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\n./gradlew :composeApp:embedAndSignAppleFrameworkForXcode\n";
+		};
+		BA925E06546B48DDE8852327 /* Compile Kotlin */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Compile Kotlin";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\n./gradlew :starter:features:analytics:embedAndSignAppleFrameworkForXcode\n";
+		};
+		BE72B81DF453C60BDD30E6BF /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-KmpIosApp/Pods-KmpIosApp-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-KmpIosApp/Pods-KmpIosApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-KmpIosApp/Pods-KmpIosApp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -342,6 +362,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -398,6 +419,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -405,21 +427,24 @@
 		};
 		B9DA97C02DC1472D00A4DA20 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B0A5A9042E88148D9870A284 /* Pods-iosApp.debug.xcconfig */;
+			baseConfigurationReference = 2E0407D8DDD5DD11B66376F0 /* Pods-KmpIosApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\n$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+					"\"$(SRCROOT)/../starter/features/analytics/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\"",
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KmpIosApp;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -429,8 +454,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kmpstarter.iosapp;
 				PRODUCT_NAME = iosApp;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -439,21 +469,24 @@
 		};
 		B9DA97C12DC1472D00A4DA20 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 794CAA7620C0370C8BFDB845 /* Pods-iosApp.release.xcconfig */;
+			baseConfigurationReference = 587C7B6E788607A201886473 /* Pods-KmpIosApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\n$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+					"\"$(SRCROOT)/../starter/features/analytics/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\"",
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KmpIosApp;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -463,8 +496,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kmpstarter.iosapp;
 				PRODUCT_NAME = iosApp;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -483,7 +521,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B9DA97BF2DC1472D00A4DA20 /* Build configuration list for PBXNativeTarget "iosApp" */ = {
+		B9DA97BF2DC1472D00A4DA20 /* Build configuration list for PBXNativeTarget "KmpIosApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B9DA97C02DC1472D00A4DA20 /* Debug */,
@@ -517,6 +555,14 @@
 			requirement = {
 				kind = exactVersion;
 				version = 9.0.0;
+			};
+		};
+		3EE452FF2EAFFC0300AB021E /* XCRemoteSwiftPackageReference "mixpanel-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mixpanel/mixpanel-swift.git";
+			requirement = {
+				branch = master;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -561,6 +607,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3E38ACE62E252D73004805A2 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignInSwift;
+		};
+		3EE453002EAFFC0300AB021E /* Mixpanel */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3EE452FF2EAFFC0300AB021E /* XCRemoteSwiftPackageReference "mixpanel-swift" */;
+			productName = Mixpanel;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -35,11 +35,6 @@ class CommonPlugin : Plugin<Project> {
 //                apply("org.jetbrains.kotlin.plugin.serialization:$version")
 //            }
             with(kmp) {
-                sourceSets.all {
-                    languageSettings.optIn(
-                        "EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING"
-                    )
-                }
                 with(sourceSets) {
                     commonMain {
                         dependencies {

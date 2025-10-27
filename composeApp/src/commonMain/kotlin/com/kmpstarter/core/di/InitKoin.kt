@@ -20,6 +20,7 @@ import com.kmpstarter.core.events.di.eventsModule
 import com.kmpstarter.core.ktor.di.ktorModule
 import com.kmpstarter.core.store.di.platformStoreModule
 import com.kmpstarter.core_db.di.databaseModule
+import com.kmpstarter.feature_analytics.di.analyticsModule
 import com.kmpstarter.feature_purchases.di.purchasesModule
 import com.kmpstarter.notifications.di.notificationsModule
 import com.kmpstarter.utils.di.utilsModule
@@ -37,7 +38,8 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             dataStoreModule,
             purchasesModule,
             ktorModule,
-            notificationsModule
+            notificationsModule,
+            analyticsModule
             /*Todo add modules here*/
         )
     }

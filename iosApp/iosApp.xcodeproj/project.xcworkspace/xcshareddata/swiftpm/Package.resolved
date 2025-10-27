@@ -1,5 +1,5 @@
 {
-  "originHash" : "42a4e7bb9e4ae8e64945ca802022fdab842bcc5f0a0c642d74ae3c629be65509",
+  "originHash" : "e8e2d0b5606a98444b8f4913cf2c439295fae168341d00511d4438814684334f",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -128,6 +128,15 @@
       }
     },
     {
+      "identity" : "mixpanel-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mixpanel/mixpanel-swift.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "4088e46b2d76a70e227f790f5b683f8ff52951d0"
+      }
+    },
+    {
       "identity" : "nanopb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/nanopb.git",
@@ -150,8 +159,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/RevenueCat/purchases-hybrid-common",
       "state" : {
-        "revision" : "0831fc45536e8f9df0497b9ac85e234da27f7b2d",
-        "version" : "13.37.0"
+        "revision" : "9b51341561d5b4ac8d4455cd864525c748ea6269",
+        "version" : "17.10.0"
       }
     },
     {
@@ -159,8 +168,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/RevenueCat/purchases-ios-spm",
       "state" : {
-        "revision" : "f7c5738962d14b7800addd2a517270aa66d5ce29",
-        "version" : "5.29.0"
+        "revision" : "249432af6b37a3665e26ea6f4ffc869dcd445f01",
+        "version" : "5.43.0"
       }
     },
     {

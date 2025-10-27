@@ -44,7 +44,6 @@ import org.koin.compose.koinInject
 
 @Composable
 fun App() {
-
     val snackbarHostState = remember {
         SnackbarHostState()
     }
