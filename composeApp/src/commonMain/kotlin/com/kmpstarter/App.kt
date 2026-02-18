@@ -17,7 +17,6 @@ package com.kmpstarter
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -26,6 +25,7 @@ import androidx.compose.material3.SnackbarResult.ActionPerformed
 import androidx.compose.material3.SnackbarResult.Dismissed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -33,10 +33,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
-import com.kmpstarter.core.navigation.ComposeNavigation
+import com.kmpstarter.feature_navigation.StarterNavigation
 import com.kmpstarter.theme.ApplicationTheme
 import com.kmpstarter.ui_utils.composition_locals.LocalThemeMode
 import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
+import com.kmpstarter.utils.logging.Log
+import com.kmpstarter.core.platform.platform
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -65,6 +67,13 @@ private fun MainApp(
         initial = ThemeDataStore.DEFAULT_DYNAMIC_COLOR_SCHEME
     )
 
+    LaunchedEffect(platform){
+        Log.d("TAG","MainApp: $platform")
+        SnackbarController.sendAlert(
+            message = "$platform"
+        )
+    }
+
     CompositionLocalProvider(LocalThemeMode provides currentThemeMode) {
         ApplicationTheme(
             darkTheme = currentThemeMode.toComposableBoolean(isSystemInDarkTheme()),
@@ -76,9 +85,9 @@ private fun MainApp(
                         hostState = snackbarHostState
                     )
                 }
-            ) { innerPaddings: PaddingValues ->
-                ComposeNavigation(
-                    scaffoldModifier = Modifier.padding(innerPaddings)
+            ) { _: PaddingValues ->
+                StarterNavigation(
+                    modifier = Modifier
                 )
             }
         }
@@ -119,9 +128,6 @@ private fun GlobalSideEffects(
         }
     }
 }
-
-
-
 
 
 

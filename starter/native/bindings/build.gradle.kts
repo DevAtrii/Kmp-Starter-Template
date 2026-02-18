@@ -12,13 +12,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-private object SwiftBindings {
-    const val BINDINGS_NAME = "SwiftBindings"
-    const val FOLDER_PATH = "src/native/swift/com/kmpstarter/native_bindings"
-    const val PACKAGE_NAME = "com.kmpstarter.native_bindings"
-}
-
-
 
 kotlin {
 

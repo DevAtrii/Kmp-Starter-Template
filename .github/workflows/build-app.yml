@@ -1,0 +1,95 @@
+name: Build App
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Extract Version from libs.versions.toml
+        id: get_version
+        run: |
+          # Standard regex to find version parts in a single-module project
+          MAJOR=$(sed -n 's/app-version-major *= *"\([^"]*\)".*/\1/p' gradle/libs.versions.toml)
+          MINOR=$(sed -n 's/app-version-minor *= *"\([^"]*\)".*/\1/p' gradle/libs.versions.toml)
+          PATCH=$(sed -n 's/app-version-patch *= *"\([^"]*\)".*/\1/p' gradle/libs.versions.toml)
+          
+          VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Detected Version: $VERSION"
+
+      - name: Check if Release Exists
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="v${{ steps.get_version.outputs.VERSION }}"
+          if gh release view "$TAG_NAME" > /dev/null 2>&1; then
+            echo "::error::Release $TAG_NAME already exists. Bump the version in libs.versions.toml."
+            exit 1
+          fi
+
+      - name: Decode Keystore
+        run: |
+          mkdir -p keystore
+          echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > keystore/release.jks
+          echo "KEYSTORE_PATH=$GITHUB_WORKSPACE/keystore/release.jks" >> $GITHUB_ENV
+
+      - name: Build APK & AAB
+        run: |
+          ./gradlew :composeApp:assembleRelease :composeApp:bundleRelease \
+            --no-configuration-cache \
+            -Pandroid.injected.signing.store.file=$KEYSTORE_PATH \
+            -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
+            -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
+            -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+
+      - name: Organize Release Artifacts
+        run: |
+          VERSION=${{ steps.get_version.outputs.VERSION }}
+          mkdir -p release-artifacts
+          
+          # Standard output paths for single-module apps
+          find composeApp/build/outputs/apk/release/ -name "*.apk" -exec cp {} release-artifacts/app-release-${VERSION}.apk \;
+          find composeApp/build/outputs/bundle/release/ -name "*.aab" -exec cp {} release-artifacts/app-release-${VERSION}.aab \;
+
+      - name: Generate Checksum Report
+        run: |
+          cd release-artifacts
+          echo "### Release Artifacts Checksums (SHA-256)" > ../checksums.md
+          echo "" >> ../checksums.md
+          echo "| File | Checksum |" >> ../checksums.md
+          echo "| :--- | :--- |" >> ../checksums.md
+          for file in *; do
+            sha=$(sha256sum "$file" | awk '{print $1}')
+            echo "| $file | \`$sha\` |" >> ../checksums.md
+          done
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          name: Release-v${{ steps.get_version.outputs.VERSION }}
+          body_path: checksums.md
+          draft: false
+          prerelease: false
+          files: |
+            release-artifacts/*.apk
+            release-artifacts/*.aab
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -19,19 +19,21 @@ class ComposeMultiplatformPlugin : Plugin<Project> {
                 with(sourceSets) {
                     commonMain {
                         dependencies {
-                            implementation(compose.runtime)
-                            implementation(compose.foundation)
-                            implementation(compose.material3)
-                            implementation(compose.ui)
-                            implementation(compose.components.resources)
-                            implementation(compose.components.uiToolingPreview)
-                            implementation(compose.materialIconsExtended)
+                            implementation(libs.findLibrary("compose-runtime").get())
+                            implementation(libs.findLibrary("compose-foundation").get())
+                            implementation(libs.findLibrary("compose-material3").get())
+                            implementation(libs.findLibrary("compose-ui").get())
+                            implementation(libs.findLibrary("compose-components-resources").get())
+                            implementation(libs.findLibrary("compose-material-icons-extended").get())
+                            implementation(libs.findLibrary("compose-ui-tooling-preview").get())
                         }
                     }
                     androidMain {
                         // Compose UI
                         dependencies {
                             implementation(libs.findLibrary("androidx.activity.compose").get())
+                            implementation(libs.findLibrary("compose-ui-tooling").get())
+                            implementation(libs.findLibrary("compose-ui-tooling-preview").get())
                         }
                     }
                 }

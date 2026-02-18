@@ -40,6 +40,7 @@ class CommonPlugin : Plugin<Project> {
                         dependencies {
                             // Dependency Injection (Koin)
                             implementation(libs.findLibrary("kotlinx-serialization-json").get())
+                            implementation(libs.findLibrary("kotlinx.coroutines.core").get())
                         }
                     }
                 }

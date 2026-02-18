@@ -39,8 +39,6 @@ kotlin {
                 implementation(libs.kotlin.stdlib)
                 // utils
                 api(projects.starter.utils)
-                // navigation
-                implementation(libs.navigation.compose)
                 // other
                 implementation(libs.atomic.fu)
                 implementation(libs.datastore.preferences)

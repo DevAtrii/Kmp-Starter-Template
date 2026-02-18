@@ -58,7 +58,7 @@ object KmpStarter {
     val PLATFORM_HOST: Any
         get() {
             if (!isInitialized)
-                throw IllegalStateException("Please call KmpStarter.initApp(...) from app entry")
+                throw IllegalStateException("Please call KmpStarter.bindPlatformHost(...) from MainActivity")
             return config.platformHost
         }
 

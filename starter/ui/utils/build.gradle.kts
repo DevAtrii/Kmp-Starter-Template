@@ -45,7 +45,6 @@ kotlin {
                 // Add KMP dependencies here
                 api(projects.starter.core)
                 implementation(libs.coil.compose)
-                implementation(libs.navigation.compose)
                 implementation(libs.kotlinx.datetime)
                 // kotlin
                 implementation(libs.kotlinx.serialization.json)

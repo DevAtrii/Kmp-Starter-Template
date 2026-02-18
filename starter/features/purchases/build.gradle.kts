@@ -58,7 +58,6 @@ kotlin {
                 implementation(projects.starter.ui.layouts)
                 // rc
                 implementation(libs.purchases.core)
-                implementation(libs.navigation.compose)
                 implementation(libs.ui.backhandler)
             }
         }

@@ -13,7 +13,7 @@
  *
  */
 
-package com.kmpstarter.core.ui.modifiers
+package com.kmpstarter.ui_utils.modifiers
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.CubicBezierEasing

@@ -65,6 +65,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -89,12 +90,12 @@ import androidx.compose.ui.unit.sp
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
 import com.kmpstarter.core.events.enums.ThemeMode
+import com.kmpstarter.core.platform.platform
 import com.kmpstarter.ui_components.lists.ScrollableColumn
 import com.kmpstarter.ui_utils.screen.ScreenSizeValue
 import com.kmpstarter.ui_utils.theme.Dimens
 import com.kmpstarter.ui_utils.theme.isAppInDarkTheme
 import com.kmpstarter.utils.intents.IntentUtils
-import com.kmpstarter.utils.platform.isDynamicColorSupported
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -102,7 +103,6 @@ import org.koin.compose.koinInject
 
 @Composable
 fun WelcomeScreen(
-    modifier: Modifier = Modifier,
     onGetStartedClick: () -> Unit,
     intentUtils: IntentUtils = koinInject(),
     themeDataStore: ThemeDataStore = koinInject(),
@@ -137,55 +137,154 @@ fun WelcomeScreen(
         }
     }*/
 
-    Box(
-        modifier = modifier.fillMaxSize()
-    ) {
-        // Background with gradient
+    Scaffold {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.surface,
-                            MaterialTheme.colorScheme.surfaceContainer
-                        )
-                    )
-                )
-        )
-
-        // Animated blur overlay
-        AnimatedVisibility(
-            visible = showBlur,
-            enter = fadeIn(
-                animationSpec = tween(durationMillis = 800)
-            ),
-            exit = fadeOut()
+            modifier = Modifier.padding(it).fillMaxSize()
         ) {
+            // Background with gradient
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        MaterialTheme.colorScheme.surface.copy(alpha = 0.1f)
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.surface,
+                                MaterialTheme.colorScheme.surfaceContainer
+                            )
+                        )
                     )
             )
-        }
 
-        // Main content with responsive layout
-        if (isExpanded) {
-            // Desktop/Tablet landscape layout
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(Dimens.paddingLarge),
-                horizontalArrangement = Arrangement.spacedBy(Dimens.paddingLarge)
+            // Animated blur overlay
+            AnimatedVisibility(
+                visible = showBlur,
+                enter = fadeIn(
+                    animationSpec = tween(durationMillis = 800)
+                ),
+                exit = fadeOut()
             ) {
-                // Left side - Hero section
-                Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.1f)
+                        )
+                )
+            }
+
+            // Main content with responsive layout
+            if (isExpanded) {
+                // Desktop/Tablet landscape layout
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(Dimens.paddingLarge),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.paddingLarge)
                 ) {
+                    // Left side - Hero section
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        AnimatedVisibility(
+                            visible = showContent,
+                            enter = slideInVertically(
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                                    stiffness = Spring.StiffnessLow
+                                )
+                            ) { it / 3 } + fadeIn(
+                                animationSpec = tween(durationMillis = 1000)
+                            ),
+                            exit = slideOutVertically() + fadeOut()
+                        ) {
+                            HeroSection(isCompact = false)
+                        }
+                    }
+
+                    // Right side - Features and actions
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        AnimatedVisibility(
+                            visible = showContent,
+                            enter = slideInVertically(
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                                    stiffness = Spring.StiffnessLow
+                                )
+                            ) { it / 3 } + fadeIn(
+                                animationSpec = tween(durationMillis = 1000, delayMillis = 200)
+                            ),
+                            exit = slideOutVertically() + fadeOut()
+                        ) {
+                            FeaturesSection(isCompact = false)
+                        }
+
+                        Spacer(modifier = Modifier.height(Dimens.paddingExtraLarge))
+                        val scope = rememberCoroutineScope()
+                        AnimatedVisibility(
+                            visible = showContent,
+                            enter = slideInVertically(
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                                    stiffness = Spring.StiffnessLow
+                                )
+                            ) { it / 3 } + fadeIn(
+                                animationSpec = tween(durationMillis = 1000, delayMillis = 400)
+                            ),
+                            exit = slideOutVertically() + fadeOut()
+                        ) {
+                            ActionButtonsSection(
+                                isCompact = false,
+                                onGetStartedClick = onGetStartedClick,
+                                themeDataStore = themeDataStore,
+                                intentUtils = intentUtils,
+                                buttonText = buttonText,
+                                onThemeClick = {
+                                    val themeMode = when (clickCount) {
+                                        0 -> {
+                                            clickCount++
+                                            buttonText = "Light"
+                                            ThemeMode.LIGHT
+                                        }
+
+                                        1 -> {
+                                            clickCount++
+                                            buttonText = "Dark"
+                                            ThemeMode.DARK
+                                        }
+
+                                        else -> {
+                                            clickCount = 0
+                                            buttonText = "System"
+                                            ThemeMode.SYSTEM
+                                        }
+                                    }
+                                    scope.launch {
+                                        themeDataStore.setThemeMode(themeMode = themeMode)
+                                        SnackbarController.sendAlert("Theme changed to ${themeMode.name.lowercase()}")
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+            } else {
+                // Mobile/Tablet portrait layout
+                ScrollableColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            horizontal = if (isCompact) Dimens.paddingMedium else Dimens.paddingLarge,
+                            vertical = Dimens.paddingLarge
+                        ),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(Dimens.paddingLarge)
+                ) {
+                    // Hero Section
                     AnimatedVisibility(
                         visible = showContent,
                         enter = slideInVertically(
@@ -198,15 +297,10 @@ fun WelcomeScreen(
                         ),
                         exit = slideOutVertically() + fadeOut()
                     ) {
-                        HeroSection(isCompact = false)
+                        HeroSection(isCompact = isCompact)
                     }
-                }
 
-                // Right side - Features and actions
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.Center
-                ) {
+                    // Features Section
                     AnimatedVisibility(
                         visible = showContent,
                         enter = slideInVertically(
@@ -219,11 +313,10 @@ fun WelcomeScreen(
                         ),
                         exit = slideOutVertically() + fadeOut()
                     ) {
-                        FeaturesSection(isCompact = false)
+                        FeaturesSection(isCompact = isCompact)
                     }
 
-                    Spacer(modifier = Modifier.height(Dimens.paddingExtraLarge))
-                    val scope = rememberCoroutineScope()
+                    // Action Buttons
                     AnimatedVisibility(
                         visible = showContent,
                         enter = slideInVertically(
@@ -236,11 +329,12 @@ fun WelcomeScreen(
                         ),
                         exit = slideOutVertically() + fadeOut()
                     ) {
+                        val scope = rememberCoroutineScope()
                         ActionButtonsSection(
-                            isCompact = false,
-                            onGetStartedClick = onGetStartedClick,
+                            isCompact = isCompact,
                             themeDataStore = themeDataStore,
                             intentUtils = intentUtils,
+                            onGetStartedClick = onGetStartedClick,
                             buttonText = buttonText,
                             onThemeClick = {
                                 val themeMode = when (clickCount) {
@@ -269,98 +363,6 @@ fun WelcomeScreen(
                             }
                         )
                     }
-                }
-            }
-        } else {
-            // Mobile/Tablet portrait layout
-            ScrollableColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        horizontal = if (isCompact) Dimens.paddingMedium else Dimens.paddingLarge,
-                        vertical = Dimens.paddingLarge
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(Dimens.paddingLarge)
-            ) {
-                // Hero Section
-                AnimatedVisibility(
-                    visible = showContent,
-                    enter = slideInVertically(
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                            stiffness = Spring.StiffnessLow
-                        )
-                    ) { it / 3 } + fadeIn(
-                        animationSpec = tween(durationMillis = 1000)
-                    ),
-                    exit = slideOutVertically() + fadeOut()
-                ) {
-                    HeroSection(isCompact = isCompact)
-                }
-
-                // Features Section
-                AnimatedVisibility(
-                    visible = showContent,
-                    enter = slideInVertically(
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                            stiffness = Spring.StiffnessLow
-                        )
-                    ) { it / 3 } + fadeIn(
-                        animationSpec = tween(durationMillis = 1000, delayMillis = 200)
-                    ),
-                    exit = slideOutVertically() + fadeOut()
-                ) {
-                    FeaturesSection(isCompact = isCompact)
-                }
-
-                // Action Buttons
-                AnimatedVisibility(
-                    visible = showContent,
-                    enter = slideInVertically(
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                            stiffness = Spring.StiffnessLow
-                        )
-                    ) { it / 3 } + fadeIn(
-                        animationSpec = tween(durationMillis = 1000, delayMillis = 400)
-                    ),
-                    exit = slideOutVertically() + fadeOut()
-                ) {
-                    val scope = rememberCoroutineScope()
-                    ActionButtonsSection(
-                        isCompact = isCompact,
-                        themeDataStore = themeDataStore,
-                        intentUtils = intentUtils,
-                        onGetStartedClick = onGetStartedClick,
-                        buttonText = buttonText,
-                        onThemeClick = {
-                            val themeMode = when (clickCount) {
-                                0 -> {
-                                    clickCount++
-                                    buttonText = "Light"
-                                    ThemeMode.LIGHT
-                                }
-
-                                1 -> {
-                                    clickCount++
-                                    buttonText = "Dark"
-                                    ThemeMode.DARK
-                                }
-
-                                else -> {
-                                    clickCount = 0
-                                    buttonText = "System"
-                                    ThemeMode.SYSTEM
-                                }
-                            }
-                            scope.launch {
-                                themeDataStore.setThemeMode(themeMode = themeMode)
-                                SnackbarController.sendAlert("Theme changed to ${themeMode.name.lowercase()}")
-                            }
-                        }
-                    )
                 }
             }
         }
@@ -605,7 +607,7 @@ private fun ActionButtonsSection(
         modifier = Modifier.fillMaxWidth()
     ) {
         // Dynamic color toggle (Android only) with custom animated toggle
-        if (isDynamicColorSupported) {
+        if (platform.isDynamicColorSupported) {
             AnimatedVisibility(
                 visible = true,
                 enter = fadeIn() + slideInVertically(),

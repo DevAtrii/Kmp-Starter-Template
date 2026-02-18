@@ -13,7 +13,7 @@
  *
  */
 
-package com.kmpstarter.core.ui.modifiers
+package com.kmpstarter.ui_utils.modifiers
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache

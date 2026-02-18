@@ -1,0 +1,131 @@
+name: Publish Release to Play Store
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: [ "Build App" ]
+    types:
+      - completed
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.ref }}
+
+      - name: Check Secret Availability
+        run: |
+          if [ -z "${{ secrets.SERVICE_ACCOUNT_JSON }}" ]; then
+            echo "::error::SERVICE_ACCOUNT_JSON is missing or empty!"
+            exit 1
+          fi
+
+      - name: Parse play.json Metadata
+        id: play_meta
+        run: |
+          TRACK=$(jq -r '.track' publish/play.json)
+          PKG=$(jq -r '.packageName' publish/play.json)
+          LOOK_LOCAL=$(jq -r '.ci_cd.lookInLocalRelease' publish/play.json)
+          LOCAL_PATH=$(jq -r '.ci_cd.localAABPath' publish/play.json)
+          
+          echo "track=$TRACK" >> $GITHUB_OUTPUT
+          echo "package_name=$PKG" >> $GITHUB_OUTPUT
+          echo "look_local=$LOOK_LOCAL" >> $GITHUB_OUTPUT
+          echo "local_path=$LOCAL_PATH" >> $GITHUB_OUTPUT
+
+      - name: Extract Version
+        id: get_version
+        run: |
+          MAJOR=$(sed -n 's/app-version-major *= *"\([^"]*\)".*/\1/p' gradle/libs.versions.toml)
+          MINOR=$(sed -n 's/app-version-minor *= *"\([^"]*\)".*/\1/p' gradle/libs.versions.toml)
+          PATCH=$(sed -n 's/app-version-patch *= *"\([^"]*\)".*/\1/p' gradle/libs.versions.toml)
+          echo "tag=v${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
+
+      - name: Prepare AAB Artifact
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p release-artifacts
+          
+          if [ "${{ github.event_name }}" == "workflow_run" ]; then
+            echo "Triggered by build workflow. Downloading from GitHub Releases..."
+            gh release download "${{ steps.get_version.outputs.tag }}" --pattern "*.aab" --dir release-artifacts
+          
+          elif [ "${{ steps.play_meta.outputs.look_local }}" == "true" ]; then
+            echo "Manual trigger & lookInLocalRelease is true."
+            AAB_FILE="${{ steps.play_meta.outputs.local_path }}"
+            if [ -f "$AAB_FILE" ]; then
+              cp "$AAB_FILE" release-artifacts/
+              echo "✅ Copied $AAB_FILE"
+            else
+              echo "::error::Local AAB not found at $AAB_FILE"
+              exit 1
+            fi
+          
+          else
+            echo "Manual trigger & lookInLocalRelease is false. Downloading from GitHub..."
+            gh release download "${{ steps.get_version.outputs.tag }}" --pattern "*.aab" --dir release-artifacts
+          fi
+
+      - name: Process Multi-Language Changelogs
+        run: |
+          mkdir -p distribution/whatsnew
+          
+          # 1. Dynamically get the first language key and its path from play.json
+          FIRST_LANG_KEY=$(jq -r '.aso | keys_unsorted[0]' publish/play.json)
+          DEFAULT_FALLBACK_PATH=$(jq -r ".aso.\"$FIRST_LANG_KEY\".whatsNew // empty" publish/play.json)
+          
+          echo "Primary fallback language: $FIRST_LANG_KEY"
+          echo "Primary fallback path: $DEFAULT_FALLBACK_PATH"
+          
+          # 2. Read supported languages list
+          LANGS=$(cat publish/play_supported_langs.txt | tr ',' '\n' | xargs)
+          
+          for lang in $LANGS; do
+            DEST="distribution/whatsnew/whatsnew-$lang"
+            SIMPLE_LANG=$(echo $lang | cut -d'-' -f1)
+          
+            # Priority Logic:
+            # 1. JSON Specific (e.g., aso.ur.whatsNew)
+            # 2. Folder Specific (publish/aso/ur-PK/changelog.txt)
+            # 3. Folder Simple (publish/aso/ur/changelog.txt)
+            # 4. First Object Fallback (from step 1)
+          
+            JSON_PATH=$(jq -r ".aso.\"$SIMPLE_LANG\".whatsNew // empty" publish/play.json)
+            DEFAULT_FOLDER_PATH="publish/aso/$lang/changelog.txt"
+            SIMPLE_FOLDER_PATH="publish/aso/$SIMPLE_LANG/changelog.txt"
+          
+            if [ -f "$JSON_PATH" ]; then 
+              SOURCE="$JSON_PATH"
+            elif [ -f "$DEFAULT_FOLDER_PATH" ]; then 
+              SOURCE="$DEFAULT_FOLDER_PATH"
+            elif [ -f "$SIMPLE_FOLDER_PATH" ]; then 
+              SOURCE="$SIMPLE_FOLDER_PATH"
+            else 
+              SOURCE="$DEFAULT_FALLBACK_PATH"
+            fi
+          
+            # 3. Process the file
+            if [ -n "$SOURCE" ] && [ -f "$SOURCE" ]; then
+              # tr -d "\r" removes Windows line endings
+              # head -c 500 enforces Google Play's character limit
+              cat "$SOURCE" | tr -d "\r" | head -c 500 > "$DEST"
+              echo "✅ $lang populated using $SOURCE"
+            else
+              echo "⚠️ $lang: No source found (even fallback failed)"
+            fi
+          done
+      - name: Upload to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: ${{ steps.play_meta.outputs.package_name }}
+          releaseFiles: release-artifacts/*.aab
+          track: ${{ steps.play_meta.outputs.track }}
+          whatsNewDirectory: distribution/whatsnew
+          status: completed
+          changesNotSentForReview: false

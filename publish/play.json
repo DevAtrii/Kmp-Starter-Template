@@ -1,0 +1,13 @@
+{
+  "ci_cd": {
+    "lookInLocalRelease": true,
+    "localAABPath" : "composeApp/release/composeApp-release.aab"
+  },
+  "track": "production",
+  "packageName": "com.kmpstarter.app",
+  "aso": {
+    "en-GB": {
+      "whatsNew": "publish/aso/en-GB/changelog.txt"
+    }
+  }
+}

@@ -79,7 +79,7 @@ fun SimpleMediumNavigationTopBar(
 
     MediumTopAppBar(
         modifier = modifier,
-        colors = TopAppBarDefaults.mediumTopAppBarColors(
+        colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.background
         ),
         title = {

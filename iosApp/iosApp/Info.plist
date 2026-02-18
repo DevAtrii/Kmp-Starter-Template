@@ -1,19 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+    "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.1061850765240-jo8cgscsdv3pqq9ofbjdvsn8m82kc8jj</string>
-			</array>
-		</dict>
-	</array>
-	<key>GIDClientID</key>
-	<string>1061850765240-jo8cgscsdv3pqq9ofbjdvsn8m82kc8jj.apps.googleusercontent.com</string>
-</dict>
+    <dict>
+        <key>CADisableMinimumFrameDurationOnPhone</key>
+        <true />
+        <key>CFBundleURLTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleURLSchemes</key>
+                <array>
+                    <string>
+                        com.googleusercontent.apps.1061850765240-jo8cgscsdv3pqq9ofbjdvsn8m82kc8jj
+                    </string>
+                </array>
+            </dict>
+        </array>
+        <key>GIDClientID</key>
+        <string>1061850765240-jo8cgscsdv3pqq9ofbjdvsn8m82kc8jj.apps.googleusercontent.com</string>
+    </dict>
 </plist>

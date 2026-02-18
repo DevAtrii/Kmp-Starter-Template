@@ -23,7 +23,10 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.services)
     alias(libs.plugins.kotlin.serialization)
+    // conviction plugins
     id(libs.plugins.build.common.get().pluginId)
+    id(libs.plugins.build.compose.multiplatform.get().pluginId)
+    id(libs.plugins.build.koin.compose.get().pluginId)
 }
 
 
@@ -61,39 +64,11 @@ kotlin {
     sourceSets {
 
         androidMain.dependencies {
-            // Compose UI
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-
-
-            // Coroutines
-            implementation(libs.kotlinx.coroutines.android)
-
-
-            // Dependency Injection
-            implementation(libs.koin.android)
-            implementation(libs.koin.androidx.compose)
-
-            // Google Play Services
-            implementation(libs.play.app.update.ktx)
-            implementation(libs.play.app.review.ktx)
-            implementation(libs.kotlinx.coroutines.play.services)
-
-
-            // ktor
-            implementation(libs.ktor.client.okhttp)
-
-            // accompanist
-
-
-            // mix panel
-            implementation(libs.mixpanel.android)
-
         }
         commonMain.dependencies {
             // local modules
             api(projects.starter.core)
-            //implementation(projects.starter.coreDb)
+            implementation(projects.starter.coreDb)
             // ui
             api(projects.starter.ui.utils)
             implementation(projects.starter.ui.components)
@@ -104,124 +79,65 @@ kotlin {
             // notifications
             implementation(projects.starter.notifications)
 
-
-            // Compose Core UI
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(compose.materialIconsExtended)
-
-            // ktor
-            implementation(libs.ktor.client.core)
-            // ktor plugins
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.ktor.client.logging)
-
-            // AndroidX Libraries
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
-
             // Navigation
-            implementation(libs.navigation.compose)
-
-
-            // Coroutines
-            implementation(libs.kotlinx.coroutines.core)
-
-            // Date & Time
-            implementation(libs.kotlinx.datetime)
-
-            // RevenueCat Purchases
-            implementation(libs.purchases.core)
-
-
-            // Dependency Injection (Koin)
-            api(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
-
-
-            // Data Storage
-            implementation(libs.datastore.preferences)
-            implementation(libs.stately.common)
-            implementation(libs.atomic.fu)
-
-            // Logging
-            api(libs.logging)
-
-            // image libs
-            implementation(libs.coil.compose)
-            implementation(libs.calf.file.picker)
-
-            // backhandler
-            implementation(libs.ui.backhandler)
-
-            // notifications
-            implementation(libs.alarmee)
-        }
-        commonTest.dependencies {
-            // Testing Framework
-            implementation(libs.kotlin.test)
-        }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
+            implementation(projects.features.navigation)
         }
         iosMain.dependencies {
-            // ktor
-            implementation(libs.ktor.client.darwin)
-        }
-        named { it.lowercase().startsWith("ios") }.configureEach {
-            languageSettings {
-                optIn("kotlinx.cinterop.ExperimentalForeignApi")
-            }
+
         }
     }
 }
-/*
-android {
-    namespace = "com.kmpstarter"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
 
-    defaultConfig {
-        buildFeatures {
-            buildConfig = true
-        }
-        applicationId = "com.kmpstarter"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = getVersionCode()
-        versionName = getVersionName()
 
-        val buildMessage = "versionCode: $versionCode, versionName: $versionName"
-        println(buildMessage)
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+val setXcodeTargetVersion by tasks.registering {
+    val xcconfigFile = File(project.rootDir, "iosApp/AppConfig.xcconfig")
+
+    // Read version from libs.versions.toml
+    val versionMajor = libs.versions.app.version.major.get().toInt()
+    val versionMinor = libs.versions.app.version.minor.get().toInt()
+    val versionPatch = libs.versions.app.version.patch.get().toInt()
+
+    val projectVersion = (versionMajor * 10000) + (versionMinor * 100) + versionPatch
+    val marketingVersion = "$versionMajor.$versionMinor.$versionPatch"
+
+    doLast {
+        if (!xcconfigFile.exists()) {
+            throw GradleException("AppConfig.xcconfig not found at ${xcconfigFile.absolutePath}")
         }
-    }
-    buildTypes {
-        release {
-            *//*Todo set this to true in prod*//*
-            isMinifyEnabled = false
-            isShrinkResources = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+
+        val content = xcconfigFile.readText()
+            // Replace CURRENT_PROJECT_VERSION
+            .replace(Regex("CURRENT_PROJECT_VERSION\\s*=\\s*\\d+"), "CURRENT_PROJECT_VERSION=$projectVersion")
+            // Replace MARKETING_VERSION
+            .replace(Regex("MARKETING_VERSION\\s*=\\s*.+"), "MARKETING_VERSION=$marketingVersion")
+
+        xcconfigFile.writeText(content)
+
+        println("Updated AppConfig.xcconfig: CURRENT_PROJECT_VERSION=$projectVersion, MARKETING_VERSION=$marketingVersion")
     }
 }
-dependencies {
-    // Debug Tools
-    debugImplementation(compose.uiTooling)
+//
+//// Make sure it runs before the Xcode build
+//tasks.named("embedAndSignAppleFrameworkForXcode") {
+//    dependsOn(setXcodeTargetVersion)
+//}
 
-}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

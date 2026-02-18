@@ -15,9 +15,11 @@
 		3E38ACE52E252D36004805A2 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3E38ACE42E252D36004805A2 /* FirebaseFirestore */; };
 		3E38ACE82E252D73004805A2 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 3E38ACE72E252D73004805A2 /* GoogleSignIn */; };
 		3E38ACEA2E252D73004805A2 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3E38ACE92E252D73004805A2 /* GoogleSignInSwift */; };
+		3E8BF7182F461A0C00576AF0 /* AppConfig.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 3E8BF7172F461A0C00576AF0 /* AppConfig.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3E8BF7172F461A0C00576AF0 /* AppConfig.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppConfig.xcconfig; sourceTree = "<group>"; };
 		B9DA97B12DC1472C00A4DA20 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -38,11 +40,6 @@
 				B99700CA2DC9B8D800C7335B /* Exceptions for "iosApp" folder in "KmpIosApp" target */,
 			);
 			path = iosApp;
-			sourceTree = "<group>";
-		};
-		B9DA98002DC14AA900A4DA20 /* Configuration */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Configuration;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -69,7 +66,7 @@
 		B9DA97A82DC1472C00A4DA20 = {
 			isa = PBXGroup;
 			children = (
-				B9DA98002DC14AA900A4DA20 /* Configuration */,
+				3E8BF7172F461A0C00576AF0 /* AppConfig.xcconfig */,
 				B9DA97B32DC1472C00A4DA20 /* iosApp */,
 				B9DA97B22DC1472C00A4DA20 /* Products */,
 			);
@@ -90,6 +87,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B9DA97BF2DC1472D00A4DA20 /* Build configuration list for PBXNativeTarget "KmpIosApp" */;
 			buildPhases = (
+				3E8BF7192F461B7400576AF0 /* ShellScript */,
 				BA925E06546B48DDE8852327 /* Compile Kotlin */,
 				B9DA97F42DC1497100A4DA20 /* Compile Kotlin Framework */,
 				B9DA97AD2DC1472C00A4DA20 /* Sources */,
@@ -162,12 +160,30 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E8BF7182F461A0C00576AF0 /* AppConfig.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		3E8BF7192F461B7400576AF0 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/bash\nset -e\n\n# Go to repo root\ncd \"$SRCROOT/..\"\n\n# Path to TOML file\nTOML_FILE=\"gradle/libs.versions.toml\"\nXC_CONFIG_FILE=\"iosApp/AppConfig.xcconfig\"\n\nif [[ ! -f \"$TOML_FILE\" ]]; then\n  echo \"TOML file not found at $TOML_FILE\"\n  exit 1\nfi\n\nif [[ ! -f \"$XC_CONFIG_FILE\" ]]; then\n  echo \"AppConfig.xcconfig not found at $XC_CONFIG_FILE\"\n  exit 1\nfi\n\n# Extract major, minor, patch from TOML\nVERSION_MAJOR=$(grep '^app-version-major' \"$TOML_FILE\" | sed 's/.*= *\"\\([0-9]*\\)\"/\\1/')\nVERSION_MINOR=$(grep '^app-version-minor' \"$TOML_FILE\" | sed 's/.*= *\"\\([0-9]*\\)\"/\\1/')\nVERSION_PATCH=$(grep '^app-version-patch' \"$TOML_FILE\" | sed 's/.*= *\"\\([0-9]*\\)\"/\\1/')\n\n# Calculate version values\nPROJECT_VERSION=$((VERSION_MAJOR * 10000 + VERSION_MINOR * 100 + VERSION_PATCH))\nMARKETING_VERSION=\"$VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH\"\n\necho \"Updating AppConfig.xcconfig: CURRENT_PROJECT_VERSION=$PROJECT_VERSION, MARKETING_VERSION=$MARKETING_VERSION\"\n\n# Backup original (optional)\ncp \"$XC_CONFIG_FILE\" \"${XC_CONFIG_FILE}.bak\" || true\n\n# Replace values in the xcconfig\nsed -i '' -E \"s/^CURRENT_PROJECT_VERSION\\s*=.*/CURRENT_PROJECT_VERSION=$PROJECT_VERSION/\" \"$XC_CONFIG_FILE\"\nsed -i '' -E \"s/^MARKETING_VERSION\\s*=.*/MARKETING_VERSION=$MARKETING_VERSION/\" \"$XC_CONFIG_FILE\"\n";
+		};
 		B9DA97F42DC1497100A4DA20 /* Compile Kotlin Framework */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -216,6 +232,7 @@
 /* Begin XCBuildConfiguration section */
 		B9DA97BD2DC1472D00A4DA20 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3E8BF7172F461A0C00576AF0 /* AppConfig.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -280,6 +297,7 @@
 		};
 		B9DA97BE2DC1472D00A4DA20 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3E8BF7172F461A0C00576AF0 /* AppConfig.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -337,12 +355,12 @@
 		};
 		B9DA97C02DC1472D00A4DA20 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3E8BF7172F461A0C00576AF0 /* AppConfig.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_PREVIEWS = YES;
@@ -351,9 +369,14 @@
 					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\n$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
 					"\"$(SRCROOT)/../starter/features/analytics/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\"",
 				);
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
+					"$(inherited)",
+					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\n$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+					"\"$(SRCROOT)/../starter/features/analytics/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\"",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = KmpIosApp;
+				INFOPLIST_KEY_CFBundleDisplayName = KmpStarter;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -363,8 +386,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kmpstarter.iosapp;
+				"OTHER_SWIFT_FLAGS[arch=*]" = "-D DEBUG";
 				PRODUCT_NAME = iosApp;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -378,12 +400,12 @@
 		};
 		B9DA97C12DC1472D00A4DA20 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3E8BF7172F461A0C00576AF0 /* AppConfig.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
@@ -394,7 +416,7 @@
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = KmpIosApp;
+				INFOPLIST_KEY_CFBundleDisplayName = KmpStarter;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -404,8 +426,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kmpstarter.iosapp;
 				PRODUCT_NAME = iosApp;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
