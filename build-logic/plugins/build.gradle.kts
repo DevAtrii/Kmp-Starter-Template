@@ -19,7 +19,7 @@ plugins {
 
 dependencies {
     compileOnly(libs.bundles.gradle.plugins)
-    compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin-api:2.2.20")
+    compileOnly(libs.kotlin.gradle.plugin.api)
 }
 
 gradlePlugin {

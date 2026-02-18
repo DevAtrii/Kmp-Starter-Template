@@ -1,23 +1,29 @@
+@file:OptIn(ExperimentalSpmForKmpFeature::class)
+
+import io.github.frankois944.spmForKmp.swiftPackageConfig
+import io.github.frankois944.spmForKmp.utils.ExperimentalSpmForKmpFeature
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
+    alias(libs.plugins.spm.kmp)
     id(libs.plugins.build.koin.core.get().pluginId)
-    alias(libs.plugins.kotlin.cocoapods)
+//    alias(libs.plugins.kotlin.cocoapods)
     id(libs.plugins.build.common.get().pluginId)
     alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
 
-    cocoapods {
-        version = libs.versions.cocoapods.fw.get()
-        ios.deploymentTarget = libs.versions.cocoapods.ios.get()
-        pod("Mixpanel") {
-            version = "5.0.8"
-            extraOpts += listOf("-compiler-option", "-fmodules")
-        }
-    }
+//    cocoapods {
+//        version = libs.versions.cocoapods.fw.get()
+//        ios.deploymentTarget = libs.versions.cocoapods.ios.get()
+//        pod("Mixpanel") {
+//            version = "5.0.8"
+//            extraOpts += listOf("-compiler-option", "-fmodules")
+//        }
+//    }
 
     androidLibrary {
         namespace = "com.kmpstarter.feature_analytics"
@@ -39,6 +45,25 @@ kotlin {
         target.binaries.framework {
             baseName = xcfName
             freeCompilerArgs += "-Xbinary=bundleId=$bundleId"
+        }
+
+    }
+
+    listOf(
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { target ->
+        target.swiftPackageConfig(cinteropName = "interop") {
+            dependency {
+                val mixPanel = libs.ios.mixpanel.swift.get()
+                remotePackageVersion(
+                    url = uri(mixPanel.group),
+                    products = {
+                        add(mixPanel.name)
+                    },
+                    version = mixPanel.version!!,
+                )
+            }
         }
     }
 

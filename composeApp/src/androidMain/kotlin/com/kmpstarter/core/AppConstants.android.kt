@@ -15,6 +15,5 @@
 
 package com.kmpstarter.core
 
-import com.kmpstarter.BuildConfig
-
-actual val isPlatformBuildDebug: Boolean = BuildConfig.DEBUG
+// todo fix this
+actual val isPlatformBuildDebug: Boolean = false

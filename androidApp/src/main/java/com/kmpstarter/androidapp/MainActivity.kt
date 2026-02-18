@@ -13,19 +13,19 @@
  *
  */
 
-package com.kmpstarter
+package com.kmpstarter.androidapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.android.play.core.review.ReviewManagerFactory
+import com.kmpstarter.App
 import com.kmpstarter.core.KmpStarter
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.enums.ThemeMode
@@ -46,36 +46,29 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-
-}
-
-@Composable
-private fun AndroidSideEffects(
-    themeDataStore: ThemeDataStore = koinInject(),
-    systemUiController: SystemUiController = rememberSystemUiController(),
-) {
-    val isSystemInDarkTheme = isSystemInDarkTheme()
-    ObserveAsEvents(
-        flow = themeDataStore.themeMode
-    ) { themeMode ->
-        val darkIcons = when (themeMode) {
-            ThemeMode.LIGHT -> true
-            ThemeMode.DARK -> false
-            ThemeMode.SYSTEM -> !isSystemInDarkTheme
+    @Composable
+    private fun AndroidSideEffects(
+        themeDataStore: ThemeDataStore = koinInject(),
+        systemUiController: SystemUiController = rememberSystemUiController(),
+    ) {
+        val isSystemInDarkTheme = isSystemInDarkTheme()
+        ObserveAsEvents(
+            flow = themeDataStore.themeMode
+        ) { themeMode ->
+            val darkIcons = when (themeMode) {
+                ThemeMode.LIGHT -> true
+                ThemeMode.DARK -> false
+                ThemeMode.SYSTEM -> !isSystemInDarkTheme
+            }
+            systemUiController.setStatusBarColor(
+                color = Color.Transparent,
+                darkIcons = darkIcons
+            )
         }
-        systemUiController.setStatusBarColor(
-            color = Color.Transparent,
-            darkIcons = darkIcons
-        )
     }
-}
 
-@Preview
-@Composable
-fun AppAndroidPreview() {
-    App()
-}
 
+}
 
 
 

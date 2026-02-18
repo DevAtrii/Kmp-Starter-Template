@@ -17,7 +17,8 @@
 
 package com.kmpstarter.utils.intents
 
-import com.kmpstarter.native_bindings.SwiftIntentUtils
+
+import interop.SwiftIntentUtils
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSError
 import platform.Foundation.NSURL

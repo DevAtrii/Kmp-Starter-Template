@@ -1,6 +1,6 @@
 [versions]
 # Android Build Tools & SDK
-agp = "8.13.0"
+agp = "9.0.0"
 android-compileSdk = "36"
 android-minSdk = "24"
 #noinspection EditedTargetSdkVersion
@@ -15,72 +15,85 @@ cocoapods-fw = "1.0"
 cocoapods-ios = "18.6"
 
 # Kotlin Ecosystem
-calfFilePicker = "0.8.0"
+calfFilePicker = "0.9.0"
 coilCompose = "3.3.0"
-kotlin = "2.2.21"
+kotlin = "2.3.10"
 kotlinx-datetime = "0.7.1"
-kotlinx-serialization-json = "1.9.0"
+kotlinx-serialization-json = "1.10.0"
 coroutines = "1.10.2"
 
 # Compose & UI
-compose-multiplatform = "1.10.0-alpha02"
-androidx-activity-compose = "1.11.0"
-androidx-lifecycle = "2.9.5"
-navigation-compose = "2.9.0"
+compose-multiplatform = "1.10.1"
+androidx-activity-compose = "1.12.4"
+androidx-lifecycle = "2.9.6"
+navigation-compose = "2.9.2"
 
 
 # Firebase & Authentication
-firebase-bom = "33.16.0"
-gitlive-firebase = "2.1.0"
+firebase-bom = "34.9.0"
+gitlive-firebase = "2.4.0"
 kmpauth-google = "2.3.1"
-google-services = "4.4.3"
+google-services = "4.4.4"
 
 # Networking
-ktor = "3.3.1"
+ktor = "3.4.0"
 
 # Dependency Injection
 koin = "4.1.1"
 
 # Google Play Services
-play-services-ads = "24.7.0"
+play-services-ads = "24.9.0"
 play-update-ktx = "2.1.0"
 play-review-ktx = "2.0.2"
 
 # RevenueCat Purchases
 #noinspection GradleDependency
-purchases-kmp = "2.2.2+17.10.0"
+purchases-kmp = "2.5.1+17.33.1"
 
 # Data Storage
-data-store = "1.1.7"
+data-store = "1.2.0"
 
 # Database
-room = "2.8.3"
+room = "2.8.4"
 ksp = "2.2.0-2.0.2"
-sqlite = "2.6.1"
+sqlite = "2.6.2"
 
 # Testing
 androidx-test-ext = "1.3.0"
 
 # Utilities
 logging = "2.0.3"
-atomic-fu = "0.29.0"
+atomic-fu = "0.31.0"
 stately-common = "2.1.0"
 
 #Accompinist
 accompanist-system-ui-controller = "0.36.0"
 
 swift-klib = "0.6.4"
+spm-kmp = "1.4.8"
 
 # notifications
-alarmee = "2.5.0"
+alarmee = "2.6.0"
 
-mixpanel-android = "8.2.4"
-kotlinStdlib = "2.2.20"
-runner = "1.5.2"
-core = "1.5.0"
+mixpanel-android = "8.3.0"
+kotlinStdlib = "2.3.0"
+runner = "1.7.0"
+core = "1.7.0"
+coreKtx = "1.17.0"
+junit = "4.13.2"
+espressoCore = "3.7.0"
+appcompat = "1.7.1"
+material = "1.13.0"
+
+# ios deps using spm-for-kmp Plugin
+ios-mixpanel-swift = "5.2.0"
 
 [libraries]
+# ios deps using spm-for-kmp Plugin
+ios-mixpanel-swift = { name = "Mixpanel", group = "https://github.com/mixpanel/mixpanel-swift.git", version.ref="ios-mixpanel-swift" }
+
 # Mix panel
+kotlin-gradle-plugin-api = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin-api", version.ref = "kotlin" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }
 mixpanel-android = { module = "com.mixpanel.android:mixpanel-android", version.ref = "mixpanel-android" }
 # notifications
@@ -161,11 +174,15 @@ androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 # Plugins
 kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 compose-multiplatform-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-multiplatform" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 [plugins]
 # Android Plugins
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-
 # Kotlin Multiplatform Plugins
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
@@ -183,6 +200,7 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 
 swift-klib = { id = "io.github.ttypic.swiftklib", version.ref = "swift-klib" }
+spm-kmp = { id = "io.github.frankois944.spmForKmp", version.ref = "spm-kmp" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 android-lint = { id = "com.android.lint", version.ref = "agp" }
 
@@ -191,6 +209,7 @@ build-compose-multiplatform = { id = "com.kmpstarter.plugins.composemultiplatfor
 build-koin-core = { id = "com.kmpstarter.plugins.koin" }
 build-koin-compose = { id = "com.kmpstarter.plugins.koincompose" }
 build-common = { id = "com.kmpstarter.plugins.common" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 [bundles]
 gradle-plugins = [

@@ -13,6 +13,8 @@
  *
  */
 
-plugins {
-   `kotlin-dsl`
-}
+package com.kmpstarter.native_bindings
+
+internal actual val platform: String
+    get() = "iosMain"
+

@@ -13,31 +13,15 @@
  *
  */
 
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 // helper function for version
-private fun getVersionCode(): Int {
-    val versionMajor = libs.versions.app.version.major.get().toInt()
-    val versionMinor = libs.versions.app.version.minor.get().toInt()
-    val versionPatch = libs.versions.app.version.patch.get().toInt()
-    return versionMajor * 10000 + versionMinor * 100 + versionPatch
-}
 
-private fun getVersionName(): String {
-    val versionMajor = libs.versions.app.version.major.get().toInt()
-    val versionMinor = libs.versions.app.version.minor.get().toInt()
-    val versionPatch = libs.versions.app.version.patch.get().toInt()
-    return "$versionMajor.$versionMinor.$versionPatch"
-}
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.application)
     alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.services)
-    alias(libs.plugins.kotlin.cocoapods)
     alias(libs.plugins.kotlin.serialization)
     id(libs.plugins.build.common.get().pluginId)
 }
@@ -48,24 +32,19 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-parameters")
     }
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(CommonPlugin.JVM_VERSION)
+    androidLibrary {
+        namespace = "com.kmpstarter"
+        compileSdk {
+            version = release(version = libs.versions.android.compileSdk.get().toInt())
+        }
+        minSdk {
+            version = release(libs.versions.android.minSdk.get().toInt())
+        }
+        androidResources {
+            enable = true
         }
     }
 
-    // cocoapods
-    cocoapods {
-        summary = "Shared module using cocoapods gradle plugin"
-        homepage = "link"
-        version = libs.versions.cocoapods.fw.get()
-        ios.deploymentTarget = libs.versions.cocoapods.ios.get()
-        podfile = project.file("../iosApp/Podfile")
-        framework {
-            baseName = "ComposeApp"
-            isStatic = true
-        }
-    }
 
     listOf(
         iosArm64(),
@@ -105,7 +84,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
 
             // accompanist
-            implementation(libs.accompanist.system.ui.controller)
+
 
             // mix panel
             implementation(libs.mixpanel.android)
@@ -113,15 +92,15 @@ kotlin {
         }
         commonMain.dependencies {
             // local modules
-            implementation(projects.starter.core)
-            implementation(projects.starter.coreDb)
+            api(projects.starter.core)
+            //implementation(projects.starter.coreDb)
             // ui
-            implementation(projects.starter.ui.utils)
+            api(projects.starter.ui.utils)
             implementation(projects.starter.ui.components)
             implementation(projects.starter.ui.layouts)
             // features
             implementation(projects.starter.features.analytics)
-            implementation(projects.starter.features.purchases)
+            api(projects.starter.features.purchases)
             // notifications
             implementation(projects.starter.notifications)
 
@@ -148,7 +127,6 @@ kotlin {
 
             // Navigation
             implementation(libs.navigation.compose)
-
 
 
             // Coroutines
@@ -203,7 +181,7 @@ kotlin {
         }
     }
 }
-
+/*
 android {
     namespace = "com.kmpstarter"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -228,7 +206,7 @@ android {
     }
     buildTypes {
         release {
-            /*Todo set this to true in prod*/
+            *//*Todo set this to true in prod*//*
             isMinifyEnabled = false
             isShrinkResources = false
             proguardFiles(
@@ -246,4 +224,4 @@ dependencies {
     // Debug Tools
     debugImplementation(compose.uiTooling)
 
-}
+}*/

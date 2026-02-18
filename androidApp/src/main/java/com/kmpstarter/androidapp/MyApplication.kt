@@ -13,7 +13,7 @@
  *
  */
 
-package com.kmpstarter
+package com.kmpstarter.androidapp
 
 import android.app.Application
 import com.kmpstarter.core.di.initKoin

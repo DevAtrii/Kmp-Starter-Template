@@ -231,6 +231,12 @@ private fun createDummyProduct(
         override val discounts: List<StoreProductDiscount> = emptyList()
         override val introductoryDiscount: StoreProductDiscount? = null
         override val presentedOfferingContext: PresentedOfferingContext? = null
+        override val pricePerWeek: Price?
+            get() = TODO("Not yet implemented")
+        override val pricePerMonth: Price?
+            get() = TODO("Not yet implemented")
+        override val pricePerYear: Price?
+            get() = TODO("Not yet implemented")
         override val purchasingData: PurchasingData = object : PurchasingData {
             override val productId: String
                 get() = id

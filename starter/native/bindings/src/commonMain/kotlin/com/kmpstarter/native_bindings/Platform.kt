@@ -13,6 +13,6 @@
  *
  */
 
-plugins {
-   `kotlin-dsl`
-}
+package com.kmpstarter.native_bindings
+
+internal expect val platform:String

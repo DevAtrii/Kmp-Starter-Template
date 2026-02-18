@@ -16,24 +16,28 @@
 package com.kmpstarter.feature_analytics.data.services
 
 
-import cocoapods.Mixpanel.Mixpanel
 import com.kmpstarter.feature_analytics.domain.services.EventsTracker
+import interop.MixPanelBridge
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
 
-
-
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class EventsTrackerImpl(
-    private val mixpanel: Mixpanel,
+    private val mixPanelBridge: MixPanelBridge,
 ) : EventsTracker {
+
+
+    init {
+        mixPanelBridge.setEnabled(this.isEnabled)
+    }
+
     actual override suspend fun track(event: String) = withContext(Dispatchers.IO) {
         if (!isEnabled)
             return@withContext
-        mixpanel.track(event)
+        mixPanelBridge.trackWithEvent(event = event)
     }
 
     actual override suspend fun track(
@@ -42,7 +46,7 @@ actual class EventsTrackerImpl(
     ) = withContext(Dispatchers.IO) {
         if (!isEnabled)
             return@withContext
-        mixpanel.track(
+        mixPanelBridge.trackWithEvent(
             event = event,
             properties = pair?.let { mapOf(it.first to it.second) },
         )
@@ -55,7 +59,7 @@ actual class EventsTrackerImpl(
     ) = withContext(Dispatchers.IO) {
         if (!isEnabled)
             return@withContext
-        mixpanel.track(
+        mixPanelBridge.trackWithEvent(
             event = event,
             properties = properties as Map<Any?, *>?
         )
@@ -65,33 +69,30 @@ actual class EventsTrackerImpl(
     actual override suspend fun setUserId(userId: String) = withContext(Dispatchers.IO) {
         if (!isEnabled)
             return@withContext
-        mixpanel.identify(distinctId = userId)
+        mixPanelBridge.setUserId(userId = userId)
     }
 
     actual override suspend fun optIn() = withContext(Dispatchers.IO) {
-        mixpanel.optInTracking()
+        mixPanelBridge.optIn()
     }
 
     actual override suspend fun optOut() = withContext(Dispatchers.IO) {
-        mixpanel.optOutTracking()
+        mixPanelBridge.optOut()
     }
 
     actual override suspend fun toggleOptInOut() = withContext(Dispatchers.IO) {
-        if (mixpanel.hasOptedOutTracking())
-            optIn()
-        else
-            optOut()
+        mixPanelBridge.toggleOptInOut()
     }
 
     actual override suspend fun hasOptedIn(): Boolean {
-        return !mixpanel.hasOptedOutTracking()
+        return !mixPanelBridge.hasOptedIn()
     }
 
     actual override suspend fun flush() = withContext(Dispatchers.IO) {
-        mixpanel.flush()
+        mixPanelBridge.flush()
     }
 
     actual override suspend fun reset() = withContext(Dispatchers.IO) {
-        mixpanel.reset()
+        mixPanelBridge.reset()
     }
 }
