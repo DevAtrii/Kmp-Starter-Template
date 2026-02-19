@@ -39,6 +39,9 @@ kotlin {
                 implementation(libs.kotlin.stdlib)
                 implementation(projects.starter.core)
                 api(projects.starter.ui.utils)
+                api(libs.coil.compose)
+                api(libs.coil.svg)
+                api(libs.coil.network.ktor)
              }
         }
 

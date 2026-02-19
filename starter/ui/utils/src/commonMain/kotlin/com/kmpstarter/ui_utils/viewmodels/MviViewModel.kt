@@ -16,12 +16,10 @@
 package com.kmpstarter.ui_utils.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 abstract class MviViewModel<STATE, ACTIONS, EVENTS> : ViewModel() {
 
@@ -35,38 +33,36 @@ abstract class MviViewModel<STATE, ACTIONS, EVENTS> : ViewModel() {
     abstract fun onAction(action: ACTIONS)
 
     protected fun emitEvent(event: EVENTS) {
-        viewModelScope.launch {
-            _uiEvents.emit(event)
-        }
+        _uiEvents.emitInViewModel(event)
     }
 }
 
 /**
-  //  EXAMPLE of MviViewModel //
+//  EXAMPLE of MviViewModel //
 data class MyState(
-    val user: String = "",
+val user: String = "",
 )
 
 sealed class MyActions {
-    data class SetUser(val user: String) : MyActions()
+data class SetUser(val user: String) : MyActions()
 }
 
 sealed class MyEvents {
-    data class ShowMessage(val message: String) : MyEvents()
+data class ShowMessage(val message: String) : MyEvents()
 }
 
 
 class MyViewModel() : MviViewModel<MyState, MyActions, MyEvents>() {
-    override val initialState: MyState
-        get() = MyState()
+override val initialState: MyState
+get() = MyState()
 
-    override fun onAction(action: MyActions) {
-        when (action) {
-            is MyActions.SetUser -> _state.update {
-                it.copy(
-                    user = action.user
-                )
-            }
-        }
-    }
+override fun onAction(action: MyActions) {
+when (action) {
+is MyActions.SetUser -> _state.update {
+it.copy(
+user = action.user
+)
+}
+}
+}
 }*/
