@@ -73,6 +73,7 @@ private fun MainApp(
     LaunchedEffect(metadataState) {
         Log.d(null, "MainApp: metadataState remoteConfigValue=$metadataState")
     }
+
     LaunchedEffect(platform) {
         Log.d("TAG", "MainApp: $platform")
         SnackbarController.sendAlert(

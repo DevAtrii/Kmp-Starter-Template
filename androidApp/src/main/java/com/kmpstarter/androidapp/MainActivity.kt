@@ -13,6 +13,8 @@
  *
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.kmpstarter.androidapp
 
 import android.os.Bundle

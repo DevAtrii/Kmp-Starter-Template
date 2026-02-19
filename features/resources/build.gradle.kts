@@ -3,21 +3,31 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
     // from build logic
-    id(libs.plugins.build.koin.core.get().pluginId)
     alias(libs.plugins.kotlin.serialization)
     id(libs.plugins.build.common.get().pluginId)
+    id(libs.plugins.build.compose.multiplatform.get().pluginId)
+}
+
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "com.kmpstarter.feature_resources"
+    generateResClass = auto
 }
 
 kotlin {
 
     androidLibrary {
-        namespace = "com.kmpstarter.core"
-        compileSdk = 36
-        minSdk = 24
+        namespace = "com.kmpstarter.feature_resources"
+        compileSdk {
+            version = release(version = libs.versions.android.compileSdk.get().toInt())
+        }
+        minSdk {
+            version = release(libs.versions.android.minSdk.get().toInt())
+        }
     }
 
 
-    val xcfName = "starter:coreKit"
+    val xcfName = "starter:featureResourcesKit"
 
 
 
@@ -37,19 +47,12 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                // utils
-                api(projects.starter.utils)
-                // other
-                implementation(libs.atomic.fu)
-                api(libs.datastore.preferences)
             }
         }
 
         androidMain {
             dependencies {
-                // google play services
-                implementation(libs.play.app.review.ktx)
-                implementation(libs.kotlinx.coroutines.play.services)
+
             }
         }
 

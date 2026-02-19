@@ -28,7 +28,9 @@ plugins {
     id(libs.plugins.build.koin.compose.get().pluginId)
 }
 
-
+compose.resources {
+    generateResClass = never
+}
 
 kotlin {
     compilerOptions {
@@ -84,6 +86,8 @@ kotlin {
             implementation(projects.features.remoteConfig.data)
             implementation(projects.features.remoteConfig.domain)
             implementation(projects.features.remoteConfig.presentation)
+            // resources
+            implementation(projects.features.resources)
 
         }
         iosMain.dependencies {
@@ -92,7 +96,7 @@ kotlin {
     }
 }
 
-
+@Deprecated("moved this to build phase inside project.pbxproj")
 val setXcodeTargetVersion by tasks.registering {
     val xcconfigFile = File(project.rootDir, "iosApp/AppConfig.xcconfig")
 
@@ -111,7 +115,10 @@ val setXcodeTargetVersion by tasks.registering {
 
         val content = xcconfigFile.readText()
             // Replace CURRENT_PROJECT_VERSION
-            .replace(Regex("CURRENT_PROJECT_VERSION\\s*=\\s*\\d+"), "CURRENT_PROJECT_VERSION=$projectVersion")
+            .replace(
+                Regex("CURRENT_PROJECT_VERSION\\s*=\\s*\\d+"),
+                "CURRENT_PROJECT_VERSION=$projectVersion"
+            )
             // Replace MARKETING_VERSION
             .replace(Regex("MARKETING_VERSION\\s*=\\s*.+"), "MARKETING_VERSION=$marketingVersion")
 

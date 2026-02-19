@@ -13,10 +13,8 @@
  *
  */
 
-package com.kmpstarter.utils
+package com.kmpstarter.feature_resources
 
-import kmpstarter.composeapp.generated.resources.Res
-import kmpstarter.composeapp.generated.resources.empty_string
 import org.jetbrains.compose.resources.StringResource
 
 object KMPStringResources {
