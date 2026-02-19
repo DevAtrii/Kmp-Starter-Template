@@ -79,7 +79,6 @@ private fun MainApp(
             message = "$platform"
         )
     }
-    // todo add mvi viewmodel base class
 
     CompositionLocalProvider(LocalThemeMode provides currentThemeMode) {
         ApplicationTheme(
