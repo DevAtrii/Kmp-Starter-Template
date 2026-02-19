@@ -16,6 +16,24 @@
 <resources>
     <string name="app_name">KMP Starter</string>
     <string name="empty_string" />
+    <string name="hello_kmp">Hello KMP from Atrii!</string>
+    <string name="locale_selector_dd_label">Select Language</string>
+
+    <!--KmpStarter WelcomeScreen-->
+    <string name="welcome_screen_title">KMP Starter!</string>
+    <string name="welcome_screen_subtitle">Build once, deploy everywhere</string>
+    <string name="welcome_screen_description">A modern, production-ready Kotlin Multiplatform template with Material 3 design and comprehensive tooling.</string>
+
+
+    <!-- Languages -->
+    <string name="lang_en">English</string>
+    <string name="lang_ur">اردو</string>
+    <string name="lang_hi">हिन्दी</string>
+    <string name="lang_ar">العربية</string>
+    <string name="lang_es_AR">Español (Argentina)</string>
+    <string name="lang_es">Español</string>
+    <string name="lang_fr">Français</string>
+    <string name="lang_de">Deutsch</string>
 
     <!-- Auth Screens -->
     <string name="auth_welcome_back">Welcome Back</string>

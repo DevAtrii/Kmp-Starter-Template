@@ -34,8 +34,8 @@ import org.koin.compose.koinInject
 @Composable
 fun <T> rememberMutableDataStoreState(
     key: Preferences.Key<T>,
-    defaultValue: T,
-): MutableState<T> {
+    defaultValue: T?,
+): MutableState<T?> {
     val appDataStore: AppDataStore = koinInject()
     val scope = rememberCoroutineScope()
 
@@ -44,36 +44,39 @@ fun <T> rememberMutableDataStoreState(
     }.collectAsState(initial = defaultValue)
 
     return remember(state) {
-        object : MutableState<T> {
-            override var value: T
+        object : MutableState<T?> {
+            override var value: T?
                 get() = state
                 set(newValue) {
                     scope.launch {
                         appDataStore.dataStore.edit { preferences ->
-                            preferences[key] = newValue
+                            if (newValue == null)
+                                preferences.remove(key)
+                            else
+                                preferences[key] = newValue
                         }
                     }
                 }
 
-            override fun component1(): T = value
-            override fun component2(): (T) -> Unit = { value = it }
+            override fun component1(): T? = value
+            override fun component2(): (T?) -> Unit = { value = it }
         }
     }
 }
 
 
 @Composable
-fun rememberMutableIntDataStore(name: String, default: Int) =
+fun rememberMutableIntDataStore(name: String, default: Int?) =
     rememberMutableDataStoreState(intPreferencesKey(name), default)
 
 @Composable
-fun rememberMutableStringDataStore(name: String, default: String) =
+fun rememberMutableStringDataStore(name: String, default: String?) =
     rememberMutableDataStoreState(stringPreferencesKey(name), default)
 
 @Composable
-fun rememberMutableBooleanDataStore(name: String, default: Boolean) =
+fun rememberMutableBooleanDataStore(name: String, default: Boolean?) =
     rememberMutableDataStoreState(booleanPreferencesKey(name), default)
 
 @Composable
-fun rememberMutableLongDataStore(name: String, default: Long) =
+fun rememberMutableLongDataStore(name: String, default: Long?) =
     rememberMutableDataStoreState(longPreferencesKey(name), default)

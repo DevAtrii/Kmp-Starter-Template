@@ -37,6 +37,10 @@ import com.kmpstarter.core.platform.platform
 import com.kmpstarter.feature_navigation.StarterNavigation
 import com.kmpstarter.feature_remote_config_domain.RemoteConfigKeys
 import com.kmpstarter.feature_remote_config_presentation.rememberRemoteConfig
+import com.kmpstarter.feature_resources.Res
+import com.kmpstarter.feature_resources.hello_kmp
+import com.kmpstarter.feature_resources.locale.LocaleProvider
+import com.kmpstarter.feature_resources.locale.StarterLocales
 import com.kmpstarter.theme.ApplicationTheme
 import com.kmpstarter.ui_utils.composition_locals.LocalThemeMode
 import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
@@ -44,6 +48,7 @@ import com.kmpstarter.utils.logging.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
 @Composable
@@ -76,26 +81,39 @@ private fun MainApp(
 
     LaunchedEffect(platform) {
         Log.d("TAG", "MainApp: $platform")
-        SnackbarController.sendAlert(
-            message = "$platform"
-        )
+//        SnackbarController.sendAlert(
+//            message = "$platform"
+//        )
     }
 
-    CompositionLocalProvider(LocalThemeMode provides currentThemeMode) {
-        ApplicationTheme(
-            darkTheme = currentThemeMode.toComposableBoolean(isSystemInDarkTheme()),
-            dynamicColor = currentDynamicColor
-        ) {
-            Scaffold(
-                snackbarHost = {
-                    SnackbarHost(
-                        hostState = snackbarHostState
+
+    LocaleProvider(
+        overrideDefault = StarterLocales.ENGLISH
+    ) {
+
+        val value = stringResource(Res.string.hello_kmp)
+        LaunchedEffect(Unit) {
+            SnackbarController.sendAlert(
+                message = value
+            )
+        }
+
+        CompositionLocalProvider(LocalThemeMode provides currentThemeMode) {
+            ApplicationTheme(
+                darkTheme = currentThemeMode.toComposableBoolean(isSystemInDarkTheme()),
+                dynamicColor = currentDynamicColor
+            ) {
+                Scaffold(
+                    snackbarHost = {
+                        SnackbarHost(
+                            hostState = snackbarHostState
+                        )
+                    }
+                ) { _: PaddingValues ->
+                    StarterNavigation(
+                        modifier = Modifier
                     )
                 }
-            ) { _: PaddingValues ->
-                StarterNavigation(
-                    modifier = Modifier
-                )
             }
         }
     }

@@ -24,6 +24,7 @@ import com.kmpstarter.feature_analytics.di.analyticsModule
 import com.kmpstarter.feature_purchases.di.purchasesModule
 import com.kmpstarter.feature_remote_config_data.di.remoteConfigDataModule
 import com.kmpstarter.feature_remote_config_domain.di.remoteConfigDomainModule
+import com.kmpstarter.feature_resources.di.resourceModule
 import com.kmpstarter.notifications.di.notificationsModule
 import com.kmpstarter.utils.di.utilsModule
 import org.koin.core.context.startKoin
@@ -43,7 +44,8 @@ internal fun initKoin(config: KoinAppDeclaration? = null) {
             analyticsModule,
             navigationModule,
             remoteConfigDataModule,
-            remoteConfigDomainModule
+            remoteConfigDomainModule,
+            resourceModule
             /*Todo add modules here*/
         )
     }

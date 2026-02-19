@@ -1,0 +1,20 @@
+<!--
+  ~ /*
+  ~  *
+  ~  *  * Copyright (c) 2025
+  ~  *  *
+  ~  *  * Author: Athar Gul
+  ~  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
+  ~  *  * YouTube: https://www.youtube.com/@devatrii/videos
+  ~  *  *
+  ~  *  * All rights reserved.
+  ~  *
+  ~  *
+  ~  */
+  -->
+<resources>
+    <string name="hello_kmp">Atrii की ओर से नमस्ते KMP</string>
+    <string name="welcome_screen_title">KMP Starter!</string>
+    <string name="welcome_screen_subtitle">एक बार कोड लिखें, कहीं भी चलाएं</string>
+    <string name="welcome_screen_description">आधुनिक और प्रोडक्शन के लिए तैयार Kotlin Multiplatform टेम्पलेट, जो Material 3 डिज़ाइन और संपूर्ण टूल्स से लैस है।</string>
+</resources>

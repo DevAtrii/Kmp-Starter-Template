@@ -91,7 +91,13 @@ import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
 import com.kmpstarter.core.events.enums.ThemeMode
 import com.kmpstarter.core.platform.platform
+import com.kmpstarter.feature_resources.Res
+import com.kmpstarter.feature_resources.locale.ui.LocaleSelectorDropdown
+import com.kmpstarter.feature_resources.welcome_screen_description
+import com.kmpstarter.feature_resources.welcome_screen_subtitle
+import com.kmpstarter.feature_resources.welcome_screen_title
 import com.kmpstarter.ui_components.lists.ScrollableColumn
+import com.kmpstarter.ui_utils.resources.toActualString
 import com.kmpstarter.ui_utils.screen.ScreenSizeValue
 import com.kmpstarter.ui_utils.theme.Dimens
 import com.kmpstarter.ui_utils.theme.isAppInDarkTheme
@@ -299,6 +305,20 @@ fun WelcomeScreen(
                     ) {
                         HeroSection(isCompact = isCompact)
                     }
+                    AnimatedVisibility(
+                        visible = showContent,
+                        enter = slideInVertically(
+                            animationSpec = spring(
+                                dampingRatio = Spring.DampingRatioMediumBouncy,
+                                stiffness = Spring.StiffnessLow
+                            )
+                        ) { it / 3 } + fadeIn(
+                            animationSpec = tween(durationMillis = 1000, delayMillis = 100)
+                        ),
+                        exit = slideOutVertically() + fadeOut()
+                    ) {
+                        LocaleSelectorDropdown(isLast = true)
+                    }
 
                     // Features Section
                     AnimatedVisibility(
@@ -411,7 +431,7 @@ private fun HeroSection(isCompact: Boolean) {
 
         // Title with gradient text effect
         Text(
-            text = "KMP Starter",
+            text = Res.string.welcome_screen_title.toActualString(),
             style = if (isCompact) MaterialTheme.typography.headlineLarge else MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface,
@@ -422,7 +442,7 @@ private fun HeroSection(isCompact: Boolean) {
 
         // Subtitle with subtle animation
         Text(
-            text = "Build once, deploy everywhere",
+            text = Res.string.welcome_screen_subtitle.toActualString(),
             style = if (isCompact) MaterialTheme.typography.titleLarge else MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -433,7 +453,7 @@ private fun HeroSection(isCompact: Boolean) {
 
         // Description with improved typography
         Text(
-            text = "A modern, production-ready Kotlin Multiplatform template with Material 3 design and comprehensive tooling.",
+            text = Res.string.welcome_screen_description.toActualString(),
             style = if (isCompact) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
             textAlign = TextAlign.Center,

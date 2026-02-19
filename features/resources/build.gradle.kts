@@ -5,6 +5,7 @@ plugins {
     // from build logic
     alias(libs.plugins.kotlin.serialization)
     id(libs.plugins.build.common.get().pluginId)
+    id(libs.plugins.build.koin.compose.get().pluginId)
     id(libs.plugins.build.compose.multiplatform.get().pluginId)
 }
 
@@ -12,11 +13,13 @@ compose.resources {
     publicResClass = true
     packageOfResClass = "com.kmpstarter.feature_resources"
     generateResClass = auto
+    this.always
 }
 
 kotlin {
 
     androidLibrary {
+        androidResources.enable = true
         namespace = "com.kmpstarter.feature_resources"
         compileSdk {
             version = release(version = libs.versions.android.compileSdk.get().toInt())
@@ -47,6 +50,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
+                implementation(projects.starter.ui.components)
             }
         }
 

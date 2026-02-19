@@ -20,7 +20,6 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
-import com.kmpstarter.utils.logging.Log
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
@@ -119,7 +118,7 @@ fun CoilImage(
     ImageBuilder(
         modifier = modifier,
         url = url,
-        headers=headers,
+        headers = headers,
         colorFilter = colorFilter,
         imageType = imageType,
         crossFade = crossFade,
