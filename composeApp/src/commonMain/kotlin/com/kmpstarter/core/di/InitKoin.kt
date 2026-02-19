@@ -22,12 +22,14 @@ import com.kmpstarter.core.store.di.platformStoreModule
 import com.kmpstarter.core_db.di.databaseModule
 import com.kmpstarter.feature_analytics.di.analyticsModule
 import com.kmpstarter.feature_purchases.di.purchasesModule
+import com.kmpstarter.feature_remote_config_data.di.remoteConfigDataModule
+import com.kmpstarter.feature_remote_config_domain.di.remoteConfigDomainModule
 import com.kmpstarter.notifications.di.notificationsModule
 import com.kmpstarter.utils.di.utilsModule
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 
-fun initKoin(config: KoinAppDeclaration? = null) {
+internal fun initKoin(config: KoinAppDeclaration? = null) {
     startKoin {
         config?.invoke(this)
         modules(
@@ -39,7 +41,9 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             purchasesModule,
             notificationsModule,
             analyticsModule,
-            navigationModule
+            navigationModule,
+            remoteConfigDataModule,
+            remoteConfigDomainModule
             /*Todo add modules here*/
         )
     }

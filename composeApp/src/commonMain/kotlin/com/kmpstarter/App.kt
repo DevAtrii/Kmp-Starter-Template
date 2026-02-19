@@ -33,12 +33,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
+import com.kmpstarter.core.platform.platform
 import com.kmpstarter.feature_navigation.StarterNavigation
+import com.kmpstarter.feature_remote_config_domain.RemoteConfigKeys
+import com.kmpstarter.feature_remote_config_presentation.rememberRemoteConfig
 import com.kmpstarter.theme.ApplicationTheme
 import com.kmpstarter.ui_utils.composition_locals.LocalThemeMode
 import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
 import com.kmpstarter.utils.logging.Log
-import com.kmpstarter.core.platform.platform
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -67,12 +69,17 @@ private fun MainApp(
         initial = ThemeDataStore.DEFAULT_DYNAMIC_COLOR_SCHEME
     )
 
-    LaunchedEffect(platform){
-        Log.d("TAG","MainApp: $platform")
+    val metadataState by rememberRemoteConfig(key = RemoteConfigKeys.Metadata())
+    LaunchedEffect(metadataState) {
+        Log.d(null, "MainApp: metadataState remoteConfigValue=$metadataState")
+    }
+    LaunchedEffect(platform) {
+        Log.d("TAG", "MainApp: $platform")
         SnackbarController.sendAlert(
             message = "$platform"
         )
     }
+    // todo add mvi viewmodel base class
 
     CompositionLocalProvider(LocalThemeMode provides currentThemeMode) {
         ApplicationTheme(

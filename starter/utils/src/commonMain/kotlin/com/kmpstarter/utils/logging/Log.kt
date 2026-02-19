@@ -66,6 +66,13 @@ object Log {
             message
         }
     }
+    fun w(tag: String?, message: Any?) {
+        log.w(
+            tag = tag ?: Logger.APP_TAG
+        ) {
+            message
+        }
+    }
 
 
     fun i(tag: String?, vararg message: Any?) {

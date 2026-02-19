@@ -15,12 +15,12 @@
 
 package com.kmpstarter.core
 
+import com.kmpstarter.utils.logging.Log
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 
 
 data class KmpConfig(
-    val isDebug: Boolean,
     // keys
     val revenueCatApiKey: String,
     val mixPanelApiKey: String,
@@ -48,12 +48,6 @@ object KmpStarter {
             return config.mixPanelApiKey
         }
 
-    val IS_DEBUG: Boolean
-        get() {
-            if (!isInitialized)
-                throw IllegalStateException("Please call KmpStarter.initApp(...) from app entry")
-            return config.isDebug
-        }
 
     val PLATFORM_HOST: Any
         get() {
@@ -63,7 +57,6 @@ object KmpStarter {
         }
 
     fun initApp(
-        isDebug: Boolean,
         // keys
         revenueCatApiKey: String,
         mixPanelApiKey: String,
@@ -72,7 +65,6 @@ object KmpStarter {
             if (isInitialized)
                 return
             config = KmpConfig(
-                isDebug = isDebug,
                 revenueCatApiKey = revenueCatApiKey,
                 mixPanelApiKey = mixPanelApiKey
             )
@@ -83,6 +75,14 @@ object KmpStarter {
     fun bindPlatformHost(host: Any) {
         synchronized(lock) {
             config = config.copy(platformHost = host)
+            Log.d(tag = null,message = "bindPlatformHost=$host")
+        }
+    }
+
+    fun unbindPlatformHost(){
+        synchronized(lock){
+            config = config.copy(platformHost = Unit)
+            Log.d(tag = null,message = "unbindPlatformHost success ")
         }
     }
 

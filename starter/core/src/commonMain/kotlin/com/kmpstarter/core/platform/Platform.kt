@@ -61,7 +61,6 @@ sealed class Platform(
 
 expect val platform: Platform
 
-
 val Platform.isIos: Boolean
     get() = this is Platform.Ios
 val Platform.isAndroid: Boolean

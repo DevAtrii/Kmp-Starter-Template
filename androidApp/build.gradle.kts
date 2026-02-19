@@ -15,6 +15,7 @@ private fun getVersionName(): String {
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -29,7 +30,7 @@ android {
         }
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        applicationId = "com.kmpstarter.androidapp"
+        applicationId = "com.kmpstarter"
 
         versionCode = getVersionCode()
         versionName = getVersionName()

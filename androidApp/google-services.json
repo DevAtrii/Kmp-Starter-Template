@@ -37,6 +37,13 @@
             {
               "client_id": "1061850765240-35h84f96u3jdbmk2sqgi9d1jp28jsfif.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1061850765240-jo8cgscsdv3pqq9ofbjdvsn8m82kc8jj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kmpstarter"
+              }
             }
           ]
         }

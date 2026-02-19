@@ -16,6 +16,7 @@
 package com.kmpstarter.feature_analytics.di
 
 import com.kmpstarter.core.KmpStarter
+import com.kmpstarter.core.platform.platform
 import com.kmpstarter.feature_analytics.data.services.EventsTrackerImpl
 import com.kmpstarter.feature_analytics.domain.services.EventsTracker
 import com.mixpanel.android.mpmetrics.MixpanelAPI
@@ -30,7 +31,7 @@ actual val platformAnalyticsModule = module {
             KmpStarter.MIXPANEL_API_KEY,
             true
         ).apply {
-            setEnableLogging(KmpStarter.IS_DEBUG)
+            setEnableLogging(platform.debug)
             flushBatchSize = 3
         }
         mixpanelAPI

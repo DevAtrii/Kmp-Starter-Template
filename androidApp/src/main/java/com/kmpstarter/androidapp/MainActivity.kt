@@ -17,7 +17,6 @@ package com.kmpstarter.androidapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -45,6 +44,12 @@ class MainActivity : ComponentActivity() {
             App()
         }
     }
+
+    override fun onDestroy() {
+        KmpStarter.unbindPlatformHost()
+        super.onDestroy()
+    }
+
 
     @Composable
     private fun AndroidSideEffects(

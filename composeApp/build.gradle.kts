@@ -21,7 +21,6 @@ plugins {
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.google.services)
     alias(libs.plugins.kotlin.serialization)
     // conviction plugins
     id(libs.plugins.build.common.get().pluginId)
@@ -81,6 +80,11 @@ kotlin {
 
             // Navigation
             implementation(projects.features.navigation)
+            // remote config
+            implementation(projects.features.remoteConfig.data)
+            implementation(projects.features.remoteConfig.domain)
+            implementation(projects.features.remoteConfig.presentation)
+
         }
         iosMain.dependencies {
 

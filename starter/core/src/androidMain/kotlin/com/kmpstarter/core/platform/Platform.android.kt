@@ -15,29 +15,29 @@
 
 package com.kmpstarter.core.platform
 
-import android.app.Activity
+import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.os.Build
-import com.kmpstarter.core.KmpStarter
+import org.koin.mp.KoinPlatform
 
 
 actual val platform: Platform
     get() {
-        val activity = (KmpStarter.PLATFORM_HOST as Activity)
-        val flags = activity.applicationContext.applicationInfo.flags
+        val context = KoinPlatform.getKoin().get<Context>()
+        val flags = context.applicationContext.applicationInfo.flags
         val isDebug = (flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
         return Platform.Android(
             osVersion = Build.VERSION.SDK_INT,
             debug = isDebug,
-            appInfo = getAppInfo(activity = activity)
+            appInfo = getAppInfo(context = context)
         )
     }
 
 
-private fun getAppInfo(activity: Activity): AppInfo {
-    val context = activity.applicationContext
-    val packageManager = context.packageManager
-    val packageInfo = packageManager.getPackageInfo(context.packageName, 0)
+private fun getAppInfo(context: Context): AppInfo {
+    val applicationContext = context.applicationContext
+    val packageManager = applicationContext.packageManager
+    val packageInfo = packageManager.getPackageInfo(applicationContext.packageName, 0)
 
     val versionCode = if (Build.VERSION.SDK_INT >= 28) {
         packageInfo.longVersionCode.toInt()
@@ -46,7 +46,7 @@ private fun getAppInfo(activity: Activity): AppInfo {
         packageInfo.versionCode
     }
 
-    val appName = context.applicationInfo.loadLabel(packageManager).toString()
+    val appName = applicationContext.applicationInfo.loadLabel(packageManager).toString()
 
     return AppInfo(
         version = versionCode,

@@ -13,7 +13,12 @@
  *
  */
 
-package com.kmpstarter.core
+package com.kmpstarter.feature_remote_config_domain
 
-// todo fix this
-actual val isPlatformBuildDebug: Boolean = false
+typealias RemoteConfigValue = String
+
+
+interface RemoteConfigRepository {
+
+    fun get(key: String): RemoteConfigValue
+}
