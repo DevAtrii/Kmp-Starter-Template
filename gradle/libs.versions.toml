@@ -75,6 +75,7 @@ spm-kmp = "1.4.8"
 
 # notifications
 alarmee = "2.6.0"
+onesignal = "5.6.1"
 
 mixpanel-android = "8.3.0"
 runner = "1.7.0"
@@ -107,7 +108,9 @@ kotlin-gradle-plugin-api = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }
 mixpanel-android = { module = "com.mixpanel.android:mixpanel-android", version.ref = "mixpanel-android" }
 # notifications
-alarmee = { group = "io.github.tweener", name = "alarmee", version.ref = "alarmee" }
+alarmee-local = { group = "io.github.tweener", name = "alarmee", version.ref = "alarmee" }
+alarmee-push = { group = "io.github.tweener", name = "alarmee-push", version.ref = "alarmee" }
+android-onesignal = { module = "com.onesignal:OneSignal", version.ref = "onesignal" }
 # Accompinist
 accompanist-system-ui-controller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-system-ui-controller" }
 # Firebase & Authentication

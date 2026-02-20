@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 
 private typealias isInitializingFailed = Boolean
 

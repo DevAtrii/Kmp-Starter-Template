@@ -1,7 +1,7 @@
 /*
  *
  *  *
- *  *  * Copyright (c) 2025
+ *  *  * Copyright (c) 2026
  *  *  *
  *  *  * Author: Athar Gul
  *  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
@@ -45,6 +45,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
+/**
+ * The main entry point of the application UI.
+ */
 @Composable
 fun App() {
     val snackbarHostState = remember {
@@ -53,9 +56,13 @@ fun App() {
 
     GlobalSideEffects(snackbarHostState = snackbarHostState)
     MainApp(snackbarHostState = snackbarHostState)
-
 }
 
+/**
+ * The core UI layout.
+ * Configures the App Update logic, Localization, Theme preferences,
+ * and hosts the main Navigation graph.
+ */
 @OptIn(ExperimentalAppUpdateApi::class)
 @Composable
 private fun MainApp(
@@ -75,7 +82,6 @@ private fun MainApp(
         LocaleProvider(
             overrideDefault = StarterLocales.ENGLISH
         ) {
-
             CompositionLocalProvider(LocalThemeMode provides currentThemeMode) {
                 ApplicationTheme(
                     darkTheme = currentThemeMode.toComposableBoolean(isSystemInDarkTheme()),
@@ -98,6 +104,10 @@ private fun MainApp(
     }
 }
 
+/**
+ * Handles non-UI logic triggered by events.
+ * Listens for global snackbar requests and manages their display and dismissal.
+ */
 @Composable
 private fun GlobalSideEffects(
     snackbarHostState: SnackbarHostState,
@@ -108,7 +118,6 @@ private fun GlobalSideEffects(
         flow = SnackbarController.events,
     ) { snackbarEvent ->
         // launching another scope inside launched effect for ui of snackbar
-
         scope.launch {
             if (snackbarEvent.dismissPrevious && snackbarHostState.currentSnackbarData != null) {
                 snackbarHostState.currentSnackbarData?.dismiss()
@@ -132,21 +141,3 @@ private fun GlobalSideEffects(
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

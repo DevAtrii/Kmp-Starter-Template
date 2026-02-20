@@ -17,14 +17,49 @@
 		3E38ACEA2E252D73004805A2 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3E38ACE92E252D73004805A2 /* GoogleSignInSwift */; };
 		3E8BF7182F461A0C00576AF0 /* AppConfig.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 3E8BF7172F461A0C00576AF0 /* AppConfig.xcconfig */; };
 		3EB403C12F46CCF500216986 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 3EB403C02F46CCF500216986 /* FirebaseRemoteConfig */; };
+		3EC0F5242F48D03A00E7D328 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 3EC0F5232F48D03A00E7D328 /* FirebaseMessaging */; };
+		3EC0F5302F48D30E00E7D328 /* AlarmeeNotificationService.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3EC0F5292F48D30E00E7D328 /* AlarmeeNotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3EC0F52E2F48D30E00E7D328 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9DA97A92DC1472C00A4DA20 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3EC0F5282F48D30E00E7D328;
+			remoteInfo = AlarmeeNotificationService;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3EB2EE502F48A2B000519965 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				3EC0F5302F48D30E00E7D328 /* AlarmeeNotificationService.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3E8BF7172F461A0C00576AF0 /* AppConfig.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppConfig.xcconfig; sourceTree = "<group>"; };
+		3EC0F5212F48CFCD00E7D328 /* KmpIosApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KmpIosApp.entitlements; sourceTree = "<group>"; };
+		3EC0F5292F48D30E00E7D328 /* AlarmeeNotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AlarmeeNotificationService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9DA97B12DC1472C00A4DA20 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		3EC0F5342F48D30E00E7D328 /* Exceptions for "AlarmeeNotificationService" folder in "AlarmeeNotificationService" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 3EC0F5282F48D30E00E7D328 /* AlarmeeNotificationService */;
+		};
 		B99700CA2DC9B8D800C7335B /* Exceptions for "iosApp" folder in "KmpIosApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -35,6 +70,14 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		3EC0F52A2F48D30E00E7D328 /* AlarmeeNotificationService */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3EC0F5342F48D30E00E7D328 /* Exceptions for "AlarmeeNotificationService" folder in "AlarmeeNotificationService" target */,
+			);
+			path = AlarmeeNotificationService;
+			sourceTree = "<group>";
+		};
 		B9DA97B32DC1472C00A4DA20 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -46,12 +89,20 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3EC0F5262F48D30E00E7D328 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B9DA97AE2DC1472C00A4DA20 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				3EB403C12F46CCF500216986 /* FirebaseRemoteConfig in Frameworks */,
 				3E38ACDC2E252CF1004805A2 /* PurchasesHybridCommonUI in Frameworks */,
+				3EC0F5242F48D03A00E7D328 /* FirebaseMessaging in Frameworks */,
 				3E38ACE32E252D36004805A2 /* FirebaseCore in Frameworks */,
 				3E38ACDA2E252CF1004805A2 /* PurchasesHybridCommon in Frameworks */,
 				3E38ACEA2E252D73004805A2 /* GoogleSignInSwift in Frameworks */,
@@ -65,11 +116,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3EC0F5222F48D03A00E7D328 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B9DA97A82DC1472C00A4DA20 = {
 			isa = PBXGroup;
 			children = (
+				3EC0F5212F48CFCD00E7D328 /* KmpIosApp.entitlements */,
 				3E8BF7172F461A0C00576AF0 /* AppConfig.xcconfig */,
 				B9DA97B32DC1472C00A4DA20 /* iosApp */,
+				3EC0F52A2F48D30E00E7D328 /* AlarmeeNotificationService */,
+				3EC0F5222F48D03A00E7D328 /* Frameworks */,
 				B9DA97B22DC1472C00A4DA20 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -78,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				B9DA97B12DC1472C00A4DA20 /* iosApp.app */,
+				3EC0F5292F48D30E00E7D328 /* AlarmeeNotificationService.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -85,6 +147,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3EC0F5282F48D30E00E7D328 /* AlarmeeNotificationService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3EC0F5312F48D30E00E7D328 /* Build configuration list for PBXNativeTarget "AlarmeeNotificationService" */;
+			buildPhases = (
+				3EC0F5252F48D30E00E7D328 /* Sources */,
+				3EC0F5262F48D30E00E7D328 /* Frameworks */,
+				3EC0F5272F48D30E00E7D328 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				3EC0F52A2F48D30E00E7D328 /* AlarmeeNotificationService */,
+			);
+			name = AlarmeeNotificationService;
+			packageProductDependencies = (
+			);
+			productName = AlarmeeNotificationService;
+			productReference = 3EC0F5292F48D30E00E7D328 /* AlarmeeNotificationService.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		B9DA97B02DC1472C00A4DA20 /* KmpIosApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B9DA97BF2DC1472D00A4DA20 /* Build configuration list for PBXNativeTarget "KmpIosApp" */;
@@ -95,10 +179,12 @@
 				B9DA97AD2DC1472C00A4DA20 /* Sources */,
 				B9DA97AE2DC1472C00A4DA20 /* Frameworks */,
 				B9DA97AF2DC1472C00A4DA20 /* Resources */,
+				3EB2EE502F48A2B000519965 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				3EC0F52F2F48D30E00E7D328 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				B9DA97B32DC1472C00A4DA20 /* iosApp */,
@@ -114,6 +200,7 @@
 				3E38ACE72E252D73004805A2 /* GoogleSignIn */,
 				3E38ACE92E252D73004805A2 /* GoogleSignInSwift */,
 				3EB403C02F46CCF500216986 /* FirebaseRemoteConfig */,
+				3EC0F5232F48D03A00E7D328 /* FirebaseMessaging */,
 			);
 			productName = iosApp;
 			productReference = B9DA97B12DC1472C00A4DA20 /* iosApp.app */;
@@ -126,9 +213,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1620;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					3EC0F5282F48D30E00E7D328 = {
+						CreatedOnToolsVersion = 26.0;
+					};
 					B9DA97B02DC1472C00A4DA20 = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -154,11 +244,19 @@
 			projectRoot = "";
 			targets = (
 				B9DA97B02DC1472C00A4DA20 /* KmpIosApp */,
+				3EC0F5282F48D30E00E7D328 /* AlarmeeNotificationService */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3EC0F5272F48D30E00E7D328 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B9DA97AF2DC1472C00A4DA20 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -223,6 +321,13 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3EC0F5252F48D30E00E7D328 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B9DA97AD2DC1472C00A4DA20 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -232,7 +337,75 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		3EC0F52F2F48D30E00E7D328 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3EC0F5282F48D30E00E7D328 /* AlarmeeNotificationService */;
+			targetProxy = 3EC0F52E2F48D30E00E7D328 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		3EC0F5322F48D30E00E7D328 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AlarmeeNotificationService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AlarmeeNotificationService;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kmpstarter.nativeapp.AlarmeeNotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3EC0F5332F48D30E00E7D328 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AlarmeeNotificationService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AlarmeeNotificationService;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kmpstarter.nativeapp.AlarmeeNotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		B9DA97BD2DC1472D00A4DA20 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3E8BF7172F461A0C00576AF0 /* AppConfig.xcconfig */;
@@ -362,10 +535,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = KmpIosApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
-				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -385,6 +558,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -407,10 +581,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = KmpIosApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -425,6 +599,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -443,6 +618,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3EC0F5312F48D30E00E7D328 /* Build configuration list for PBXNativeTarget "AlarmeeNotificationService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3EC0F5322F48D30E00E7D328 /* Debug */,
+				3EC0F5332F48D30E00E7D328 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B9DA97AC2DC1472C00A4DA20 /* Build configuration list for PBXProject "iosApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -535,6 +719,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3E38ACDD2E252D36004805A2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseRemoteConfig;
+		};
+		3EC0F5232F48D03A00E7D328 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3E38ACDD2E252D36004805A2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

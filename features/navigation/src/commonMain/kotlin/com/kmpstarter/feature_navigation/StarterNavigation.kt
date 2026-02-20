@@ -20,8 +20,7 @@ import org.koin.core.annotation.KoinExperimentalAPI
 @Composable
 fun StarterNavigation(
     modifier: Modifier = Modifier,
-
-    ) {
+) {
     val backStack: NavBackStack<NavKey> = rememberStarterBackStack()
     val navigator: StarterNavigator = StarterNavigator.getCurrent()
     val entryProvider = koinEntryProvider()

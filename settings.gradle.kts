@@ -1,7 +1,7 @@
 /*
  *
  *  *
- *  *  * Copyright (c) 2025
+ *  *  * Copyright (c) 2026
  *  *  *
  *  *  * Author: Athar Gul
  *  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
@@ -50,7 +50,6 @@ include(":starter:core_db")
 include(":starter:utils")
 include(":starter:native:bindings")
 include(":starter:ui:utils")
-include(":starter:notifications")
 include(":starter:ui:components")
 include(":starter:ui:layouts")
 include(":starter:features:analytics")
@@ -64,3 +63,6 @@ include(":features:remote_config:domain")
 include(":features:remote_config:data")
 include(":features:remote_config:presentation")
 include(":features:resources")
+include(":features:notifications:core")
+include(":features:notifications:local")
+include(":features:notifications:push")

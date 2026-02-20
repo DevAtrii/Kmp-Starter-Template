@@ -21,6 +21,11 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 
 class MyApplication : Application() {
+
+    companion object {
+        private const val TAG = "MyApplication"
+    }
+
     override fun onCreate() {
         super.onCreate()
         initKmpApp(
@@ -30,6 +35,5 @@ class MyApplication : Application() {
             }
         )
     }
-
 }
 

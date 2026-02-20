@@ -78,7 +78,9 @@ kotlin {
             implementation(projects.starter.features.analytics)
             api(projects.starter.features.purchases)
             // notifications
-            implementation(projects.starter.notifications)
+            implementation(projects.features.notifications.core)
+            implementation(projects.features.notifications.local)
+            implementation(projects.features.notifications.push)
 
             // Navigation
             implementation(projects.features.navigation)
