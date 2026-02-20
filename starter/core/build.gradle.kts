@@ -47,10 +47,7 @@ kotlin {
 
         androidMain {
             dependencies {
-                // google play services
-                implementation(libs.play.app.review.ktx)
-                implementation(libs.kotlinx.coroutines.play.services)
-            }
+             }
         }
 
 

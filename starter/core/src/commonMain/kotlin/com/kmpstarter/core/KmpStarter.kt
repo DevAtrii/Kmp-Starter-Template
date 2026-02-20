@@ -24,8 +24,7 @@ data class KmpConfig(
     // keys
     val revenueCatApiKey: String,
     val mixPanelApiKey: String,
-    val platformHost: Any = Unit,
-)
+ )
 
 object KmpStarter {
 
@@ -49,12 +48,6 @@ object KmpStarter {
         }
 
 
-    val PLATFORM_HOST: Any
-        get() {
-            if (!isInitialized)
-                throw IllegalStateException("Please call KmpStarter.bindPlatformHost(...) from MainActivity")
-            return config.platformHost
-        }
 
     fun initApp(
         // keys
@@ -72,19 +65,7 @@ object KmpStarter {
         }
     }
 
-    fun bindPlatformHost(host: Any) {
-        synchronized(lock) {
-            config = config.copy(platformHost = host)
-            Log.d(tag = null,message = "bindPlatformHost=$host")
-        }
-    }
 
-    fun unbindPlatformHost(){
-        synchronized(lock){
-            config = config.copy(platformHost = Unit)
-            Log.d(tag = null,message = "unbindPlatformHost success ")
-        }
-    }
 
 
 }

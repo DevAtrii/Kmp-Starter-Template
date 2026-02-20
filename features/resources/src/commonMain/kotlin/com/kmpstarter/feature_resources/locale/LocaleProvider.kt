@@ -69,7 +69,7 @@ fun rememberMutableStarterLocaleDataStore(default: StarterLocales?): MutableStat
                     if (value != null) {
                         vm.switchLanguage(value)
                     } else {
-                        // todo remove
+                        // remove
                     }
                 }
 

@@ -53,7 +53,10 @@ kotlin {
 
         androidMain {
             dependencies {
-
+                // google play services
+                implementation(libs.play.app.review.ktx)
+                implementation(libs.play.app.update.ktx)
+                implementation(libs.kotlinx.coroutines.play.services)
             }
         }
 

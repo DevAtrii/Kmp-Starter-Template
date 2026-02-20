@@ -43,6 +43,11 @@ class CommonPlugin : Plugin<Project> {
                             implementation(libs.findLibrary("kotlinx.coroutines.core").get())
                         }
                     }
+                    androidMain{
+                        dependencies{
+                            implementation(libs.findLibrary("kotlinx.coroutines.android").get())
+                        }
+                    }
                 }
 
             }

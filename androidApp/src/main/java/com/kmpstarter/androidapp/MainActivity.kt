@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kmpstarter.App
-import com.kmpstarter.core.KmpStarter
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.enums.ThemeMode
 import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
@@ -40,16 +39,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        KmpStarter.bindPlatformHost(host = activity)
         setContent {
             AndroidSideEffects()
             App()
         }
-    }
-
-    override fun onDestroy() {
-        KmpStarter.unbindPlatformHost()
-        super.onDestroy()
     }
 
 
