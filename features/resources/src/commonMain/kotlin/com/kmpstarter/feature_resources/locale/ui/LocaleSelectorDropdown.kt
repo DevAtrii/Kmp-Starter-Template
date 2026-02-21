@@ -31,7 +31,7 @@ import com.kmpstarter.feature_resources.locale.StarterLocales
 import com.kmpstarter.feature_resources.locale_selector_dd_label
 import com.kmpstarter.ui_components.material_cupertino.dropdown.CupertinoDropdownItem
 import com.kmpstarter.ui_components.material_cupertino.sections.CupertinoSectionRow
-import com.kmpstarter.ui_utils.resources.toActualString
+import com.kmpstarter.feature_resources.toActualString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

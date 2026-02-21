@@ -19,9 +19,10 @@ import org.koin.core.annotation.KoinExperimentalAPI
 @Suppress("NonSkippableComposable")
 @Composable
 fun StarterNavigation(
+    vararg initialScreens: NavKey,
     modifier: Modifier = Modifier,
 ) {
-    val backStack: NavBackStack<NavKey> = rememberStarterBackStack()
+    val backStack: NavBackStack<NavKey> = rememberStarterBackStack(initialScreens=initialScreens)
     val navigator: StarterNavigator = StarterNavigator.getCurrent()
     val entryProvider = koinEntryProvider()
 

@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.Modifier
 import com.kmpstarter.core.ui.screens.WelcomeScreen
+import com.kmpstarter.feature_core_presentation.screens.OnboardingV1Screen
+import com.kmpstarter.feature_core_presentation.screens.SplashScreen
 import com.kmpstarter.feature_navigation.StarterNavigator
 import com.kmpstarter.feature_navigation.di.navigationCoreModule
 import com.kmpstarter.feature_navigation.screens.StarterScreens
@@ -44,6 +46,32 @@ val navigationModule = module {
         )
     }
 
+    navigation<StarterScreens.Splash> { route ->
+        val navigator = StarterNavigator.getCurrent()
+        SplashScreen(
+            onNavigate = {
+                navigator.popAndNavigate(
+                    route = StarterScreens.Welcome
+                )
+            },
+            onNavigateToOnboarding = {
+                navigator.popAndNavigate(
+                    route = StarterScreens.Onboarding
+                )
+            }
+        )
+    }
+    navigation<StarterScreens.Onboarding> { route ->
+        val navigator = StarterNavigator.getCurrent()
+        OnboardingV1Screen(
+            onNavigate = {
+                navigator.popAndNavigate(
+                    route = StarterScreens.Welcome
+                )
+            }
+        )
+    }
+
     navigation<StarterScreens.Purchases> { route ->
         val navigator = StarterNavigator.getCurrent()
         SamplePurchaseScreen(
@@ -55,3 +83,22 @@ val navigationModule = module {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -33,13 +33,14 @@ import androidx.compose.ui.Modifier
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
 import com.kmpstarter.feature_navigation.StarterNavigation
+import com.kmpstarter.feature_navigation.screens.StarterScreens
 import com.kmpstarter.feature_resources.locale.LocaleProvider
 import com.kmpstarter.feature_resources.locale.StarterLocales
 import com.kmpstarter.theme.ApplicationTheme
 import com.kmpstarter.ui_utils.composition_locals.LocalThemeMode
 import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
 import com.kmpstarter.ui_utils.store.AppUpdateProvider
-import com.kmpstarter.ui_utils.store.ExperimentalAppUpdateApi
+import com.kmpstarter.utils.starter.ExperimentalStarterApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -63,7 +64,7 @@ fun App() {
  * Configures the App Update logic, Localization, Theme preferences,
  * and hosts the main Navigation graph.
  */
-@OptIn(ExperimentalAppUpdateApi::class)
+@OptIn(ExperimentalStarterApi::class)
 @Composable
 private fun MainApp(
     snackbarHostState: SnackbarHostState,
@@ -95,6 +96,7 @@ private fun MainApp(
                         }
                     ) { _: PaddingValues ->
                         StarterNavigation(
+                            StarterScreens.Splash,
                             modifier = Modifier
                         )
                     }

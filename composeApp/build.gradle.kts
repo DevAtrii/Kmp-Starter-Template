@@ -69,13 +69,15 @@ kotlin {
         commonMain.dependencies {
             // local modules
             api(projects.starter.core)
-            implementation(projects.starter.coreDb)
+            // database
+            implementation(projects.features.database)
             // ui
             api(projects.starter.ui.utils)
             implementation(projects.starter.ui.components)
             implementation(projects.starter.ui.layouts)
-            // features
-            implementation(projects.starter.features.analytics)
+            // analytics
+            implementation(projects.features.analytics.data)
+            implementation(projects.features.analytics.domain)
             api(projects.starter.features.purchases)
             // notifications
             implementation(projects.features.notifications.core)
@@ -90,6 +92,10 @@ kotlin {
             implementation(projects.features.remoteConfig.presentation)
             // resources
             implementation(projects.features.resources)
+            // Feature Core
+            implementation(projects.features.core.data)
+            implementation(projects.features.core.domain)
+            implementation(projects.features.core.presentation)
 
         }
         iosMain.dependencies {

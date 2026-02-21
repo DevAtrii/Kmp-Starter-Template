@@ -27,5 +27,11 @@ sealed class StarterScreens : NavKey {
     data object Welcome : StarterScreens()
 
     @Serializable
+    data object Splash : StarterScreens()
+
+    @Serializable
+    data object Onboarding : StarterScreens()
+
+    @Serializable
     data object Purchases : StarterScreens()
 }

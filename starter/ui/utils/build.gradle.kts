@@ -47,6 +47,7 @@ kotlin {
                 implementation(libs.kotlinx.datetime)
                 // kotlin
                 implementation(libs.kotlinx.serialization.json)
+                api(libs.ui.backhandler)
             }
         }
 

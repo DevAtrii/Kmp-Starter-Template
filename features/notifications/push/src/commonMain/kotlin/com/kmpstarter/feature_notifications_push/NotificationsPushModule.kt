@@ -18,7 +18,6 @@ package com.kmpstarter.feature_notifications_push
 import com.kmpstarter.feature_notifications_core.createAlarmeePlatformConfiguration
 import com.tweener.alarmee.MobileAlarmeeService
 import com.tweener.alarmee.createAlarmeeMobileService
-import dev.gitlive.firebase.Firebase
 import org.koin.dsl.module
 
 val notificationsPushModule = module {
@@ -26,7 +25,6 @@ val notificationsPushModule = module {
         val alarmeeService = createAlarmeeMobileService()
         alarmeeService.initialize(
             platformConfiguration = createAlarmeePlatformConfiguration(),
-            firebase = Firebase
         )
 
         alarmeeService

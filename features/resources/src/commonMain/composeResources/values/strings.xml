@@ -18,14 +18,34 @@
     <string name="empty_string" />
     <string name="hello_kmp">Hello KMP from Atrii!</string>
     <string name="locale_selector_dd_label">Select Language</string>
+    
+    
+    <!-- Starter: Onboarding -->
+    <string name="starter_onboarding_continue">Continue</string>
+    <string name="starter_onboarding_slide_1_title">Welcome to KMP Starter</string>
+    <string name="starter_onboarding_slide_1_description">The ultimate template to kickstart your Multiplatform journey with ease and speed.</string>
 
-    <!--KmpStarter WelcomeScreen-->
+    <string name="starter_onboarding_slide_2_title">Built-in UI Utilities</string>
+    <string name="starter_onboarding_slide_2_description">Includes keyboard handling, MVI ViewModels, and shared components out of the box.</string>
+
+    <string name="starter_onboarding_slide_3_title">How did you find us?</string>
+    <string name="starter_onboarding_slide_3_description">Help us grow by letting us know where you heard about this starter template.</string>
+
+    <string name="starter_onboarding_source_google_play">Google Play Store</string>
+    <string name="starter_onboarding_source_social_media">Social Media (X/FB/IG)</string>
+    <string name="starter_onboarding_source_reddit">Reddit Community</string>
+    <string name="starter_onboarding_source_youtube">YouTube Video</string>
+    <string name="starter_onboarding_source_whatsapp">WhatsApp / Messaging</string>
+    <string name="starter_onboarding_source_friend">Recommended by a Friend</string>
+    <string name="starter_onboarding_source_other">Other Sources</string>
+
+    <!--Starter: WelcomeScreen-->
     <string name="welcome_screen_title">KMP Starter!</string>
     <string name="welcome_screen_subtitle">Build once, deploy everywhere</string>
     <string name="welcome_screen_description">A modern, production-ready Kotlin Multiplatform template with Material 3 design and comprehensive tooling.</string>
+    
 
-
-    <!-- Languages -->
+    <!-- Starter: Languages -->
     <string name="lang_en">English</string>
     <string name="lang_ur">اردو</string>
     <string name="lang_hi">हिन्दी</string>
@@ -35,27 +55,5 @@
     <string name="lang_fr">Français</string>
     <string name="lang_de">Deutsch</string>
 
-    <!-- Auth Screens -->
-    <string name="auth_welcome_back">Welcome Back</string>
-    <string name="auth_sign_in_to_continue">Sign in to continue</string>
-    <string name="auth_email_label">Email</string>
-    <string name="auth_password_label">Password</string>
-    <string name="auth_hide_password">Hide password</string>
-    <string name="auth_show_password">Show password</string>
-    <string name="auth_forgot_password">Forgot Password?</string>
-    <string name="auth_sign_in">Sign In</string>
-    <string name="auth_or">OR</string>
-    <string name="auth_no_account">Don't have an account? </string>
-    <string name="auth_sign_up">Sign Up</string>
-    <string name="auth_create_account">Create Account</string>
-    <string name="auth_already_have_account">Already have an account? </string>
-    <string name="auth_name_label">Full Name</string>
-    <string name="auth_confirm_password">Confirm Password</string>
-    <string name="auth_reset_password">Reset Password</string>
-    <string name="auth_reset_password_instructions">Enter your email address to receive password reset instructions</string>
-    <string name="auth_submit">Submit</string>
-    <string name="auth_cancel">Cancel</string>
-    <string name="auth_forgot_password_title">Forgot Password</string>
-    <string name="auth_forgot_password_desc">Enter your email address and we'll send you a link to reset your password</string>
-    <string name="auth_send_link">Send Link</string>
+ 
 </resources>

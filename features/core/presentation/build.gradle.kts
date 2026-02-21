@@ -9,6 +9,10 @@ plugins {
     id(libs.plugins.build.compose.multiplatform.get().pluginId)
 }
 
+compose.resources {
+    generateResClass = never
+}
+
 kotlin {
 
     androidLibrary {
@@ -42,6 +46,10 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
+                api(projects.starter.ui.layouts)
+                api(projects.features.core.domain)
+                api(projects.features.resources)
+                api(projects.features.analytics.domain)
             }
         }
 
