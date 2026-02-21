@@ -92,6 +92,7 @@ fun rememberMutableStarterLocaleDataStore(default: StarterLocales?): MutableStat
         key = localeKey,
         defaultValue = default?.langCode
     )
+
     return value
 }
 
@@ -156,9 +157,10 @@ fun LocaleProvider(
         CompositionLocalProvider(
             LocalLayoutDirection provides activeLocale.layoutDirection,
         ) {
-            key(activeLocale) {
                 content()
-            }
+            // key(activeLocale) {
+            //    content()
+            // }
         }
     }
 }
