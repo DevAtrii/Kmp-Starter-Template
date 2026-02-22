@@ -69,3 +69,26 @@ kotlin {
     }
 
 }
+
+
+// -----------------------------
+// Task: Generate Compose Resource Accessors
+// -----------------------------
+val generateAccessors by tasks.registering {
+    group = "resources"
+    description = "Generates type-safe Compose Multiplatform resource accessors for the features module"
+
+    // Make this task depend on all CMP-generated resource accessor tasks
+    dependsOn(
+        ":features:resources:generateResourceAccessorsForCommonMain",
+        ":features:resources:generateResourceAccessorsForAndroidMain",
+        ":features:resources:generateResourceAccessorsForAppleMain",
+        ":features:resources:generateResourceAccessorsForIosArm64Main",
+        ":features:resources:generateResourceAccessorsForIosSimulatorArm64Main",
+        ":features:resources:generateResourceAccessorsForNativeMain"
+    )
+
+    doLast {
+        println("✅ Compose resource accessors for features module generated successfully!")
+    }
+}

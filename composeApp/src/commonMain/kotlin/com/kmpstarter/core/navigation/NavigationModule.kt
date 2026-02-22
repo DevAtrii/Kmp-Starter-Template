@@ -15,17 +15,13 @@
 
 package com.kmpstarter.core.navigation
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.ui.Modifier
 import com.kmpstarter.core.ui.screens.WelcomeScreen
 import com.kmpstarter.feature_core_presentation.screens.OnboardingV1Screen
 import com.kmpstarter.feature_core_presentation.screens.SplashScreen
 import com.kmpstarter.feature_navigation.StarterNavigator
 import com.kmpstarter.feature_navigation.di.navigationCoreModule
 import com.kmpstarter.feature_navigation.screens.StarterScreens
-import com.kmpstarter.feature_purchases.presentation.ui_main.screens.SamplePurchaseScreen
+import com.kmpstarter.feature_purchases_presentation.ui.screens.PurchasesScreen
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.module
 import org.koin.dsl.navigation3.navigation
@@ -74,9 +70,8 @@ val navigationModule = module {
 
     navigation<StarterScreens.Purchases> { route ->
         val navigator = StarterNavigator.getCurrent()
-        SamplePurchaseScreen(
-            modifier = Modifier.windowInsetsPadding(WindowInsets.safeContent),
-            onDismiss = {
+        PurchasesScreen(
+            onNavigate = {
                 navigator.navigateUp()
             }
         )

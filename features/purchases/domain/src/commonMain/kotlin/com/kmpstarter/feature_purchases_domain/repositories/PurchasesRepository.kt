@@ -68,7 +68,7 @@ interface PurchasesRepository {
      * Launches the store's purchase flow for the given [productId].
      * @param productId The unique identifier of the product (SKU).
      */
-    suspend fun startPurchase(productId: ProductId): Result<Unit>
+    suspend fun startPurchase(productId: ProductId): Result<Product>
 
     /** Retrieves configuration data used to render the Paywall UI (e.g., colors, imagery, text). */
     suspend fun getPaywallMetadata(): Result<PaywallMetadata>

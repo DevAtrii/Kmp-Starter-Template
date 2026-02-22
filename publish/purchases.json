@@ -1,0 +1,70 @@
+{
+  "discountOffer": "kmp_starter_early_bird_discount",
+  "paywall_meta_data": {
+    "version": 1,
+    "faqs": [
+      {
+        "question": "What is included in the KMP Starter Template?",
+        "answer": "You get a production-ready Kotlin Multiplatform project with pre-configured Compose UI, Koin DI, RevenueCat Billing, and a robust startup orchestration system."
+      },
+      {
+        "question": "Does it support both Android and iOS?",
+        "answer": "Yes! The template is built for 100% shared logic across platforms, including shared UI using Compose Multiplatform for maximum code reuse."
+      },
+      {
+        "question": "Can I use this for commercial projects?",
+        "answer": "Absolutely. Once you purchase a plan, you can use the template to launch your own apps on the Play Store and App Store without any hidden royalties."
+      },
+      {
+        "question": "How do I get updates to the template?",
+        "answer": "Premium members get access to our private repository where we regularly push updates for the latest Kotlin and Compose versions."
+      },
+      {
+        "question": "Is there support for integrating my own backend?",
+        "answer": "Yes, the template is designed with a clean architecture (Repository pattern), making it easy to swap the mock data with your Firebase, Supabase, or Ktor backend."
+      },
+      {
+        "question": "What is the refund policy?",
+        "answer": "We offer a 24-hour 'no questions asked' refund if the template doesn't meet your technical requirements."
+      }
+    ],
+    "reviews": [
+      {
+        "author": "Alex Rivera",
+        "profilePictureUrl": "https://placehold.co/150x150/6366f1/ffffff?text=AR&font=roboto",
+        "rating": 5.0,
+        "review": "Saved me at least 40 hours of boilerplate setup. The billing integration alone is worth the price. Truly a plug-and-play solution for KMP."
+      },
+      {
+        "author": "Sarah Chen",
+        "profilePictureUrl": "https://placehold.co/150x150/ec4899/ffffff?text=SC&font=roboto",
+        "rating": 5.0,
+        "review": "The most stable KMP template I've found. Clean architecture, easy to follow, and the dependency injection setup is top-notch. Highly recommended!"
+      },
+      {
+        "author": "MobileDev Guru",
+        "profilePictureUrl": "https://placehold.co/150x150/10b981/ffffff?text=MG&font=roboto",
+        "rating": 4.5,
+        "review": "Solid foundation. It handles the 'boring' parts of app dev so I can focus on building unique features. Great documentation too."
+      },
+      {
+        "author": "Jordan Smith",
+        "profilePictureUrl": "https://placehold.co/150x150/f59e0b/ffffff?text=JS&font=roboto",
+        "rating": 5.0,
+        "review": "I launched my first iOS app in record time thanks to this starter. The shared UI logic works like a charm. Best investment this year."
+      }
+    ]
+  },
+  "products_meta_data": {
+    "kmp_pro.weekly": {
+      "title": "Weekly Pro",
+      "description": "Full access to the template with weekly updates for %price%.",
+      "badge": null
+    },
+    "kmp_pro.yearly": {
+      "title": "Yearly Pro",
+      "description": "Best for long-term projects. Get the template for %price% per year.",
+      "badge": "Save 50%"
+    }
+  }
+}

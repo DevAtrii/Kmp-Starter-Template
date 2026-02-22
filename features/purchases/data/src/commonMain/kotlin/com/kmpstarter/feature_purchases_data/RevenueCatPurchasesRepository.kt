@@ -161,7 +161,7 @@ class RevenueCatPurchasesRepository(
     }
 
 
-    override suspend fun startPurchase(productId: ProductId): Result<Unit> {
+    override suspend fun startPurchase(productId: ProductId): Result<Product> {
         val storeProduct =
             if (productId == discountStoreProduct?.id) discountStoreProduct else getStoreProduct(
                 id = productId
@@ -194,7 +194,7 @@ class RevenueCatPurchasesRepository(
                     _purchasesState.update {
                         PurchasesBackendState.Purchased(product)
                     }
-                    return Result.success(Unit)
+                    return Result.success(product)
                 }
 
                 else -> {

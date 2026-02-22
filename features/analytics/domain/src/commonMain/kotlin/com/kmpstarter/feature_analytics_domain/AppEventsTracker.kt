@@ -18,13 +18,24 @@ interface AppEventsTracker {
 
     // events names
     companion object {
-        // onboarding
         const val KEY_ONBOARDING_TRAFFIC_SOURCE = "traffic_source"
 
+        const val KEY_PURCHASE_SUCCESS = "purchase_success"
+        const val KEY_PURCHASE_FAILURE = "purchase_failure"
+        const val KEY_PURCHASE_RESTORE_FAILURE = "purchase_restore_failure"
+        const val KEY_PURCHASE_PRODUCTS_FAILURE = "purchase_products_failure"
 
     }
 
-    suspend fun trackTrafficSource(source:String)
+    // onboarding
+    suspend fun trackTrafficSource(source: String)
+
+    // purchases
+    suspend fun trackPurchaseSuccess(productId: String)
+    suspend fun trackPurchaseFailure(productId: String, error: String)
+    suspend fun trackPurchaseProductsFailure(error: String)
+    suspend fun trackPurchaseRestoreFailure(error: String)
+
 }
 
 

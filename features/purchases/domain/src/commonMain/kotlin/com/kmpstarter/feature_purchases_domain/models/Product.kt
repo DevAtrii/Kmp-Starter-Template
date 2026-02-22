@@ -27,7 +27,27 @@ data class Product(
     val price: String,
     val isTrial: Boolean,
     val discountPercentage: Int = 0,
-)
+) {
+    fun formatValues(): Product {
+        val title = this.title
+        val description = this.description
+        val badge = this.badge
+
+        val newTitle = title.replace("%price%", this.price)
+        val newDescription = description.replace("%price%", this.price)
+        val newBadge = badge.copy(
+            text = badge.text.replace("%price%", this.price)
+        )
+
+        return this.copy(
+            title = newTitle,
+            description = newDescription,
+            badge = newBadge
+        )
+    }
+
+
+}
 
 /**
  * Visual metadata used to highlight specific products in the UI.

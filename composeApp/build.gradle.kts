@@ -78,7 +78,10 @@ kotlin {
             // analytics
             implementation(projects.features.analytics.data)
             implementation(projects.features.analytics.domain)
-            api(projects.starter.features.purchases)
+            // purchases
+            implementation(projects.features.purchases.data)
+            implementation(projects.features.purchases.domain)
+            implementation(projects.features.purchases.presentation)
             // notifications
             implementation(projects.features.notifications.core)
             implementation(projects.features.notifications.local)

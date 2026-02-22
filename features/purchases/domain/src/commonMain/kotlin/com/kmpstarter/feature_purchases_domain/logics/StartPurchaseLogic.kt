@@ -15,6 +15,7 @@
 
 package com.kmpstarter.feature_purchases_domain.logics
 
+import com.kmpstarter.feature_purchases_domain.models.Product
 import com.kmpstarter.feature_purchases_domain.models.ProductId
 import com.kmpstarter.feature_purchases_domain.repositories.PurchasesRepository
 
@@ -25,6 +26,6 @@ class StartPurchaseLogic(
     private val repository: PurchasesRepository,
 ) {
 
-    suspend operator fun invoke(productId: ProductId): Result<Unit> = repository.startPurchase(productId)
+    suspend operator fun invoke(productId: ProductId): Result<Product> = repository.startPurchase(productId)
 
 }

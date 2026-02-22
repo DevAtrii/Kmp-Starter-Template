@@ -13,7 +13,7 @@
  *
  */
 
-package com.kmpstarter.core.ui.side_effects
+package com.kmpstarter.ui_utils.side_effects
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

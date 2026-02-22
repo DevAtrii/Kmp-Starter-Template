@@ -53,14 +53,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		3EC0F5342F48D30E00E7D328 /* Exceptions for "AlarmeeNotificationService" folder in "AlarmeeNotificationService" target */ = {
+		3EC0F5342F48D30E00E7D328 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = 3EC0F5282F48D30E00E7D328 /* AlarmeeNotificationService */;
 		};
-		B99700CA2DC9B8D800C7335B /* Exceptions for "iosApp" folder in "KmpIosApp" target */ = {
+		B99700CA2DC9B8D800C7335B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -73,7 +73,7 @@
 		3EC0F52A2F48D30E00E7D328 /* AlarmeeNotificationService */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				3EC0F5342F48D30E00E7D328 /* Exceptions for "AlarmeeNotificationService" folder in "AlarmeeNotificationService" target */,
+				3EC0F5342F48D30E00E7D328 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
 			);
 			path = AlarmeeNotificationService;
 			sourceTree = "<group>";
@@ -81,7 +81,7 @@
 		B9DA97B32DC1472C00A4DA20 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				B99700CA2DC9B8D800C7335B /* Exceptions for "iosApp" folder in "KmpIosApp" target */,
+				B99700CA2DC9B8D800C7335B /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -539,6 +539,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

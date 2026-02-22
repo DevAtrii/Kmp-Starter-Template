@@ -15,11 +15,19 @@
 
 <resources>
     <string name="app_name">KMP Starter</string>
+
+
+    <!-- ============================================================ -->
+    <!-- ===============  STARTER STRINGS SECTION  ================== -->
+    <!-- ============================================================ -->
+    <!-- ===== ADD YOUR CUSTOM STRINGS ABOVE THIS LINE ONLY ======== -->
+    <!-- ============================================================ -->
+
     <string name="empty_string" />
-    <string name="hello_kmp">Hello KMP from Atrii!</string>
+
+    <!-- Starter: Locale Selector DropDown -->
     <string name="locale_selector_dd_label">Select Language</string>
-    
-    
+
     <!-- Starter: Onboarding -->
     <string name="starter_onboarding_continue">Continue</string>
     <string name="starter_onboarding_slide_1_title">Welcome to KMP Starter</string>
@@ -43,7 +51,41 @@
     <string name="welcome_screen_title">KMP Starter!</string>
     <string name="welcome_screen_subtitle">Build once, deploy everywhere</string>
     <string name="welcome_screen_description">A modern, production-ready Kotlin Multiplatform template with Material 3 design and comprehensive tooling.</string>
-    
+
+
+    <!-- Starter: Purchases -->
+    <string name="starter_purchases_products_not_found">Products Not Found</string>
+    <string name="starter_purchases_error_button_try_again">Try Again</string>
+    <string name="starter_purchase_error_product_not_found">Product not found. Please try again later.</string>
+    <string name="starter_purchase_error_purchase_failed">Purchase failed. Please try again.</string>
+    <string name="starter_purchase_error_user_not_signed_in">You must be signed in to complete this purchase.</string>
+    <string name="starter_purchase_error_restore_failed">Failed to restore purchases. Please try again.</string>
+
+    <!-- Starter: Paywall v1 -->
+    <string name="paywall_v1_title">Best Boilerplate</string>
+    <string name="paywall_v1_reviews_title">What our users say</string>
+    <string name="paywall_v1_faqs_title">Frequently Asked Questions</string>
+    <string name="paywall_v1_purchasing">Purchasing</string>
+    <string name="paywall_v1_btn_trial">Try for free</string>
+    <string name="paywall_v1_btn_continue">Continue</string>
+    <string name="paywall_v1_restore_purchases">Restore Purchases</string>
+    <string name="paywall_v1_feature_1">Clean Architecture Setup</string>
+    <string name="paywall_v1_feature_2">MVI State Management</string>
+    <string name="paywall_v1_feature_3">Multiplatform DataStore</string>
+    <string name="paywall_v1_feature_4">Ktor API Client Included</string>
+    <string name="paywall_v1_feature_5">Logging &amp; Crash Reporting</string>
+    <string name="paywall_v1_feature_6">Secure Local Storage</string>
+    <string name="paywall_v1_feature_7">Shared Business Logic</string>
+    <string name="paywall_v1_feature_8">Android &amp; iOS Ready</string>
+    <string name="paywall_v1_feature_9">In-App Update Support</string>
+    <string name="paywall_v1_feature_10">Modular Project Structure</string>
+    <string name="paywall_v1_feature_11">Production-Ready Boilerplate</string>
+
+
+    <!-- Starter: Generic -->
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_of_use">Terms of use</string>
+    <string name="error_generic">Something went wrong..</string>
 
     <!-- Starter: Languages -->
     <string name="lang_en">English</string>
@@ -55,5 +97,5 @@
     <string name="lang_fr">Français</string>
     <string name="lang_de">Deutsch</string>
 
- 
+
 </resources>

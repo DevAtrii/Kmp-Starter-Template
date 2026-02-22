@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import com.kmpstarter.core.KmpAppInitializer
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
 import com.kmpstarter.feature_navigation.StarterNavigation
@@ -38,6 +39,7 @@ import com.kmpstarter.feature_resources.locale.LocaleProvider
 import com.kmpstarter.feature_resources.locale.StarterLocales
 import com.kmpstarter.theme.ApplicationTheme
 import com.kmpstarter.ui_utils.composition_locals.LocalThemeMode
+import com.kmpstarter.ui_utils.side_effects.LaunchOnce
 import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
 import com.kmpstarter.ui_utils.store.AppUpdateProvider
 import com.kmpstarter.utils.starter.ExperimentalStarterApi
@@ -51,6 +53,11 @@ import org.koin.compose.koinInject
  */
 @Composable
 fun App() {
+    val appInitializer: KmpAppInitializer = koinInject()
+    LaunchOnce {
+        appInitializer.initialize()
+    }
+
     val snackbarHostState = remember {
         SnackbarHostState()
     }

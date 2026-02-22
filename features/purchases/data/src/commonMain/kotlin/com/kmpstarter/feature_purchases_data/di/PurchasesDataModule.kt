@@ -17,10 +17,16 @@ package com.kmpstarter.feature_purchases_data.di
 
 import com.kmpstarter.feature_purchases_data.RevenueCatPurchasesRepository
 import com.kmpstarter.feature_purchases_domain.repositories.PurchasesRepository
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.bind
+import com.revenuecat.purchases.kmp.Purchases
 import org.koin.dsl.module
 
 val purchasesDataModule = module {
-    singleOf(::RevenueCatPurchasesRepository) bind PurchasesRepository::class
+    /*single<Purchases> {
+       return@single Purchases.sharedInstance
+    }*/
+    single<PurchasesRepository> {
+        RevenueCatPurchasesRepository(
+            purchases = Purchases.sharedInstance
+        )
+    }
 }

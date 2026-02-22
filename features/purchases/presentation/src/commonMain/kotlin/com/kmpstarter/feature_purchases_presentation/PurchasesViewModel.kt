@@ -15,57 +15,45 @@
 
 package com.kmpstarter.feature_purchases_presentation
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kmpstarter.core.KmpStarter
 import com.kmpstarter.feature_analytics_domain.AppEventsTracker
-import com.kmpstarter.feature_purchases_domain.repositories.PurchasesRepository
+import com.kmpstarter.feature_purchases_domain.logics.PurchasesLogics
+import com.kmpstarter.feature_purchases_domain.models.PaywallMetadata
+import com.kmpstarter.ui_utils.viewmodels.MviViewModel
+import com.kmpstarter.utils.intents.IntentUtils
 import com.kmpstarter.utils.logging.Log
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-/*
 
-class PurchaseViewModel(
-    private val purchasesRepository: PurchasesRepository,
+class PurchasesViewModel(
+    private val purchasesLogics: PurchasesLogics,
     private val eventsTracker: AppEventsTracker,
-) : ViewModel() {
+    private val intentUtils: IntentUtils,
+) : MviViewModel<PurchasesState, PurchasesActions, PurchasesEvents>() {
 
-    companion object {
+    companion object Companion {
         private const val TAG = "PurchaseViewModel"
     }
 
-    private val _state = MutableStateFlow(PurchaseState())
-    val state = _state.onStart {
-    }.stateIn(
-        viewModelScope,
-        started = SharingStarted.Companion.WhileSubscribed(5000L),
-        initialValue = _state.value
-    )
 
-    private val _uiEvents = Channel<CommonUiEvents>(Channel.Factory.BUFFERED)
-    val uiEvents = _uiEvents.receiveAsFlow()
+    override val initialState: PurchasesState
+        get() = PurchasesState()
+
 
     // jobs
     private var startPurchaseJob: Job? = null
+    private var restorePurchasesJob: Job? = null
     private var loadProductsJob: Job? = null
     private var getPaywallMetadataJob: Job? = null
     private var loadDiscountProductJob: Job? = null
 
 
-    init {
-        onAction(PurchaseActions.LoadProducts)
-    }
-
     private fun getPaywallMetadata() {
         getPaywallMetadataJob?.cancel()
         getPaywallMetadataJob = viewModelScope.launch {
-            purchasesRepository
+            purchasesLogics
                 .getPaywallMetadata()
                 .onSuccess { paywallMetadata: PaywallMetadata ->
                     Log.i(TAG, "getPaywallMetadata: meta data loaded")
@@ -85,15 +73,60 @@ class PurchaseViewModel(
     }
 
 
-    fun onAction(action: PurchaseActions) {
+    override fun onAction(action: PurchasesActions) {
         when (action) {
-            PurchaseActions.LoadProducts -> loadProducts()
-            PurchaseActions.StartPurchase -> startPurchase()
-            is PurchaseActions.UpdateSelectedProduct -> _state.update {
+            PurchasesActions.LoadProducts -> loadProducts()
+            PurchasesActions.RestorePurchases -> restorePurchases()
+            PurchasesActions.StartPurchase -> startPurchase()
+            is PurchasesActions.UpdateSelectedProduct -> _state.update {
                 it.copy(
                     selectedProduct = action.product
                 )
             }
+
+            PurchasesActions.OnPrivacyPolicyClick -> viewModelScope.launch {
+                intentUtils.openUrl(
+                    url = KmpStarter.PRIVACY_POLICY
+                )
+            }
+
+            PurchasesActions.OnTermsOfUseClick -> viewModelScope.launch {
+                intentUtils.openUrl(
+                    url = KmpStarter.TERMS_OF_USE
+                )
+            }
+        }
+    }
+
+    private fun restorePurchases() {
+        restorePurchasesJob?.cancel()
+        restorePurchasesJob = viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isRestoring = true
+                )
+            }
+            purchasesLogics
+                .restorePurchases()
+                .onSuccess { activeProducts ->
+                    _state.update {
+                        it.copy(
+                            activeProducts = activeProducts,
+                            isRestoring = false
+                        )
+                    }
+                }.onFailure { err ->
+                    _state.update {
+                        it.copy(
+                            isRestoring = false
+                        )
+                    }
+                    val message = err.getPurchaseExceptionMessage()
+                    emitEvent(PurchasesEvents.ShowMessage(message))
+                    eventsTracker.trackPurchaseRestoreFailure(
+                        error = err.message ?: "--"
+                    )
+                }
         }
     }
 
@@ -106,10 +139,11 @@ class PurchaseViewModel(
                     isPurchasing = true
                 )
             }
-            purchasesRepository.startPurchase(productId = selectedProduct.id)
-                .onSuccess {
+            purchasesLogics.startPurchase(productId = selectedProduct.id)
+                .onSuccess { product ->
                     _state.update {
                         it.copy(
+                            activeProducts = it.activeProducts + product,
                             isPurchased = true,
                             isPurchasing = false
                         )
@@ -123,10 +157,10 @@ class PurchaseViewModel(
                         )
                     }
                     val message = err.getPurchaseExceptionMessage()
-                    _uiEvents.showMessage(message)
+                    emitEvent(PurchasesEvents.ShowMessage(message))
                     eventsTracker.trackPurchaseFailure(
                         productId = selectedProduct.id,
-                        error = err.message ?: message
+                        error = err.message ?: "--"
                     )
                 }
         }
@@ -135,7 +169,7 @@ class PurchaseViewModel(
     private fun loadDiscountProduct() {
         loadDiscountProductJob?.cancel()
         loadDiscountProductJob = viewModelScope.launch {
-            purchasesRepository.getDiscountProduct()
+            purchasesLogics.getDiscountProduct()
                 .onSuccess { product ->
                     Log.i(TAG, "loadDiscountProduct: discountProduct loaded: $product")
                     _state.update {
@@ -160,13 +194,13 @@ class PurchaseViewModel(
         }
         loadProductsJob?.cancel()
         loadProductsJob = viewModelScope.launch {
-            purchasesRepository.getProducts()
+            purchasesLogics.getProducts()
                 .onSuccess { products ->
                     loadDiscountProduct()
                     val formattedProducts = products.map {
                         it.formatValues()
                     }
-                    Log.i(TAG,"loadProducts: formatted Products: $formattedProducts")
+                    Log.i(TAG, "loadProducts: formatted Products: $formattedProducts")
                     _state.update {
                         it.copy(
                             products = formattedProducts,
@@ -182,32 +216,13 @@ class PurchaseViewModel(
                         )
                     }
                     val message = err.getPurchaseExceptionMessage()
-                    _uiEvents.showMessage(message)
+                    emitEvent(PurchasesEvents.ShowMessage(message))
                     eventsTracker.trackPurchaseProductsFailure(
-                        error = err.message ?: message
+                        error = err.message ?: "--"
                     )
                 }
         }
     }
 
 
-    private fun Product.formatValues(): Product {
-        val title = this.title
-        val description = this.description
-        val badge = this.badge
-
-        val newTitle = title.replace("%price%", this.price)
-        val newDescription = description.replace("%price%", this.price)
-        val newBadge = badge.copy(
-            text = badge.text.replace("%price%", this.price)
-        )
-
-        return this.copy(
-            title = newTitle,
-            description = newDescription,
-            badge = newBadge
-        )
-    }
-
-
-}*/
+}

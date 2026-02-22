@@ -9,7 +9,7 @@ plugins {
 
 kotlin {
 
-      androidLibrary {
+    androidLibrary {
         namespace = "com.kmpstarter.ui_components"
         compileSdk = 36
         minSdk = 24
@@ -17,7 +17,7 @@ kotlin {
 
     }
 
-     val xcfName = "starter:ui:componentsKit"
+    val xcfName = "starter:ui:componentsKit"
 
 
 
@@ -33,7 +33,7 @@ kotlin {
         }
     }
 
-      sourceSets {
+    sourceSets {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
@@ -42,20 +42,22 @@ kotlin {
                 api(libs.coil.compose)
                 api(libs.coil.svg)
                 api(libs.coil.network.ktor)
-             }
+            }
         }
 
 
         androidMain {
             dependencies {
-                     }
+                implementation(libs.ktor.client.okhttp)
+            }
         }
 
 
 
         iosMain {
             dependencies {
-                      }
+                implementation(libs.ktor.client.darwin)
+            }
         }
     }
 

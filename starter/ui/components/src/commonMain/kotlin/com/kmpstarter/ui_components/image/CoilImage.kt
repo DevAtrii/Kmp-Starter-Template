@@ -20,6 +20,7 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
+import com.kmpstarter.utils.logging.Log
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
@@ -29,6 +30,7 @@ enum class CoilImageType {
 }
 
 
+private const val TAG = "CoilImage"
 @Composable
 private fun ImageBuilder(
     modifier: Modifier = Modifier,
@@ -58,6 +60,14 @@ private fun ImageBuilder(
         .diskCacheKey(key = url)
         .diskCachePolicy(CachePolicy.ENABLED)
         .data(url)
+        .listener(
+            onStart = { Log.d(TAG, "Image Load Started: $url") },
+            onSuccess = { _, _ -> Log.d(TAG, "Image Load Success: $url") },
+            onError = { _, result ->
+                // This is what you actually need to see!
+                Log.e(TAG, "Image Load Error: ${result.throwable.message}")
+            }
+        )
         .crossfade(crossFade)
         .run {
             if (imageType == CoilImageType.SVG) {
@@ -65,7 +75,6 @@ private fun ImageBuilder(
             }
             build()
         }
-
 
 
 

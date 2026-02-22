@@ -15,7 +15,6 @@
 
 package com.kmpstarter.core
 
-import com.kmpstarter.utils.logging.Log
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 
@@ -24,7 +23,10 @@ data class KmpConfig(
     // keys
     val revenueCatApiKey: String,
     val mixPanelApiKey: String,
- )
+    // other
+    val privacyPolicy: String = "",
+    val termsOfUse: String = "",
+)
 
 object KmpStarter {
 
@@ -47,25 +49,40 @@ object KmpStarter {
             return config.mixPanelApiKey
         }
 
+    val PRIVACY_POLICY: String
+        get() {
+            if (!isInitialized)
+                throw IllegalStateException("Please call KmpStarter.initApp(...) from app entry")
+            return config.privacyPolicy
+        }
+
+    val TERMS_OF_USE: String
+        get() {
+            if (!isInitialized)
+                throw IllegalStateException("Please call KmpStarter.initApp(...) from app entry")
+            return config.termsOfUse
+        }
 
 
     fun initApp(
         // keys
         revenueCatApiKey: String,
         mixPanelApiKey: String,
+        privacyPolicy: String = "",
+        termsOfUse: String = "",
     ) {
         synchronized(lock) {
             if (isInitialized)
                 return
             config = KmpConfig(
                 revenueCatApiKey = revenueCatApiKey,
-                mixPanelApiKey = mixPanelApiKey
+                mixPanelApiKey = mixPanelApiKey,
+                privacyPolicy = privacyPolicy,
+                termsOfUse = termsOfUse,
             )
             isInitialized = true
         }
     }
-
-
 
 
 }
