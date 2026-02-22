@@ -1,0 +1,32 @@
+/* Right Sidebar TOC Layout Enhancements */
+.md-sidebar--secondary {
+  height: auto !important;
+}
+.md-sidebar--secondary .md-sidebar__scrollwrap {
+  overflow: visible !important;
+  height: auto !important;
+}
+.md-sidebar--secondary .md-sidebar__inner {
+  position: static !important;
+  height: auto !important;
+}
+
+/* Feedback Widget Enhancements */
+.md-feedback {
+  margin-top: 3rem !important;
+  padding: 1.5rem !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+body[data-md-color-scheme="slate"] .md-feedback {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.md-feedback__title {
+  font-weight: 600 !important;
+  margin-bottom: 0.5rem !important;
+}

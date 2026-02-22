@@ -24,3 +24,4 @@ DerivedData/
 composeApp/release/
 *.bak
 schemas
+venv

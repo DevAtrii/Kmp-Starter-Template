@@ -43,10 +43,10 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.kmpstarter.ui_utils.modifiers.customOverscroll
-import com.kmpstarter.ui_utils.providers.provideNullAndroidOverscrollConfiguration
 import com.kmpstarter.core.platform.isAndroid
 import com.kmpstarter.core.platform.platform
+import com.kmpstarter.ui_utils.modifiers.customOverscroll
+import com.kmpstarter.ui_utils.providers.provideNullAndroidOverscrollConfiguration
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class)

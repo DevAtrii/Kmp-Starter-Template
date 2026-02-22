@@ -17,7 +17,6 @@ package com.kmpstarter.feature_resources.locale
 
 import androidx.compose.ui.unit.LayoutDirection
 import com.kmpstarter.feature_resources.Res
-import com.kmpstarter.feature_resources.lang_ar
 import com.kmpstarter.feature_resources.lang_en
 import com.kmpstarter.feature_resources.lang_es
 import com.kmpstarter.feature_resources.lang_hi

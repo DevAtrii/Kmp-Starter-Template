@@ -1,0 +1,361 @@
+/* Modern Shadcn-like Theme for MkDocs Material */
+
+:root {
+  /* Use Google Sans & Google Sans Code */
+  --md-text-font-family:
+    "Google Sans", -apple-system, BlinkMacSystemFont, Helvetica, Arial,
+    sans-serif;
+  --md-text-font: var(--md-text-font-family);
+  --md-code-font:
+    "Google Sans Code", "JetBrains Mono", SFMono-Regular, Consolas, Menlo,
+    monospace;
+}
+
+/* Load web fonts for Google Sans if not locally installed */
+@font-face {
+  font-family: "Google Sans";
+  font-style: normal;
+  font-weight: 400;
+  src: url("https://fonts.gstatic.com/s/googlesans/v44/4UaGrENHsxJlGDuGo1OIlL3Owp4.woff2")
+    format("woff2");
+}
+@font-face {
+  font-family: "Google Sans";
+  font-style: normal;
+  font-weight: 500;
+  src: url("https://fonts.gstatic.com/s/googlesans/v44/4UabrENHsxJlGDuGo1OIlLU94YtzCwc.woff2")
+    format("woff2");
+}
+@font-face {
+  font-family: "Google Sans";
+  font-style: normal;
+  font-weight: 600;
+  src: url("https://fonts.gstatic.com/s/googlesans/v44/4UabrENHsxJlGDuGo1OIlLAP4YtzCwc.woff2")
+    format("woff2");
+}
+@font-face {
+  font-family: "Google Sans";
+  font-style: normal;
+  font-weight: 700;
+  src: url("https://fonts.gstatic.com/s/googlesans/v44/4UabrENHsxJlGDuGo1OIlLV14YtzCwc.woff2")
+    format("woff2");
+}
+
+/* Base Background */
+body[data-md-color-scheme="default"] {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  background-attachment: fixed !important;
+  color: #0f172a;
+}
+/* Improved Night Mode Scheme base on Shadcn Zinc */
+body[data-md-color-scheme="slate"] {
+  background: #09090b !important;
+  color: #fafafa;
+}
+
+/* Haze / Glassmorphism Navigation Bar */
+.md-header {
+  background: rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02) !important;
+  position: sticky;
+  top: 0;
+}
+body[data-md-color-scheme="default"] .md-header {
+  color: #0f172a !important;
+}
+body[data-md-color-scheme="default"] .md-header a,
+body[data-md-color-scheme="default"] .md-header label,
+body[data-md-color-scheme="default"] .md-header button {
+  color: #0f172a !important;
+}
+
+/* Dark mode header */
+body[data-md-color-scheme="slate"] .md-header {
+  background: rgba(9, 9, 11, 0.4) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3) !important;
+  color: #fafafa !important;
+}
+body[data-md-color-scheme="slate"] .md-header a,
+body[data-md-color-scheme="slate"] .md-header label,
+body[data-md-color-scheme="slate"] .md-header button {
+  color: #fafafa !important;
+}
+
+/* Force standard drawer hierarchy */
+.md-sidebar--primary {
+  z-index: 122 !important; /* ensures standard Material overlay index */
+}
+body[data-md-color-scheme="default"]
+  [data-md-toggle="drawer"]:checked
+  ~ .md-overlay {
+  background-color: rgba(15, 23, 42, 0.4) !important;
+  backdrop-filter: blur(4px);
+  z-index: 121;
+}
+body[data-md-color-scheme="slate"]
+  [data-md-toggle="drawer"]:checked
+  ~ .md-overlay {
+  background-color: rgba(9, 9, 11, 0.6) !important;
+  backdrop-filter: blur(4px);
+  z-index: 121;
+}
+
+/* Mobile specific styling */
+@media screen and (max-width: 76.1875em) {
+  /* Clean nav drawer aesthetics with Glassmorphism */
+  .md-sidebar--primary {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.4) !important;
+  }
+  body[data-md-color-scheme="slate"] .md-sidebar--primary {
+    background: rgba(9, 9, 11, 0.7) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+  }
+
+  /* Show logo in mobile nav bar, place alongside title */
+  .md-header__button.md-logo {
+    display: block !important;
+    margin-right: 0.5rem;
+    padding: 0 !important;
+  }
+  .md-header__button.md-logo img,
+  .md-header__button.md-logo svg {
+    height: 2rem !important;
+    width: auto !important;
+  }
+  .md-header__title {
+    margin-left: 0 !important;
+  }
+
+  /* Target article content specifically to remove padding on mobile */
+  .md-content {
+    padding: 0 !important;
+  }
+  .md-content__inner {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    margin-top: 0.5rem !important;
+  }
+
+  /* Give the actual text area some breathing room to avoid hitting edges completely */
+  .md-content__inner article {
+    padding: 0 1rem !important;
+  }
+}
+
+/* Tabs Navigation Fix */
+.md-tabs {
+  background: transparent !important;
+  backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+body[data-md-color-scheme="slate"] .md-tabs {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Unified Sidebar Links (Night Mode Readability Improvement) */
+.md-nav__link {
+  border-radius: 6px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+  padding: 0.4rem 0.6rem;
+  color: #475569 !important; /* slate-600 */
+}
+.md-nav__link:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: #0f172a !important; /* slate-900 */
+}
+.md-nav__link--active {
+  background-color: rgba(15, 23, 42, 0.06) !important;
+  font-weight: 600 !important;
+  color: #0f172a !important;
+}
+
+/* Night Mode Sidebar */
+body[data-md-color-scheme="slate"] .md-nav__link {
+  color: #a1a1aa !important; /* zinc-400 */
+}
+body[data-md-color-scheme="slate"] .md-nav__link:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #fafafa !important;
+}
+body[data-md-color-scheme="slate"] .md-nav__link--active {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #fafafa !important;
+  font-weight: 600 !important;
+}
+
+/* Reset article content fonts to match */
+article,
+.md-typeset {
+  font-family: var(--md-text-font-family) !important;
+}
+
+/* Typography styles */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--md-text-font-family) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.025em;
+  color: inherit;
+}
+
+/* Code block fonts */
+code,
+pre,
+kbd {
+  font-family: var(--md-code-font) !important;
+}
+
+/* Shadcn-like Content Cards Desktop */
+@media screen and (min-width: 76.25em) {
+  .md-content__inner {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 2.5rem !important;
+    box-shadow:
+      0 4px 6px -1px rgb(0 0 0 / 0.05),
+      0 2px 4px -2px rgb(0 0 0 / 0.05);
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  body[data-md-color-scheme="slate"] .md-content__inner {
+    background: #09090b !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 4px 6px -1px rgb(0 0 0 / 0.2),
+      0 2px 4px -2px rgb(0 0 0 / 0.2);
+  }
+}
+
+/* Search bar glassmorphism */
+.md-search__form {
+  background-color: transparent !important;
+}
+.md-search__input {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(10px) !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+  transition: all 0.2s ease !important;
+}
+.md-search__input:focus {
+  background-color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+body[data-md-color-scheme="slate"] .md-search__input {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #fafafa !important;
+}
+body[data-md-color-scheme="slate"] .md-search__input:focus {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Enhancing Left Sidebar and TOC Layout */
+.md-nav__title {
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+}
+.md-sidebar--secondary .md-nav__title {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: #64748b !important;
+  margin-bottom: 0.75rem;
+}
+body[data-md-color-scheme="slate"] .md-sidebar--secondary .md-nav__title {
+  color: #a1a1aa !important;
+}
+.md-sidebar--secondary .md-nav__link {
+  font-size: 0.85rem;
+  padding: 0.35rem 0.75rem;
+  margin: 0.1rem 0;
+  border-left: 2px solid transparent;
+  border-radius: 0 6px 6px 0 !important;
+  transition: all 0.2s;
+}
+.md-sidebar--secondary .md-nav__link--active {
+  background-color: rgba(59, 130, 246, 0.05) !important;
+  color: #3b82f6 !important;
+  border-left: 2px solid #3b82f6 !important;
+  font-weight: 600 !important;
+}
+body[data-md-color-scheme="slate"]
+  .md-sidebar--secondary
+  .md-nav__link--active {
+  background-color: rgba(96, 165, 250, 0.05) !important;
+  color: #60a5fa !important;
+  border-left: 2px solid #60a5fa !important;
+}
+
+/* Dropdown list items inside the Left Nav */
+.md-nav__item--nested > .md-nav__link {
+  font-weight: 600;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+/* Bigger Desktop Logo Header */
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 2.2rem !important;
+  width: auto !important;
+}
+
+/* Transparent wrapper scroll */
+.md-sidebar__scrollwrap {
+  background-color: transparent !important;
+}
+
+/* Buttons */
+.md-button {
+  border-radius: 6px;
+  font-weight: 500;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+  color: #0f172a !important;
+}
+
+.md-grid {
+  max-width: 70rem !important;
+}
+
+body[data-md-color-scheme="slate"] .md-button {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #09090b;
+  color: #fafafa !important;
+}
+.md-button--primary {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border: none;
+}
+body[data-md-color-scheme="slate"] .md-button--primary {
+  background: #fafafa !important;
+  color: #09090b !important;
+}

@@ -93,11 +93,11 @@ import com.kmpstarter.core.events.enums.ThemeMode
 import com.kmpstarter.core.platform.platform
 import com.kmpstarter.feature_resources.Res
 import com.kmpstarter.feature_resources.locale.ui.LocaleSelectorDropdown
+import com.kmpstarter.feature_resources.toActualString
 import com.kmpstarter.feature_resources.welcome_screen_description
 import com.kmpstarter.feature_resources.welcome_screen_subtitle
 import com.kmpstarter.feature_resources.welcome_screen_title
 import com.kmpstarter.ui_components.lists.ScrollableColumn
-import com.kmpstarter.feature_resources.toActualString
 import com.kmpstarter.ui_utils.screen.ScreenSizeValue
 import com.kmpstarter.ui_utils.theme.Dimens
 import com.kmpstarter.ui_utils.theme.isAppInDarkTheme

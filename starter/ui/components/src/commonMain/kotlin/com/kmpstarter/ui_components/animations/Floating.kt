@@ -26,8 +26,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import kotlin.math.PI
-import kotlin.math.sin
 import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * Floating animation component that creates a smooth 2D floating effect.

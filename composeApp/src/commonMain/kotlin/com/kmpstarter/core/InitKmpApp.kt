@@ -24,7 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import org.koin.dsl.KoinAppDeclaration
-import org.koin.mp.KoinPlatform
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.seconds
 

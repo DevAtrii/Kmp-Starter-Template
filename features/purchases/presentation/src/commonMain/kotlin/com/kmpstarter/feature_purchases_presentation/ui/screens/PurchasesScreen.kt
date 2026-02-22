@@ -25,15 +25,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kmpstarter.core.events.controllers.SnackbarController
-import com.kmpstarter.ui_utils.side_effects.LaunchOnce
 import com.kmpstarter.feature_purchases_domain.models.PaywallMetadata
 import com.kmpstarter.feature_purchases_domain.models.Product
-import com.kmpstarter.feature_purchases_presentation.PurchasesViewModel
 import com.kmpstarter.feature_purchases_presentation.PurchasesActions
 import com.kmpstarter.feature_purchases_presentation.PurchasesEvents
+import com.kmpstarter.feature_purchases_presentation.PurchasesViewModel
 import com.kmpstarter.feature_purchases_presentation.ui.PurchasesDiscountV1Dialog
 import com.kmpstarter.feature_purchases_presentation.ui.screens.paywalls.PaywallV1
 import com.kmpstarter.ui_layouts.empty.EmptyStateWithAction
+import com.kmpstarter.ui_utils.side_effects.LaunchOnce
 import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
 import com.kmpstarter.utils.logging.Log
 import org.jetbrains.compose.resources.getString

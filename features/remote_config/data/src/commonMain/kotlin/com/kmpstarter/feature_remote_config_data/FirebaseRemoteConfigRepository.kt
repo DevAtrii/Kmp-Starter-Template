@@ -17,7 +17,6 @@ package com.kmpstarter.feature_remote_config_data
 
 import com.kmpstarter.feature_remote_config_domain.RemoteConfigRepository
 import com.kmpstarter.feature_remote_config_domain.RemoteConfigValue
-import com.kmpstarter.utils.logging.Log
 import dev.gitlive.firebase.remoteconfig.FirebaseRemoteConfig
 import dev.gitlive.firebase.remoteconfig.get
 
