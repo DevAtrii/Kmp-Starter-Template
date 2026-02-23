@@ -1,9 +1,12 @@
 # Metadata
 
-This page include changing app icon, changing version, changing package name & change app name docs.
+This page includes documentation for changing the app icon, version, package name, and app name.
+
+---
 
 ## Changing App Version
-``` toml title="gradle/libs.versions.toml"
+
+```toml title="gradle/libs.versions.toml"
 [versions]
 ...
 app-version-major = "1"
@@ -11,10 +14,11 @@ app-version-minor = "0"
 app-version-patch = "0"
 ...
 ```
+
 We use a `MAJOR.MINOR.PATCH` scheme:
 
-* **Major** → major changes, total revamp
-* **Minor** → small features or changes
+* **Major** → major changes, complete revamp
+* **Minor** → small features or updates
 * **Patch** → bug fixes
 
 Version code is generated as:
@@ -25,27 +29,31 @@ Version code is generated as:
 
 Example: `2.5.0 → 25000`
 
-On iOS, `AppConfig.xcconfig` is automatically synced from `gradle/libs.versions.toml` using `Run Script` in Build Phases inside xCode.
+On iOS, `AppConfig.xcconfig` is automatically synced from `gradle/libs.versions.toml` using a **Run Script** in Build Phases inside Xcode.
 The first build updates the file; subsequent builds use the updated version.
 
-
+---
 
 ## Platform Specific
+
 ### Android
+
 #### App Icon
-You can generate app icon using <a href="https://icon.kitchen/" target="_blank">IconKitchen</a>. just upload your app icon and it will generate all the required icons for you.
 
-??? abstract "IconKitchen"
-    ![IconKitchen](../assets/icon-kitchen.png)
+You can generate an app icon using <a href="https://icon.kitchen/" target="_blank">IconKitchen</a>. Just upload your app icon, and it will generate all required icons.
 
-After exporting the icon you will get a zip file, extract it and copy all files from `IconKitchen-Output/android/res/*` to `androidApp/src/main/res/` folder.
+After exporting, you will get a zip file. Extract it and copy all files from `IconKitchen-Output/android/res/*` to the `androidApp/src/main/res/` folder.
+
 !!! note "Important"
-    Make sure to overwrite all files in `androidApp/src/main/res/` folder.
+    Make sure to overwrite all files in `androidApp/src/main/res/`.
 
-Done your androidApp icon has been changed
+Your Android app icon is now updated.
 
 ##### Removing Monochrome Mode
-IconKitchen by default enables monochrome mode, but if your icon isn't png it can cause app rejection on playstore, To disable `monochrome` mode remove the following line:
+
+IconKitchen enables monochrome mode by default. If your icon isn't PNG, it can cause Play Store rejection.
+To disable `monochrome` mode, remove the following line:
+
 ```xml title="androidApp/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" hl_lines="5"
 <?xml version="1.0" encoding="utf-8"?>
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
@@ -55,18 +63,25 @@ IconKitchen by default enables monochrome mode, but if your icon isn't png it ca
 </adaptive-icon>
 ```
 
+---
+
 #### App Name
-``` xml title="androidApp/src/main/res/values/strings.xml"
+
+```xml title="androidApp/src/main/res/values/strings.xml"
 <resources>
     ...
     <string name="app_name">KmpStarter</string>
     ...
 </resources>
 ```
-just change the `KmpStarter` to your app name.
+
+Change `KmpStarter` to your app name.
+
+---
 
 #### Package Name
-``` kotlin title="androidApp/build.gradle.kts"
+
+```kotlin title="androidApp/build.gradle.kts"
 android {
     ...
     defaultConfig {
@@ -76,51 +91,70 @@ android {
     }
 }
 ```
-change the `com.kmpstarter` to your package name
-### IOS
+
+Change `com.kmpstarter` to your package name.
+
+---
+
+### iOS
+
 #### App Name
-just use the xcode to change the app name:
+
+Use Xcode to change the app name:
 ![changing app name](../assets/ios-app-name.png)
+
+---
+
 #### Package Name
-``` xcconfig title="iosApp/AppConfig.xcconfig"
+
+```xcconfig title="iosApp/AppConfig.xcconfig"
 PRODUCT_BUNDLE_IDENTIFIER=com.kmpstarter.nativeapp
 ```
-change the `com.kmpstarter.nativeapp` to your package name
+
+Change `com.kmpstarter.nativeapp` to your package name.
+
 !!! warning "Warning"
-    make sure to only change the package name through `AppConfig.xcconfig`, changing it through xcode UI might cause some issues
+    Always change the package name through `AppConfig.xcconfig`. Changing it through the Xcode UI may cause issues.
+
+---
 
 #### App Icon
-You can create an app icon using <a href="https://developer.apple.com/icon-composer/" target="_blank">IconComposer</a>. With IconComposer you'll get Apple famous Liquid Glass effect as well.
+
+You can create an app icon using <a href="https://developer.apple.com/icon-composer/" target="_blank">IconComposer</a>, which also gives the Apple Liquid Glass effect.
 
 ##### Step 0
-Create App Icon using IconComposer
-![Exported Icons](../assets/ios-icon-0.png)
+
+Create the app icon using IconComposer:
+![IconComposer](../assets/ios-icon-0.jpeg)
+
 ##### Step 1
-Export The App Icon, copy the following settings to export all varients
-![Exported Icons](../assets/ios-icon-1.png)
-you'll see exported icons like this:
-![Exported Icons](../assets/ios-icon-2.png)
+
+Export the app icon with the following settings to generate all variants:
+![Export Settings](../assets/ios-icon-1.jpeg)
+You’ll see exported icons like this:
+![Exported Icons](../assets/ios-icon-2.jpeg)
 
 ##### Step 2
-Open Xcode & goto `Assets` inside `iosApp` target.
-![Exported Icons](../assets/ios-icon-3.png)
-Drag all the coresponding icons to each varient block
-like: 
 
-- `Default -> Any Apperance`
-- `Dark -> Dark Apperance`
-- `Tinted -> Tinted Apperance`
+Open Xcode and go to `Assets` inside the `iosApp` target:
+![Assets](../assets/ios-icon-3.jpeg)
+Drag all corresponding icons to each variant block, e.g.:
 
-![Exported Icons](../assets/ios-icon-4.png)
+* `Default -> Any Appearance`
+* `Dark -> Dark Appearance`
+* `Tinted -> Tinted Appearance`
 
-Done your iosApp icon has been changed!
+![Icons](../assets/ios-icon-4.jpeg)
 
+Your iOS app icon is now updated.
+
+---
 
 ## Support My Project ☕️
 
-If you find this project useful, consider supporting it by buying me a coffee. Your support will help me to continue working on this project and add more features.
+If you find this project useful, consider supporting it by buying me a coffee. Your support helps me continue working on this project and add more features.
 
-<div >
+<div>
   <a href="https://buymeacoffee.com/devatrii" target="_blank">
     <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="150" />
   </a>

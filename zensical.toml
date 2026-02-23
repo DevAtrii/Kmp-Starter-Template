@@ -2,13 +2,12 @@
 site_name = "KMP Starter Docs"
 site_description = "Documentation for KMP Starter Template"
 
-[theme]
-name = "material"
+[project.theme]
+name = "KMP Starter Docs"
 logo = "assets/logo.webp"
-favicon = "assets/logo.webp"
+favicon = "assets/favicon/favicon.ico"
 font = false
 features = [
-    "navigation.sections",
     "navigation.footer",
     "search.suggest",
     "search.highlight",
@@ -17,22 +16,24 @@ features = [
     "content.code.select"
 ]
 
-[[theme.palette]]
+
+[[project.theme.palette]]
 scheme = "default"
-primary = "white"
-accent = "indigo"
-[theme.palette.toggle]
-icon = "material/weather-night"
-name = "Switch to dark mode"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
 
-[[theme.palette]]
+[[project.theme.palette]]
+palette.accent = "green"
 scheme = "slate"
-primary = "slate"
-accent = "indigo"
-
-[theme.palette.toggle]
-icon = "material/weather-sunny"
-name = "Switch to light mode"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+#[theme.palette.toggle]
+#icon = "material/weather-night"
+#name = "Switch to dark mode"
+#
+#[theme.palette.toggle]
+#icon = "material/weather-sunny"
+#name = "Switch to light mode"
 
 [extra.analytics]
 provider = "google"

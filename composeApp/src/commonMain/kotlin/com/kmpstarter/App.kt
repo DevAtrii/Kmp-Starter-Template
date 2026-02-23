@@ -92,7 +92,7 @@ private fun MainApp(
         ) {
             CompositionLocalProvider(LocalThemeMode provides currentThemeMode) {
                 ApplicationTheme(
-                    darkTheme = currentThemeMode.toComposableBoolean(isSystemInDarkTheme()),
+                    darkTheme = currentThemeMode.isInDarkTheme(isSystemInDarkTheme()),
                     dynamicColor = currentDynamicColor
                 ) {
                     Scaffold(

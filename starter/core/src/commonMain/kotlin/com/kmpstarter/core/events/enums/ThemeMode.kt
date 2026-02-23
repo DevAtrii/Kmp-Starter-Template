@@ -21,7 +21,7 @@ enum class ThemeMode(val displayName: String) {
     DARK("Dark"),
     SYSTEM("System");
 
-    fun toComposableBoolean(isSystemInDarkTheme: Boolean) =
+    fun isInDarkTheme(isSystemInDarkTheme: Boolean) =
         when (this) {
             LIGHT -> false
             DARK -> true
