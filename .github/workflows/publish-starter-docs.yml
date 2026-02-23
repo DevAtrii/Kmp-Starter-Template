@@ -1,34 +1,26 @@
-name: Publish Starter Docs
-
+name: Documentation
 on:
-  workflow_dispatch:  # Allows manual triggering from the Actions tab
-
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 jobs:
-  build-and-publish:
-    name: Build & Publish Zensical Docs
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"  # or your preferred Python version
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install zensical
-
-      - name: Build docs
-        run: |
-          zensical build
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v6
+          python-version: 3.x
+      - run: pip install zensical
+      - run: zensical build --clean
+      - uses: actions/upload-pages-artifact@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site  # Zensical default output folder
-          publish_branch: gh-pages
+          path: site
+      - uses: actions/deploy-pages@v4
+        id: deployment
