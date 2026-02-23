@@ -25,3 +25,4 @@ composeApp/release/
 *.bak
 schemas
 venv
+site

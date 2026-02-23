@@ -1,0 +1,72 @@
+[project]
+site_name = "KMP Starter Docs"
+site_description = "Documentation for KMP Starter Template"
+
+[theme]
+name = "material"
+logo = "assets/logo.webp"
+favicon = "assets/logo.webp"
+font = false
+features = [
+    "navigation.sections",
+    "navigation.footer",
+    "search.suggest",
+    "search.highlight",
+    "content.code.copy",
+    "content.code.annotate",
+    "content.code.select"
+]
+
+[[theme.palette]]
+scheme = "default"
+primary = "white"
+accent = "indigo"
+[theme.palette.toggle]
+icon = "material/weather-night"
+name = "Switch to dark mode"
+
+[[theme.palette]]
+scheme = "slate"
+primary = "slate"
+accent = "indigo"
+
+[theme.palette.toggle]
+icon = "material/weather-sunny"
+name = "Switch to light mode"
+
+[extra.analytics]
+provider = "google"
+property = "G-XXXXXXXXXX"
+
+[extra.analytics.feedback]
+title = "Was this page helpful?"
+
+[[extra.analytics.feedback.ratings]]
+icon = "material/emoticon-happy-outline"
+name = "This page was helpful"
+data = 1
+note = "Thanks for your feedback!"
+
+[[extra.analytics.feedback.ratings]]
+icon = "material/emoticon-sad-outline"
+name = "This page could be improved"
+data = 0
+note = "Thanks for your feedback! Help us improve this page by creating an issue in our <a href=\"https://github.com/DevAtrii/Kmp-Starter-Tempalte/discussions\" target=\"_blank\" rel=\"noopener\">GitHub Discussions</a>."
+
+[markdown_extensions]
+admonition = {}
+footnotes = {}
+def_list = {}
+"pymdownx.details" = {}
+"pymdownx.superfences" = {}
+"pymdownx.inlinehilite" = {}
+"pymdownx.snippets" = {}
+copy_button = {}
+attr_list = {}
+md_in_html = {}
+
+[markdown_extensions."pymdownx.tasklist"]
+custom_checkbox = true
+
+[markdown_extensions."pymdownx.highlight"]
+anchor_linenums = true

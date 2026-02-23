@@ -1,47 +1,47 @@
-# KMP Starter Guide
+# Getting Started
 
-Welcome to the documentation. This page utilizes advanced Markdown extensions for a professional developer experience.
+## Requirements
 
-## Quick Setup
+- [x] Kotlin 2.3.10
+- [x] Java 17
+- [x] Gradle 9.0 or later
+- [x] Android Studio Otter 2025.2.3 or later
+- [x] Xcode 26 or later
 
-!!! info "Important Note"
-Ensure you have the latest Kotlin version installed before proceeding with the `KmpAppInitializer` setup.
+!!! info "Android Studio Compatibility"
+    Starter Template is compatible with Gradle 9.0, you can see list of android studio versions that supports gradle 9.0 <a href="https://developer.android.com/studio/releases#android_gradle_plugin_and_android_studio_compatibility" target="_blank" rel="noopener noreferrer">
+    here
+    </a>
 
-### Development Tasks
+## Using Template
 
-- [x] Setup Koin modules
-- [x] Configure RevenueCat keys
-- [ ] Implement custom Auth provider
+Let's see how you can use Starter Template
+### Step 0
+Clone the repository
 
-## Code Implementation
-
-```kotlin
-fun initKmpApp() {
-    // Standard initialization sequence (1)
-    KmpStarter.initApp(apiKey = "MY_KEY")
-    initKoin()
-}
+``` bash
+git clone https://github.com/DevAtrii/Kmp-Starter-Template.git starter-app
 ```
 
-1. This order is critical to prevent DI resolution errors.
+that's it now open the project in your IDE (android studio + xcode) and run the app.
 
-## Advanced Features
+you can find the xcode project inside `iosApp` folder, open the `iosApp.xcodeproj` file in xcode and run the app.
 
-??? abstract "Architecture Details"
-This template follows Clean Architecture principles:
-- **Data Layer**: Repositories and DataSources
-- **Domain Layer**: UseCases and Models
-- **Presentation Layer**: Compose Multiplatform UI
+in the next page learn about all modules.
 
 
-## Glossary
+## Support My Project ☕️
 
-**KMP**
-: Kotlin Multiplatform — the core technology behind this template.[^1]
+If you find this project useful, consider supporting it by buying me a coffee. Your support will help me to continue working on this project and add more features.
 
-**RevenueCat**
-: The service used for handling in-app purchases and subscriptions.
+<div >
+  <a href="https://buymeacoffee.com/devatrii" target="_blank">
+    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="150" />
+  </a>
+  <a href="https://www.youtube.com/@devatrii" target="_blank">
+    <img src="https://img.shields.io/badge/YouTube-DevAtrii-red?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube Channel" />
+  </a>
+</div>
 
----
 
-[^1]: KMP allows sharing up to 90% of code across Android and iOS.
+ 
