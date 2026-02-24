@@ -86,7 +86,6 @@ kotlin {
             implementation(projects.features.notifications.core)
             implementation(projects.features.notifications.local)
             implementation(projects.features.notifications.push)
-
             // Navigation
             implementation(projects.features.navigation)
             // remote config
@@ -99,6 +98,11 @@ kotlin {
             implementation(projects.features.core.data)
             implementation(projects.features.core.domain)
             implementation(projects.features.core.presentation)
+
+            // Feature Your Feature
+            implementation(projects.features.yourFeature.data)
+            implementation(projects.features.yourFeature.domain)
+            implementation(projects.features.yourFeature.presentation)
 
         }
         iosMain.dependencies {

@@ -33,6 +33,9 @@ import com.kmpstarter.feature_purchases_presentation.di.purchasesPresentationMod
 import com.kmpstarter.feature_remote_config_data.di.remoteConfigDataModule
 import com.kmpstarter.feature_remote_config_domain.di.remoteConfigDomainModule
 import com.kmpstarter.feature_resources.di.resourceModule
+import com.kmpstarter.feature_your_feature_data.di.featureYourDataModule
+import com.kmpstarter.feature_your_feature_domain.di.featureYourDomainModule
+import com.kmpstarter.feature_your_feature_presentation.di.featureYourPresentationModule
 import com.kmpstarter.utils.di.utilsModule
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
@@ -80,6 +83,28 @@ internal fun initKoin(config: KoinAppDeclaration? = null) {
             starterModules,
             kmpAppInitializerModule,
             /* Add Modules Here */
+            featureYourDataModule,
+            featureYourDomainModule,
+            featureYourPresentationModule
         )
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

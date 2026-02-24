@@ -27,7 +27,6 @@ fun Onboarding(viewModel:OnboardingViewModel) {
 
 !!! warning "Platform Behavior"
     - On Android, `askForReview()` may throw an exception if the review dialog is unavailable.
-    - On iOS, the call is skipped silently.
 
 ---
 

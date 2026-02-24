@@ -43,7 +43,8 @@ fun rememberStarterBackStack(vararg initialScreens: NavKey): NavBackStack<NavKey
 }
 ```
 
-If a screen is not registered using `subclass(...)`, state restoration will fail.
+!!! warning "State Restoration"
+    If a screen is not registered using `subclass(...)`, state restoration will fail.
 
 ---
 

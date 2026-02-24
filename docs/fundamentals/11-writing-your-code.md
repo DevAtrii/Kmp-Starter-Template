@@ -1,4 +1,12 @@
-# My Code
+# Writing Own Code
+
+Starter Template is a project agnostic template, it doesn't care what app you are building it just integrates itself, let's talk about where you can start writing the code.
+
+Since we are using Clean Architecture, we've divided our app into each feature, you can develop your app as a feature for example let's take notes app
+
+you can find `your-feature` module inside `features` with `data`, `domain` & `presentation` submodules. you can rename it to your feature like `notes` and start writing your code in clean way.
+
+
 
 Welcome to the documentation. This page utilizes advanced Markdown extensions for a professional developer experience.
 
