@@ -1,7 +1,7 @@
 [project]
 site_name = "KMP Starter Docs"
 site_description = "Documentation for KMP Starter Template"
-site_url="http://localhost:3000"
+site_url="https://devatrii.github.io/Kmp-Starter-Template"
 repo_name = "devatrii/kmp-starter-template"
 repo_url="https://github.com/DevAtrii/Kmp-Starter-Template"
 
