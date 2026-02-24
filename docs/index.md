@@ -1,6 +1,6 @@
 ---
 comments: true
-title: Starter Template
+title: Home
 icon: lucide/home
 ---
 

@@ -31,7 +31,6 @@ fun getKmpDatabase(
     val builder = databaseProvider.getDatabase()
     return builder
         .addMigrations(*KmpStarterDatabaseMigrations.SUPPORTED_MIGRATIONS)
-//        .fallbackToDestructiveMigrationOnDowngrade()
         .setDriver(BundledSQLiteDriver())
         .setQueryCoroutineContext(Dispatchers.IO)
         .build()
