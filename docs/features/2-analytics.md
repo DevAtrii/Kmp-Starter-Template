@@ -1,4 +1,4 @@
-[theme.md](../customization/theme.md)# KMP Starter Guide
+# Analytics
 
 Welcome to the documentation. This page utilizes advanced Markdown extensions for a professional developer experience.
 

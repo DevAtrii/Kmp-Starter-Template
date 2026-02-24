@@ -1,4 +1,4 @@
-# KMP Starter Guide
+# Purchases
 
 Welcome to the documentation. This page utilizes advanced Markdown extensions for a professional developer experience.
 

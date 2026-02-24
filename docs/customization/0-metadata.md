@@ -125,26 +125,26 @@ You can create an app icon using <a href="https://developer.apple.com/icon-compo
 ##### Step 0
 
 Create the app icon using IconComposer:
-![IconComposer](../assets/ios-icon-0.jpeg)
+![IconComposer](../assets/ios-icon-0.webp)
 
 ##### Step 1
 
 Export the app icon with the following settings to generate all variants:
-![Export Settings](../assets/ios-icon-1.jpeg)
+![Export Settings](../assets/ios-icon-1.webp)
 You’ll see exported icons like this:
-![Exported Icons](../assets/ios-icon-2.jpeg)
+![Exported Icons](../assets/ios-icon-2.webp)
 
 ##### Step 2
 
 Open Xcode and go to `Assets` inside the `iosApp` target:
-![Assets](../assets/ios-icon-3.jpeg)
+![Assets](../assets/ios-icon-3.webp)
 Drag all corresponding icons to each variant block, e.g.:
 
 * `Default -> Any Appearance`
 * `Dark -> Dark Appearance`
 * `Tinted -> Tinted Appearance`
 
-![Icons](../assets/ios-icon-4.jpeg)
+![Icons](../assets/ios-icon-4.webp)
 
 Your iOS app icon is now updated.
 
