@@ -27,3 +27,4 @@ schemas
 venv
 site
 .cache
+temp

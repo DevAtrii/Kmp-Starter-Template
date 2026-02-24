@@ -67,6 +67,20 @@ abstract class KmpStarterDatabase : RoomDatabase() {
 ...
 ```
 
+you can also configure other things like
+``` kotlin linenums="1" title="features/database/.../DatabaseProvider.kt"
+fun getKmpDatabase(
+    ...
+): KmpStarterDatabase {
+    val builder = ...
+    return builder
+        .addMigrations(*KmpStarterDatabaseMigrations.SUPPORTED_MIGRATIONS)
+        .setDriver(BundledSQLiteDriver())
+        .setQueryCoroutineContext(Dispatchers.IO)
+        .build()
+}
+
+```
 ---
 
 ## Adding Tables
