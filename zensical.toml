@@ -27,7 +27,12 @@ features = [
     "content.tooltips"
 ]
 
-
+[[project.theme.palette]]
+scheme = "slate"
+primary = "green"
+accent = "green"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
 
 [[project.theme.palette]]
 scheme = "default"
@@ -36,14 +41,7 @@ toggle.name = "Switch to dark mode"
 primary = "green"
 accent = "green"
 
-[[project.theme.palette]]
-scheme = "slate"
-primary = "green"
-accent = "green"
-toggle.icon = "lucide/moon"
-toggle.name = "Switch to light mode"
-font.text="cursive"
-font.code="Google Sans Code"
+
 
 
 [project.extra.analytics.feedback]
