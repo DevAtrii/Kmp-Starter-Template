@@ -1,55 +1,189 @@
-# Writing Own Code
+# Writing Your Own Code
 
-Starter Template is a project agnostic template, it doesn't care what app you are building it just integrates itself, let's talk about where you can start writing the code.
+Starter Template is project-agnostic. It does not care what app you are building — it simply provides a clean and scalable structure so you can start building immediately.
 
-Since we are using Clean Architecture, we've divided our app into each feature, you can develop your app as a feature for example let's take notes app
+Since the template follows **Clean Architecture**, each feature is divided into:
 
-you can find `your-feature` module inside `features` with `data`, `domain` & `presentation` submodules. you can rename it to your feature like `notes` and start writing your code in clean way.
+* `data`
+* `domain`
+* `presentation`
 
-
-
-Welcome to the documentation. This page utilizes advanced Markdown extensions for a professional developer experience.
-
-## Quick Setup
-
-!!! info "Important Note"
-Ensure you have the latest Kotlin version installed before proceeding with the `KmpAppInitializer` setup.
-
-### Development Tasks
-
-- [x] Setup Koin modules
-- [x] Configure RevenueCat keys
-- [ ] Implement custom Auth provider
-
-## Code Implementation
-
-```kotlin
-fun initKmpApp() {
-    // Standard initialization sequence (1)
-    KmpStarter.initApp(apiKey = "MY_KEY")
-    initKoin()
-}
-```
-
-1. This order is critical to prevent DI resolution errors.
-
-## Advanced Features
-
-??? abstract "Architecture Details"
-This template follows Clean Architecture principles:
-- **Data Layer**: Repositories and DataSources
-- **Domain Layer**: UseCases and Models
-- **Presentation Layer**: Compose Multiplatform UI
-
-
-## Glossary
-
-**KMP**
-: Kotlin Multiplatform — the core technology behind this template.[^1]
-
-**RevenueCat**
-: The service used for handling in-app purchases and subscriptions.
+If you are building a **Notes app**, you can convert `your-feature` into a `notes` feature and start implementing your logic.
 
 ---
 
-[^1]: KMP allows sharing up to 90% of code across Android and iOS.
+## Feature Structure
+
+You will find the placeholder module inside:
+
+```
+features/your-feature/
+```
+
+It contains:
+
+```
+data/
+domain/
+presentation/
+```
+
+Rename this module to match your feature and begin development.
+
+---
+
+# Refactoring (Recommended)
+
+It is strongly recommended to properly rename `your-feature`.
+The placeholder name has no meaning and should be replaced.
+
+---
+
+## Step 0 – Rename Module
+
+Right-click on `your-feature`
+→ `Refactor`
+→ `Rename`
+
+![Refactor Step 0](../assets/refactor/refactor-0.webp)
+
+---
+
+## Step 1 – Rename Directory
+
+Select **Rename Directory**
+
+![Refactor Step 1](../assets/refactor/refactor-1.webp)
+
+---
+
+## Step 2 – Enter Feature Name
+
+Enter your feature name.
+
+Example: `notes`
+
+![Refactor Step 2](../assets/refactor/refactor-2.webp)
+
+---
+
+## Step 3 – Update settings.gradle.kts
+
+Open `settings.gradle.kts` in the root directory and rename module references.
+
+### Before
+
+```kotlin title="settings.gradle.kts" linenums="1" hl_lines="3-5"
+...
+/*Your Feature*/
+include(":features:your-Feature:presentation")
+include(":features:your-Feature:domain")
+include(":features:your-Feature:data")
+```
+
+### After
+
+```kotlin title="settings.gradle.kts" linenums="1" hl_lines="3-5"
+...
+/*Your Feature*/
+include(":features:notes:presentation")
+include(":features:notes:domain")
+include(":features:notes:data")
+```
+
+![Refactor Step 3](../assets/refactor/refactor-3.webp)
+
+---
+
+## Step 4 – Rename Across Project
+
+`your-Feature` is referenced by other modules using project accessors.
+
+Rename it everywhere as shown in the screenshot:
+
+![Refactor Step 4](../assets/refactor/refactor-4.webp)
+
+!!! note "Shortcuts"
+    - Windows: ++ctrl+shift+r++
+    - Mac: ++cmd+shift+r++
+
+---
+
+## Step 5 – Rename Package (Data Layer)
+
+Right-click:
+
+```
+.../data/commonMain/.../feature_your_feature_data
+```
+
+→ `Refactor`
+→ `Rename`
+
+![Refactor Step 5](../assets/refactor/refactor-5.webp)
+
+---
+
+## Step 6 – Select All Directories
+
+This is important.
+
+![Refactor Step 6](../assets/refactor/refactor-6.webp)
+
+---
+
+## Step 7 – Enter New Package Name
+
+Example:
+
+```
+feature_notes_data
+```
+
+![Refactor Step 7](../assets/refactor/refactor-7.webp)
+
+---
+
+## Step 8 – Rename Domain Layer
+
+Repeat the same process for the `domain` layer.
+
+![Refactor Step 8](../assets/refactor/refactor-8.webp)
+
+---
+
+## Step 9 – Rename Presentation Layer
+
+Repeat the same process for the `presentation` layer.
+
+![Refactor Step 9](../assets/refactor/refactor-9.webp)
+
+---
+
+# Done
+
+You have successfully refactored the placeholder feature.
+
+Now you can start writing your code inside:
+
+* `data` → repositories, data sources
+* `domain` → use cases, models
+* `presentation` → UI, ViewModels, state
+
+Follow Clean Architecture principles to keep your feature modular and scalable.
+
+---
+
+# Dependency Injection
+
+Each layer contains a `di/` package for dependency injection.
+
+You can:
+
+* Rename the DI module to match your feature
+* Add your repositories and use cases
+* It is already included in `initKoin`
+
+You can replicate this structure for every new feature you build.
+
+Starter Template gives you structure — you focus on building your app.

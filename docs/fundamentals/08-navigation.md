@@ -20,9 +20,8 @@ sealed class AuthScreens : NavKey {
 ```
 
 !!! note "Rules"
-    * Must be `@Serializable`
-    * Must extend `NavKey`
-    * Use `sealed class` per feature
+_ Must be `@Serializable`
+_ Must extend `NavKey` \* Use `sealed class` per feature
 
 ---
 
@@ -44,7 +43,7 @@ fun rememberStarterBackStack(vararg initialScreens: NavKey): NavBackStack<NavKey
 ```
 
 !!! warning "State Restoration"
-    If a screen is not registered using `subclass(...)`, state restoration will fail.
+If a screen is not registered using `subclass(...)`, state restoration will fail.
 
 ---
 
@@ -64,10 +63,10 @@ val navigationModule = module {
     }
 }
 ```
+
 !!! note "Custom Module"
-    You can also create a custom module inside your feature `di` package,
-    don't forget to include it inside `initKoin`
-    
+You can also create a custom module inside your feature `di` package,
+don't forget to include it inside `initKoin`
 
 ---
 
@@ -75,7 +74,7 @@ val navigationModule = module {
 
 Get navigator:
 
-```kotlin 
+```kotlin
 val navigator = StarterNavigator.getCurrent()
 ```
 
@@ -95,6 +94,93 @@ Example:
 navigator.popAllAndNavigate(StarterScreens.Home)
 ```
 
+## 5. Changing Initial Screen
+
+You can change the initial (starting) screen from `App.kt`.
+
+By default, navigation starts from `StarterScreens.Splash`.
+To change it, update the first parameter of `StarterNavigation`.
+
+```kotlin title="composeApp/src/commonMain/kotlin/com/kmpstarter/App.kt" linenums="1" hl_lines="20"
+@Composable
+private fun MainApp(
+    ...
+) {
+    ...
+    AppUpdateProvider(
+        ...
+    ) {
+        LocaleProvider(
+            overrideDefault = StarterLocales.ENGLISH
+        ) {
+            CompositionLocalProvider(...) {
+                ApplicationTheme(
+                    ...
+                ) {
+                    Scaffold(
+                        ...
+                    ) { _: PaddingValues ->
+                        StarterNavigation(
+                            StarterScreens.Splash, // Change this
+                            modifier = Modifier
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+For example, to start directly from SignIn:
+
+```kotlin linenums="1"
+StarterNavigation(
+    AuthScreens.SignIn,
+    modifier = Modifier
+)
+```
+
+---
+
+## Keeping Splash → Onboarding → Your Screen Flow
+
+If you want to keep the default flow:
+
+```
+Splash → Onboarding → Your Screen
+```
+
+You can control it inside the navigation module.
+
+```kotlin title="composeApp/src/commonMain/.../navigation/NavigationModule.kt" linenums="1" hl_lines="8 19"
+val navigationModule = module {
+    ...
+    navigation<StarterScreens.Splash> { route ->
+        ...
+        SplashScreen(
+            onNavigate = {
+                navigator.popAndNavigate(
+                    route = StarterScreens.Welcome
+                )
+            },
+            ...
+        )
+    }
+    navigation<StarterScreens.Onboarding> { route ->
+        ...
+        OnboardingV1Screen(
+            onNavigate = {
+                navigator.popAndNavigate(
+                    route = StarterScreens.Welcome
+                )
+            }
+        )
+    }
+    ...
+}
+```
+
 ---
 
 !!! abstract "Navigation Flow"
@@ -102,6 +188,6 @@ navigator.popAllAndNavigate(StarterScreens.Home)
     2. Register in `StarterBackStack`
     3. Add route in `NavigationModule` or custom module
     4. Use `StarterNavigator` to navigate
+    5. Change `inital screen` if needed
 
     Navigation is type-safe, serializable, and works across Compose Multiplatform.
-
