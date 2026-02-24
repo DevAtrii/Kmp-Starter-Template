@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/database-backup
+---
+
 # DataStores (Local Storage)
 
 The Starter Template provides a unified **DataStore** setup for local storage in Kotlin Multiplatform projects.

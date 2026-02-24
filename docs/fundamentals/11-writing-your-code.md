@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/code
+---
+
 # Writing Your Own Code
 
 Starter Template is project-agnostic. It does not care what app you are building — it simply provides a clean and scalable structure so you can start building immediately.

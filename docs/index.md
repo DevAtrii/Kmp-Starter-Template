@@ -1,6 +1,7 @@
 ---
 comments: true
 title: Starter Template
+icon: lucide/home
 ---
 
 # KMP Starter Template

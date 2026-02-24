@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/file-terminal
+---
+
 # Logging
 
 Starter Template provides a simple logging utility via the `Log` object.

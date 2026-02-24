@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/bolt
+---
+
 # Remote Config
 
 The Starter Template includes a **type-safe Remote Config system** built using Clean Architecture.
@@ -13,7 +18,7 @@ It allows you to:
 ---
 
 ## Keys
-
+You can define all your keys inside:
 
 ```kotlin title="features/remote_config/domain/.../RemoteConfigKeys.kt" linenums="1"
 @Serializable
@@ -53,6 +58,7 @@ sealed class RemoteConfigKeys<T>(
 ```
 
 !!! note
+    - It's recommended to set default value by `override`
     - Keys must exactly match Firebase console keys.
     - Always provide safe default values.
     - Use a serializer for custom objects.
@@ -119,8 +125,8 @@ class PromoViewModel(
     private val getConfig: GetConfigLogic
 ) : ViewModel() {
 
-    private val _promo = MutableStateFlow(PromoConfig())
-    val promo: StateFlow<PromoConfig> = _promo
+    private val _promo = MutableStateFlow(RemoteConfigKeys.Promo())
+    val promo: StateFlow<RemoteConfigKeys.Promo> = _promo
 
     init {
         viewModelScope.launch {

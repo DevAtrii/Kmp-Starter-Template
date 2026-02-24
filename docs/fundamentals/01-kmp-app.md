@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/log-in
+---
+
 # KMP App (Entry Point)
 
 `initKmpApp()` is the global bootstrap for the KMP application.  

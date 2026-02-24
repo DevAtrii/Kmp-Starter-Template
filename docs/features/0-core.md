@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/archive
+---
+
 # Core
 
 The **Core** module contains shared logic used across multiple features.

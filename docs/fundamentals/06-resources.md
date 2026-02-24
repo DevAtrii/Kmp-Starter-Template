@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/layout-panel-left
+---
+
 # Resources
 
 The Starter Template provides a **centralized `resources` module** to store shared assets for your KMP project.

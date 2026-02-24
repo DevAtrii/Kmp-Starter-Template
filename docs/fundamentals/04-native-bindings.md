@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/dock
+---
+
 # Native Bindings
 
 We already covered the **SPM plugin** on the previous page.

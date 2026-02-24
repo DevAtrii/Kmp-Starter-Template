@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/play
+---
+
 # Store Reviews & Updates
 
 Starter Template provides a simple way to **request store reviews** and **check for app updates** using `StarterStoreManager`.

@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/palette
+---
+
 # Theming
 
 

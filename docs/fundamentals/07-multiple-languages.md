@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/globe
+---
+
 # Multiple Languages
 
 The Starter Template supports **multiple languages** via the centralized `resources` module.

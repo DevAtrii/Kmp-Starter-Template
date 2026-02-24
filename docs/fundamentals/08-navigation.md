@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/navigation
+---
+
 # Navigation
 
 Starter Template uses **navigation3** with `Koin`.

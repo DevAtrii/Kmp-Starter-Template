@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/info
+---
+
 # Metadata
 
 This page includes documentation for changing the app icon, version, package name, and app name.

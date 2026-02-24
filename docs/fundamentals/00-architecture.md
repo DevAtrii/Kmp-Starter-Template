@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/book-text
+---
+
 # Architecture
 
 KMP Starter Template follows Clean Architecture principles:

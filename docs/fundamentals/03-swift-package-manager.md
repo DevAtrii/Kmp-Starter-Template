@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/apple
+---
+
 # Swift Package Manager (SPM) for KMP
 
 The Starter Template uses the <a href="https://spmforkmp.eu/" target="_blank">`spm-for-kmp`</a> plugin to integrate Swift Package Manager dependencies in Kotlin Multiplatform projects.

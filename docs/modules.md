@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/layers
+---
+
 # Modules
 
 Starter templates follow multimodule architecture. each feature has its own module. this helps in keeping the codebase organized and makes it easier to maintain.

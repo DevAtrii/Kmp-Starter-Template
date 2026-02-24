@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/key
+---
+
 # Dependency Injection
 
 The Starter Template uses `Koin` for dependency injection.

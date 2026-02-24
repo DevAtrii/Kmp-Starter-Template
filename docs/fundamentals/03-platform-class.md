@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/signpost
+---
+
 # Platform Class
 
 The `Platform` class provides platform-specific information inside shared code in a clean and type-safe way.

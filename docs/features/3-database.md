@@ -1,3 +1,8 @@
+---
+comments: false
+icon: lucide/database
+---
+
 # Database
 
 Welcome to the documentation. This page utilizes advanced Markdown extensions for a professional developer experience.
