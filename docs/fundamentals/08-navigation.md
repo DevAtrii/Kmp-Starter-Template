@@ -1,47 +1,106 @@
 # Navigation
 
-Welcome to the documentation. This page utilizes advanced Markdown extensions for a professional developer experience.
-
-## Quick Setup
-
-!!! info "Important Note"
-Ensure you have the latest Kotlin version installed before proceeding with the `KmpAppInitializer` setup.
-
-### Development Tasks
-
-- [x] Setup Koin modules
-- [x] Configure RevenueCat keys
-- [ ] Implement custom Auth provider
-
-## Code Implementation
-
-```kotlin
-fun initKmpApp() {
-    // Standard initialization sequence (1)
-    KmpStarter.initApp(apiKey = "MY_KEY")
-    initKoin()
-}
-```
-
-1. This order is critical to prevent DI resolution errors.
-
-## Advanced Features
-
-??? abstract "Architecture Details"
-This template follows Clean Architecture principles:
-- **Data Layer**: Repositories and DataSources
-- **Domain Layer**: UseCases and Models
-- **Presentation Layer**: Compose Multiplatform UI
-
-
-## Glossary
-
-**KMP**
-: Kotlin Multiplatform — the core technology behind this template.[^1]
-
-**RevenueCat**
-: The service used for handling in-app purchases and subscriptions.
+Starter Template uses **navigation3** with `Koin`.
+All navigation logic lives inside the `features/navigation` module.
 
 ---
 
-[^1]: KMP allows sharing up to 90% of code across Android and iOS.
+## 1. Define Screens
+
+Example:
+
+```kotlin title="features/navigation/src/commonMain/.../screens/AuthScreens.kt" linenums="1"
+@Serializable
+sealed class AuthScreens : NavKey {
+
+    @Serializable
+    data object SignIn : AuthScreens()
+
+}
+```
+
+!!! note "Rules"
+    * Must be `@Serializable`
+    * Must extend `NavKey`
+    * Use `sealed class` per feature
+
+---
+
+## 2. Register Screens for Serialization
+
+Add the screen to the back stack configuration:
+
+```kotlin title="features/navigation/src/commonMain/.../StarterBackStack.kt" linenums="1" hl_lines="8"
+@Composable
+fun rememberStarterBackStack(vararg initialScreens: NavKey): NavBackStack<NavKey> {
+    return rememberNavBackStack(
+        elements = initialScreens
+    ) {
+        ...
+        // Register new screens
+        subclass(AuthScreens.SignIn::class)
+    }
+}
+```
+
+If a screen is not registered using `subclass(...)`, state restoration will fail.
+
+---
+
+## 3. Define Navigation Routes (Koin)
+
+```kotlin title="composeApp/src/commonMain/.../core/navigation/NavigationModule.kt" linenums="1"
+val navigationModule = module {
+
+    navigation<AuthScreens.SignIn> {
+        val navigator = StarterNavigator.getCurrent()
+
+        SignInScreen(
+            onSignedIn = {
+                navigator.navigateTo(StarterScreens.Home)
+            }
+        )
+    }
+}
+```
+!!! note "Custom Module"
+    You can also create a custom module inside your feature `di` package,
+    don't forget to include it inside `initKoin`
+    
+
+---
+
+## 4. Navigating Between Screens
+
+Get navigator:
+
+```kotlin 
+val navigator = StarterNavigator.getCurrent()
+```
+
+Available methods:
+
+```kotlin
+navigator.navigateTo(route)
+navigator.popAndNavigate(route)
+navigator.popAllAndNavigate(route)
+navigator.navigateOrBringToTop(route)
+navigator.navigateUp()
+```
+
+Example:
+
+```kotlin
+navigator.popAllAndNavigate(StarterScreens.Home)
+```
+
+---
+
+!!! abstract "Navigation Flow"
+    1. Create screen (extend `NavKey`)
+    2. Register in `StarterBackStack`
+    3. Add route in `NavigationModule` or custom module
+    4. Use `StarterNavigator` to navigate
+
+    Navigation is type-safe, serializable, and works across Compose Multiplatform.
+

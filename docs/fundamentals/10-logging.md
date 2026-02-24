@@ -1,47 +1,49 @@
 # Logging
 
-Welcome to the documentation. This page utilizes advanced Markdown extensions for a professional developer experience.
-
-## Quick Setup
-
-!!! info "Important Note"
-Ensure you have the latest Kotlin version installed before proceeding with the `KmpAppInitializer` setup.
-
-### Development Tasks
-
-- [x] Setup Koin modules
-- [x] Configure RevenueCat keys
-- [ ] Implement custom Auth provider
-
-## Code Implementation
-
-```kotlin
-fun initKmpApp() {
-    // Standard initialization sequence (1)
-    KmpStarter.initApp(apiKey = "MY_KEY")
-    initKoin()
-}
-```
-
-1. This order is critical to prevent DI resolution errors.
-
-## Advanced Features
-
-??? abstract "Architecture Details"
-This template follows Clean Architecture principles:
-- **Data Layer**: Repositories and DataSources
-- **Domain Layer**: UseCases and Models
-- **Presentation Layer**: Compose Multiplatform UI
-
-
-## Glossary
-
-**KMP**
-: Kotlin Multiplatform — the core technology behind this template.[^1]
-
-**RevenueCat**
-: The service used for handling in-app purchases and subscriptions.
+Starter Template provides a simple logging utility via the `Log` object.
+You can use it anywhere in your Kotlin code to log messages consistently.
 
 ---
 
-[^1]: KMP allows sharing up to 90% of code across Android and iOS.
+## Usage
+
+Use the following functions:
+
+```kotlin linenums="1"
+Log.d(TAG, "Debug message")
+Log.i(TAG, "Info message")
+Log.w(TAG, "Warning message")
+Log.e(TAG, "Error message")
+```
+
+You can also pass multiple items:
+
+```kotlin linenums="1"
+Log.d(TAG, "User ID:", userId, "Action:", actionName)
+```
+!!! tip "Default Tag" 
+    If you want the **default tag**, pass `null`:
+
+    ```kotlin linenums="1"
+    Log.d(null, "Debug message with default tag")
+    ```
+
+
+---
+
+## IDE Live Templates (Recommended)
+
+Create live templates in your IDE for faster logging.
+
+Scope: **Kotlin**
+
+| Abbreviation | Template                                                          | Notes                                |
+| ------------ | ----------------------------------------------------------------- | ------------------------------------ |
+| `klogd`      | `com.kmpstarter.utils.logging.Log.d(null,"$FUNNAME$: $MESSAGE$")` | `$FUNNAME$` → `kotlinFunctionName()` |
+| `klogi`      | `com.kmpstarter.utils.logging.Log.i(null,"$FUNNAME$: $MESSAGE$")` | `$FUNNAME$` → `kotlinFunctionName()` |
+| `klogw`      | `com.kmpstarter.utils.logging.Log.w(null,"$FUNNAME$: $MESSAGE$")` | `$FUNNAME$` → `kotlinFunctionName()` |
+| `kloge`      | `com.kmpstarter.utils.logging.Log.e(null,"$FUNNAME$: $MESSAGE$")` | `$FUNNAME$` → `kotlinFunctionName()` |
+
+!!! note "Live Templates"
+    Using live templates will **save tons of time** when writing log statements.
+    Official JetBrains documentation: <a href="https://www.jetbrains.com/help/idea/using-live-templates.html" target="_blank">Live Templates</a>

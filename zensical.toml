@@ -14,8 +14,6 @@ favicon = "assets/favicon/favicon.ico"
 custom_dir = "docs/overrides"
 features = [
     "navigation.footer",
-    "navigation.tabs",
-    "navigation.tabs.sticky",
     "navigation.instant",
     "navigation.instant.prefetch",
     "navigation.instant.progress",
