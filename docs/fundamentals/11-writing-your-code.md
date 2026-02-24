@@ -32,14 +32,14 @@ Rename this module to match your feature and begin development.
 
 ---
 
-# Refactoring (Recommended)
+## Refactoring (Recommended)
 
 It is strongly recommended to properly rename `your-feature`.
 The placeholder name has no meaning and should be replaced.
 
 ---
 
-## Step 0 – Rename Module
+### Step 0 – Rename Module
 
 Right-click on `your-feature`
 → `Refactor`
@@ -49,7 +49,7 @@ Right-click on `your-feature`
 
 ---
 
-## Step 1 – Rename Directory
+### Step 1 – Rename Directory
 
 Select **Rename Directory**
 
@@ -57,7 +57,7 @@ Select **Rename Directory**
 
 ---
 
-## Step 2 – Enter Feature Name
+### Step 2 – Enter Feature Name
 
 Enter your feature name.
 
@@ -67,11 +67,11 @@ Example: `notes`
 
 ---
 
-## Step 3 – Update settings.gradle.kts
+### Step 3 – Update settings.gradle.kts
 
 Open `settings.gradle.kts` in the root directory and rename module references.
 
-### Before
+#### Before
 
 ```kotlin title="settings.gradle.kts" linenums="1" hl_lines="3-5"
 ...
@@ -81,7 +81,7 @@ include(":features:your-Feature:domain")
 include(":features:your-Feature:data")
 ```
 
-### After
+#### After
 
 ```kotlin title="settings.gradle.kts" linenums="1" hl_lines="3-5"
 ...
@@ -95,7 +95,7 @@ include(":features:notes:data")
 
 ---
 
-## Step 4 – Rename Across Project
+### Step 4 – Rename Across Project
 
 `your-Feature` is referenced by other modules using project accessors.
 
@@ -109,7 +109,7 @@ Rename it everywhere as shown in the screenshot:
 
 ---
 
-## Step 5 – Rename Package (Data Layer)
+### Step 5 – Rename Package (Data Layer)
 
 Right-click:
 
@@ -124,7 +124,7 @@ Right-click:
 
 ---
 
-## Step 6 – Select All Directories
+### Step 6 – Select All Directories
 
 This is important.
 
@@ -132,7 +132,7 @@ This is important.
 
 ---
 
-## Step 7 – Enter New Package Name
+### Step 7 – Enter New Package Name
 
 Example:
 
@@ -144,7 +144,7 @@ feature_notes_data
 
 ---
 
-## Step 8 – Rename Domain Layer
+### Step 8 – Rename Domain Layer
 
 Repeat the same process for the `domain` layer.
 
@@ -152,7 +152,7 @@ Repeat the same process for the `domain` layer.
 
 ---
 
-## Step 9 – Rename Presentation Layer
+### Step 9 – Rename Presentation Layer
 
 Repeat the same process for the `presentation` layer.
 
@@ -160,7 +160,7 @@ Repeat the same process for the `presentation` layer.
 
 ---
 
-# Done
+### Done
 
 You have successfully refactored the placeholder feature.
 
@@ -174,7 +174,7 @@ Follow Clean Architecture principles to keep your feature modular and scalable.
 
 ---
 
-# Dependency Injection
+## Dependency Injection
 
 Each layer contains a `di/` package for dependency injection.
 
@@ -185,5 +185,3 @@ You can:
 * It is already included in `initKoin`
 
 You can replicate this structure for every new feature you build.
-
-Starter Template gives you structure — you focus on building your app.

@@ -1,47 +1,63 @@
 # Core
 
-Welcome to the documentation. This page utilizes advanced Markdown extensions for a professional developer experience.
+The **Core** module contains shared logic used across multiple features.
+It follows Clean Architecture and is divided into:
 
-## Quick Setup
-
-!!! info "Important Note"
-Ensure you have the latest Kotlin version installed before proceeding with the `KmpAppInitializer` setup.
-
-### Development Tasks
-
-- [x] Setup Koin modules
-- [x] Configure RevenueCat keys
-- [ ] Implement custom Auth provider
-
-## Code Implementation
-
-```kotlin
-fun initKmpApp() {
-    // Standard initialization sequence (1)
-    KmpStarter.initApp(apiKey = "MY_KEY")
-    initKoin()
-}
-```
-
-1. This order is critical to prevent DI resolution errors.
-
-## Advanced Features
-
-??? abstract "Architecture Details"
-This template follows Clean Architecture principles:
-- **Data Layer**: Repositories and DataSources
-- **Domain Layer**: UseCases and Models
-- **Presentation Layer**: Compose Multiplatform UI
-
-
-## Glossary
-
-**KMP**
-: Kotlin Multiplatform — the core technology behind this template.[^1]
-
-**RevenueCat**
-: The service used for handling in-app purchases and subscriptions.
+* `data`
+* `domain`
+* `presentation`
 
 ---
 
-[^1]: KMP allows sharing up to 90% of code across Android and iOS.
+## What Goes in Core?
+
+Add logic that needs to be reused across features, such as:
+
+* Shared auth logic (e.g., getting `userId`)
+* Common DataStores (user token)
+* Base repositories or use cases
+* Splash logic
+* Onboarding flow
+* Shared UI components
+* Global helpers
+
+If multiple features need it, it belongs in `core`.
+
+---
+
+## Dependency Rule
+
+All features can depend on `core`, but `core` must never depend on features.
+
+Correct:
+
+```text
+features/* → core
+```
+
+Wrong:
+
+```text
+core → features/*
+```
+
+---
+
+## Example
+
+If you create:
+
+```text
+features/notes/
+```
+
+Then:
+
+* `notes/data` → can use `core/data`
+* `notes/domain` → can use `core/domain`
+* `notes/presentation` → can use `core/presentation`
+
+---
+
+Core is your shared foundation.
+Features build on top of it.

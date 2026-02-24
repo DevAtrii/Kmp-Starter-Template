@@ -89,6 +89,6 @@ val generateAccessors by tasks.registering {
     )
 
     doLast {
-        println("✅ Compose resource accessors for features module generated successfully!")
+        println("✅ Compose resource accessors for resource module generated successfully!")
     }
 }
