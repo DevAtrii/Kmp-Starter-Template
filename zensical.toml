@@ -1,58 +1,71 @@
 [project]
 site_name = "KMP Starter Docs"
 site_description = "Documentation for KMP Starter Template"
+site_url="http://localhost:3000"
+repo_name = "devatrii/kmp-starter-template"
+repo_url="https://github.com/DevAtrii/Kmp-Starter-Template"
+
+
 
 [project.theme]
 name = "KMP Starter Docs"
 logo = "assets/logo.webp"
 favicon = "assets/favicon/favicon.ico"
-font = false
+custom_dir = "docs/overrides"
 features = [
     "navigation.footer",
+    "navigation.tabs",
+    "navigation.tabs.sticky",
+    "navigation.instant",
+    "navigation.instant.prefetch",
+    "navigation.instant.progress",
+    "navigation.path",
+    "navigation.top",
     "search.suggest",
     "search.highlight",
     "content.code.copy",
     "content.code.annotate",
-    "content.code.select"
+    "content.code.select",
+    "content.tooltips"
 ]
+
 
 
 [[project.theme.palette]]
 scheme = "default"
 toggle.icon = "lucide/sun"
 toggle.name = "Switch to dark mode"
+primary = "green"
+accent = "green"
 
 [[project.theme.palette]]
-palette.accent = "green"
 scheme = "slate"
+primary = "green"
+accent = "green"
 toggle.icon = "lucide/moon"
 toggle.name = "Switch to light mode"
-#[theme.palette.toggle]
-#icon = "material/weather-night"
-#name = "Switch to dark mode"
-#
-#[theme.palette.toggle]
-#icon = "material/weather-sunny"
-#name = "Switch to light mode"
+font.text="cursive"
+font.code="Google Sans Code"
 
-[extra.analytics]
-provider = "google"
-property = "G-XXXXXXXXXX"
 
-[extra.analytics.feedback]
+[project.extra.analytics.feedback]
 title = "Was this page helpful?"
 
-[[extra.analytics.feedback.ratings]]
+[[project.extra.analytics.feedback.ratings]]
 icon = "material/emoticon-happy-outline"
 name = "This page was helpful"
 data = 1
 note = "Thanks for your feedback!"
 
-[[extra.analytics.feedback.ratings]]
+[[project.extra.analytics.feedback.ratings]]
 icon = "material/emoticon-sad-outline"
 name = "This page could be improved"
 data = 0
-note = "Thanks for your feedback! Help us improve this page by creating an issue in our <a href=\"https://github.com/DevAtrii/Kmp-Starter-Tempalte/discussions\" target=\"_blank\" rel=\"noopener\">GitHub Discussions</a>."
+note = """
+  Thanks for your feedback! Help us improve this page by
+  using our <a href="..." target="_blank" rel="noopener">feedback form</a>.
+"""
+
 
 [markdown_extensions]
 admonition = {}
@@ -66,8 +79,15 @@ copy_button = {}
 attr_list = {}
 md_in_html = {}
 
-[markdown_extensions."pymdownx.tasklist"]
-custom_checkbox = true
+# socials
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/DevAtrii/Kmp-Starter-Template"
 
-[markdown_extensions."pymdownx.highlight"]
-anchor_linenums = true
+[[project.extra.social]]
+icon = "fontawesome/brands/x-twitter"
+link = "https://x.com/dev_atrii"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/youtube"
+link = "https://youtube.com/@devatrii"

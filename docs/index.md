@@ -1,23 +1,34 @@
+---
+comments: true
+---
+
 # KMP Starter Template
 
 Starter template is a project agnostic multi-module boilerplate based on KMP for Android & IOS, which includes high quaility written code for KMP/CMP projects. It is built with best practices and follows clean architecture principles.
 
 it will help you cut the noise of setting up basic things such as remote config, in app purchases & analytics etc and focus on building your app.
 
+
+
 ## Features
 
-- [x] Clean Architecture
-- [x] Koin for dependency injection
-- [x] RevenueCat for in-app purchases
-- [x] Mixpanel for tracking user behavior
-- [x] Firebase remote config for feature flags
-- [x] InAppReview & InAppUpdate
-- [x] Multiple Languages
-- [x] Swift to Kotlin using SPM4KMP Plugin
-- [x] DataStores for local storage
-- [x] Room for local database
-- [x] Logging similar to Android Logger
-- [x] Platform Class to check platform specific things like os version etc
+<div class="grid cards" markdown>
+
+* :fontawesome-solid-layer-group: **Clean Architecture**
+* :fontawesome-solid-sitemap: **Koin** for dependency injection
+* :fontawesome-solid-credit-card: **RevenueCat** for in-app purchases
+* :fontawesome-solid-chart-line: **Mixpanel** for tracking user behavior
+* :fontawesome-solid-toggle-on: **Remote Config** for feature flags
+* :fontawesome-solid-star: **InAppReview & InAppUpdate**
+* :fontawesome-solid-language: **Multiple Languages**
+* :fontawesome-solid-code-branch: **Swift to Kotlin** using SPM4KMP Plugin
+* :fontawesome-solid-database: **DataStore** for local storage
+* :fontawesome-solid-server: **Room** for local database
+* :fontawesome-solid-terminal: **Logging** similar to Android Logger
+* :fontawesome-solid-mobile-screen: **Platform Class** for OS/version checks
+
+</div>
+
 
 Each feature follows clean architecture data, domain & presentation layers. you can easily make changes in any layer, for example for analytics it uses mixpanel if you want to swap it with posthog you can do it by just changing the analytics data source.
 

@@ -1,3 +1,7 @@
+---
+comments: true
+---
+
 # Getting Started
 
 ## Requirements
@@ -6,6 +10,7 @@
 - [x] Java 17
 - [x] Gradle 9.0 or later
 - [x] Android Studio Otter 2025.2.3 or later
+- [x] KMP Plugin for Android Studio
 - [x] Xcode 26 or later
 
 !!! info "Android Studio Compatibility"

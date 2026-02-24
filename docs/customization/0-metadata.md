@@ -6,7 +6,7 @@ This page includes documentation for changing the app icon, version, package nam
 
 ## Changing App Version
 
-```toml title="gradle/libs.versions.toml"
+```toml title="gradle/libs.versions.toml" linenums="1"
 [versions]
 ...
 app-version-major = "1"
@@ -54,7 +54,7 @@ Your Android app icon is now updated.
 IconKitchen enables monochrome mode by default. If your icon isn't PNG, it can cause Play Store rejection.
 To disable `monochrome` mode, remove the following line:
 
-```xml title="androidApp/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" hl_lines="5"
+```xml title="androidApp/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" hl_lines="5" linenums="1"
 <?xml version="1.0" encoding="utf-8"?>
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
   <background android:drawable="@mipmap/ic_launcher_background"/>
@@ -67,7 +67,7 @@ To disable `monochrome` mode, remove the following line:
 
 #### App Name
 
-```xml title="androidApp/src/main/res/values/strings.xml"
+```xml title="androidApp/src/main/res/values/strings.xml" linenums="1" hl_lines="3"
 <resources>
     ...
     <string name="app_name">KmpStarter</string>
@@ -81,7 +81,7 @@ Change `KmpStarter` to your app name.
 
 #### Package Name
 
-```kotlin title="androidApp/build.gradle.kts"
+```kotlin title="androidApp/build.gradle.kts" linenums="1" hl_lines="4-6"
 android {
     ...
     defaultConfig {
