@@ -25,8 +25,8 @@ sealed class AuthScreens : NavKey {
 ```
 
 !!! note "Rules"
-_ Must be `@Serializable`
-_ Must extend `NavKey` \* Use `sealed class` per feature
+    - Must be `@Serializable`
+    - Must extend `NavKey` \* Use `sealed class` per feature
 
 ---
 
@@ -48,7 +48,7 @@ fun rememberStarterBackStack(vararg initialScreens: NavKey): NavBackStack<NavKey
 ```
 
 !!! warning "State Restoration"
-If a screen is not registered using `subclass(...)`, state restoration will fail.
+    If a screen is not registered using `subclass(...)`, state restoration will fail.
 
 ---
 
@@ -70,8 +70,8 @@ val navigationModule = module {
 ```
 
 !!! note "Custom Module"
-You can also create a custom module inside your feature `di` package,
-don't forget to include it inside `initKoin`
+    You can also create a custom module inside your feature `di` package,
+    don't forget to include it inside `initKoin`
 
 ---
 
