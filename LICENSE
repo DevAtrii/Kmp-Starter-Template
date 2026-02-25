@@ -1,0 +1,32 @@
+# KMP Starter Template License (KS-1.0)
+
+Copyright (c) 2026 DevAtrii
+
+## 1. Permission
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to:
+
+* Use the Software for personal or commercial projects
+* Modify the Software
+* Distribute applications built using the Software
+* Sell applications built using the Software
+
+## 2. Restrictions
+
+You may NOT:
+
+* Sell the Software (in whole or in part) as a boilerplate, starter template, framework, or competing template product
+* Repackage the Software (modified or unmodified) and redistribute it as a starter template
+* Offer the Software as a paid or free template product for redistribution
+* Sell access to the source code as a reusable template
+
+This restriction applies whether the Software is modified or unmodified.
+
+## 3. Attribution
+
+Attribution is appreciated but not required.
+
+## 4. Disclaimer
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
