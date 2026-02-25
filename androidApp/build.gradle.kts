@@ -1,3 +1,18 @@
+/*
+ *
+ *  *
+ *  *  * Copyright (c) 2026
+ *  *  *
+ *  *  * Author: Athar Gul
+ *  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
+ *  *  * YouTube: https://www.youtube.com/@devatrii/videos
+ *  *  *
+ *  *  * All rights reserved.
+ *  *
+ *  *
+ *
+ */
+
 private fun getVersionCode(): Int {
     val versionMajor = libs.versions.app.version.major.get().toInt()
     val versionMinor = libs.versions.app.version.minor.get().toInt()

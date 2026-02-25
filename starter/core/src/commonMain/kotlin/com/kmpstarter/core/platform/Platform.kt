@@ -1,7 +1,7 @@
 /*
  *
  *  *
- *  *  * Copyright (c) 2025
+ *  *  * Copyright (c) 2026
  *  *  *
  *  *  * Author: Athar Gul
  *  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
@@ -66,10 +66,10 @@ val Platform.isIos: Boolean
 val Platform.isAndroid: Boolean
     get() = this is Platform.Android
 
-inline fun Platform.ifAndroid(crossinline action: () -> Unit) {
-    if (this.isAndroid) action()
+inline fun Platform.ifAndroid(crossinline action: (Platform.Android) -> Unit) {
+    if (this.isAndroid) action(this as Platform.Android)
 }
 
-inline fun Platform.ifIos(crossinline action: () -> Unit) {
-    if (this.isIos) action()
+inline fun Platform.ifIos(crossinline action: (Platform.Ios) -> Unit) {
+    if (this.isIos) action(this as Platform.Ios)
 }

@@ -1,82 +1,110 @@
-# 🚀 KMP Starter
+<p align="center">
+  <img src="docs/assets/logo.webp" alt="KMP Starter Template Logo" width="160"/>
+</p>
 
-![KMP-Starter-Template](https://github.com/user-attachments/assets/3f531331-d9ae-4a6b-99f0-7d6a51778a93)
+<h1 align="center">KMP Starter Template</h1>
 
-A modern, production-ready **Kotlin Multiplatform** starter template with Material 3 design, utils, and clean architecture.
+<p align="center">
+  Project-agnostic, production-ready <b>Kotlin Multiplatform</b> starter for Android & iOS.
+</p>
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.21-blue.svg)](https://kotlinlang.org)
-[![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-1.10.0-alpha02-orange.svg)](https://www.jetbrains.com/lp/compose-multiplatform/)
-[![Material 3](https://img.shields.io/badge/Material%203-Latest-green.svg)](https://m3.material.io/)
+<p align="center">
+  <img src="https://img.shields.io/badge/Kotlin-2.3.10-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" />
+  <img src="https://img.shields.io/badge/Java-17-007396?style=for-the-badge&logo=openjdk&logoColor=white" />
+  <img src="https://img.shields.io/badge/iOS-12+-000000?style=for-the-badge&logo=apple&logoColor=white" />
+  <img src="https://img.shields.io/badge/Android-7+-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
+  <img src="https://img.shields.io/badge/Version-0.4.0-6C63FF?style=for-the-badge" />
+</p>
 
-<div align="center">
-  <a href="https://buymeacoffee.com/devatrii" target="_blank">
-    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="150" />
+<p align="center">
+  <a href="https://devatrii.github.io/Kmp-Starter-Template/">
+    <img src="https://img.shields.io/badge/READ%20DOCUMENTATION-Click%20Here-6C63FF?style=for-the-badge" alt="Read Documentation"/>
   </a>
-  <a href="https://www.youtube.com/@devatrii" target="_blank">
-    <img src="https://img.shields.io/badge/YouTube-DevAtrii-red?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube Channel" />
-  </a>
-</div>
-
-
-## Modules
-![Modules](https://github.com/user-attachments/assets/13fba037-33a2-45d4-8235-2d0120f48893)
-
-
-
-## ✨ More...
-
-### 🧩 Example Apps
-- SubFox — Subscription manager built with this template. [Check Here](https://subfox.app/)
-
-
-### 💰 **RC Docs**
-- **RevenueCat Integration** - In-app purchases and subscriptions
-  - [📖 RevenueCat Setup Guide](docs/revenue-cat.md) - Complete implementation guide
-
-### 📚 **UI Components Docs**
-- [BaseDialog](docs/ui-base-dialog.md)
-- [BaseBottomSheet](docs/ui-base-bottom-sheet.md)
-- [SelectableListCard](docs/ui-selectable-list-card.md)
-- [DatePickerDialog](docs/ui-date-picker-dialog.md)
-- [SelectableDates](docs/ui-selectable-dates.md)
-- [UI Utilities & Side Effects](docs/ui-utils-docs.md)
-
-
-#### 📚 Utils Docs
-- [ImageBitmap Utils](docs/utils-image-bitmap.md)
-- [ImageVector Utils](docs/utils-image-vector.md)
-- [kotlinx-datetime Utils](docs/utils-kotlinx-datetime.md)
-- [var Utils](docs/utils-var.md)
-- [AppConstants](docs/utils-app-constants.md)
-- [Common Utils (Exception, ByteString, ByteArray)](docs/utils-docs.md)
-
- 
-
-## 📱 Supported Platforms
-
-- **Android** - API 24+ (Android 7.0+)
-- **iOS**  
-
-## 🛠️ Tech Stack
-
-- **Kotlin Multiplatform** - Cross-platform development
-- **Compose Multiplatform** - Shared UI framework
-- **Material 3** - Design system
-- **Koin** - Dependency injection
-- **Room** - Local database
-- **DataStore** - Preferences storage
-- **Coroutines & Flow** - Asynchronous programming
-- **RevenueCat** - In-app purchases
-- **MixPanel** - Analytics
-- **Kotlinx Serialization** - JSON serialization
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Help
-docs are not complete, you can contact me on [X (twitter)](https://x.com/dev_atrii) if you face any problem
+</p>
 
 ---
 
-**Built by DevAtrii 🇵🇰 with ❤️ using Kotlin Multiplatform & Compose**
+## Overview
+
+KMP Starter Template is a multi-module boilerplate built with:
+
+* Clean Architecture (data / domain / presentation)
+* Compose Multiplatform
+* Koin (DI)
+* RevenueCat (In-App Purchases)
+* Mixpanel (Analytics)
+* Remote Config
+* Room Database
+* DataStore
+* Modular Navigation
+* Notifications
+* Logging
+* Platform utilities
+
+It removes the repetitive setup work (analytics, purchases, remote config, etc.) so you can focus on building your app.
+
+---
+
+## Architecture
+
+Each feature is isolated in its own module:
+
+```text
+features/
+  analytics/
+  core/
+  database/
+  navigation/
+  purchases/
+  remoteconfig/
+  your-feature/
+```
+
+Every feature follows:
+
+```text
+data/
+domain/
+presentation/
+```
+
+You can easily swap implementations (e.g., replace Mixpanel with PostHog) by changing the data layer.
+
+---
+
+## Getting Started
+
+```bash
+git clone https://github.com/DevAtrii/Kmp-Starter-Template.git starter-app
+```
+
+Open in Android Studio (KMP Plugin required).
+Open `iosApp/iosApp.xcodeproj` in Xcode to run on iOS.
+
+---
+
+## License & Usage
+
+You are free to:
+
+* Use this template in personal or commercial projects
+* Modify it
+* Ship apps built with it
+
+You are **not allowed** to:
+
+* Resell this template (partially or fully) as another boilerplate
+* Repackage and distribute it as a competing starter template (paid)
+
+See the full license here:
+[https://github.com/DevAtrii/Kmp-Starter-Template/blob/main/LICENSE](https://github.com/DevAtrii/Kmp-Starter-Template/blob/main/LICENSE)
+
+
+----
+
+
+<p align="center">
+  <a href="https://devatrii.github.io/Kmp-Starter-Template/">
+    <img src="https://img.shields.io/badge/READ%20DOCUMENTATION-Click%20Here-6C63FF?style=for-the-badge" alt="Read Documentation"/>
+  </a>
+</p>

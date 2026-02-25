@@ -1,7 +1,7 @@
 /*
  *
  *  *
- *  *  * Copyright (c) 2025
+ *  *  * Copyright (c) 2026
  *  *  *
  *  *  * Author: Athar Gul
  *  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
@@ -45,17 +45,16 @@ import kotlin.time.Duration.Companion.seconds
 fun initKmpApp(
     koinConfig: KoinAppDeclaration? = null,
 ) {
-    // 1. Core SDK Configuration
+    // 1. Dependency Injection Setup
+    // Starts Koin. This must happen before any 'inject()' or 'get()' calls.
+    initKoin(config = koinConfig)
+
+    // 2. Core SDK Configuration
     // Sets up the fundamental API keys used by the underlying library modules.
     KmpStarter.initApp(
         revenueCatApiKey = AppConstants.REVENUE_CAT_API_KEY,
         mixPanelApiKey = AppConstants.MIXPANEL_API_TOKEN
     )
-
-    // 2. Dependency Injection Setup
-    // Starts Koin. This must happen before any 'inject()' or 'get()' calls.
-    initKoin(config = koinConfig)
-
 
     // 3. Feature-Specific Initialization (YOU CAN INIT OTHER STUFF HERE)
     // Configures platform-specific billing and remote toggle logic.

@@ -4,7 +4,36 @@ site_description = "Documentation for KMP Starter Template"
 site_url="https://devatrii.github.io/Kmp-Starter-Template"
 repo_name = "devatrii/kmp-starter-template"
 repo_url="https://github.com/DevAtrii/Kmp-Starter-Template"
-
+nav = [
+  {"Home" = "index.md"},
+  {"Getting Started" = "getting-started.md"},
+  {"Customization" = [
+    "customization/0-metadata.md",
+    "customization/1-theme.md",
+  ]},
+  {"Fundamentals" = [
+    "fundamentals/00-architecture.md",
+    "fundamentals/01-kmp-app.md",
+    "fundamentals/02-dependency-injection.md",
+    "fundamentals/03-platform-class.md",
+    "fundamentals/04-native-bindings.md",
+    "fundamentals/05-datastores.md",
+    "fundamentals/06-resources.md",
+    "fundamentals/07-multiple-languages.md",
+    "fundamentals/08-navigation.md",
+    "fundamentals/09-store-reviews-and-updates.md",
+    "fundamentals/10-logging.md",
+    "fundamentals/11-swift-package-manager.md",
+    "fundamentals/12-writing-your-code.md",
+  ]},
+  {"Features" = [
+     "features/0-core.md",
+     "features/1-remote-config.md",
+     "features/2-analytics.md",
+     "features/3-database.md",
+     "features/4-purchases.md"
+  ]}
+]
 
 
 [project.theme]

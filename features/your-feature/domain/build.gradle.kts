@@ -1,3 +1,18 @@
+/*
+ *
+ *  *
+ *  *  * Copyright (c) 2026
+ *  *  *
+ *  *  * Author: Athar Gul
+ *  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
+ *  *  * YouTube: https://www.youtube.com/@devatrii/videos
+ *  *  *
+ *  *  * All rights reserved.
+ *  *
+ *  *
+ *
+ */
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
