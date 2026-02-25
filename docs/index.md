@@ -1,5 +1,5 @@
 ---
-comments: true
+comments: false
 title: Home
 icon: lucide/home
 ---

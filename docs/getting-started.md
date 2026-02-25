@@ -1,5 +1,5 @@
 ---
-comments: true
+comments: false
 icon: lucide/rocket
 ---
 

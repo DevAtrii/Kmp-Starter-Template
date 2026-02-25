@@ -52,8 +52,7 @@ val osVersion = platform.osVersion
 * Full version is available via `exactVersion`
 
 ```kotlin
-platform.ifIos {
-    val ios = platform as Platform.Ios
+platform.ifIos { ios->
     val major = ios.exactVersion.major
     val minor = ios.exactVersion.minor
     val patch = ios.exactVersion.patch
@@ -123,11 +122,11 @@ if (platform.isIos) {
 Or use helpers:
 
 ```kotlin
-platform.ifAndroid {
+platform.ifAndroid { android->
     // Android-only code
 }
 
-platform.ifIos {
+platform.ifIos { ios->
     // iOS-only code
 }
 ```
