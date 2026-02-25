@@ -1,7 +1,6 @@
 ---
 comments: false
 icon: lucide/code
-
 ---
 
 # Writing Your Own Code
