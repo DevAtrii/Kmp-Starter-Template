@@ -2,7 +2,6 @@
 comments: false
 title: Home
 icon: lucide/home
-
 ---
 
 # KMP Starter Template
