@@ -27,6 +27,7 @@ import org.koin.dsl.KoinAppDeclaration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.seconds
 
+
 /**
  * The global initialization entry point for the KMP application.
  * * This function MUST be called at the earliest possible stage of the platform
