@@ -77,6 +77,11 @@ abstract class MviViewModel<STATE, ACTIONS, EVENTS>(
 
     /**
      * Defines the initial state of the UI when the ViewModel is first created.
+     * Always use get() to initialize the value of initialState otherwise it'll throw error
+     * example
+     * ``` kotlin
+     * override val initialState get() = ProfileState()
+     * ```
      */
     abstract val initialState: STATE
 
