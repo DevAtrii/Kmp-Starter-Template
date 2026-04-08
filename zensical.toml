@@ -15,6 +15,7 @@ nav = [
     "fundamentals/00-architecture.md",
     "fundamentals/01-kmp-app.md",
     "fundamentals/02-dependency-injection.md",
+    "fundamentals/03-mvi-viewmodel.md",
     "fundamentals/03-platform-class.md",
     "fundamentals/04-native-bindings.md",
     "fundamentals/05-datastores.md",

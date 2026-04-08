@@ -190,3 +190,75 @@ You can:
 * It is already included in `initKoin`
 
 You can replicate this structure for every new feature you build.
+
+---
+
+## Defining Screen Composables
+
+When you are making a new screen, it is best practice to divide it into two parts: a **Screen Composable** and a **Content Composable**.
+
+### 1. Screen Composable
+This is the "brain" of your screen. It is responsible for:
+
+- Getting data from the `ViewModel`
+- Handling navigation (like what happens when you click back or finish a task)
+- Observing UI events (like showing a Snackbar)
+- Knowing where the data is coming from (DI, Navigation parameters, etc.)
+
+### 2. Content Composable
+This is just for displaying the UI. It doesn't know anything about ViewModels or where the data comes from. It just takes parameters (like `state`) and callbacks (like `onAction`). 
+
+This makes it very easy to:
+
+- Preview your screen in Android Studio
+- Test the UI without worrying about logic
+- Reuse the UI if needed
+
+---
+
+### Example
+Here is how you should structure your screen and its navigation:
+
+```kotlin title="Sample Screen"
+@Composable
+fun HomeScreen(
+    viewModel: HomeViewModel = koinViewModel(),
+    onTaskComplete: () -> Unit,
+) {
+    val state by viewModel.state.collectAsState()
+
+    ObserveAsEvents(flow = viewModel.uiEvents) { event ->
+        when (event) {
+            is HomeEvents.ShowSnackbar -> SnackbarController.sendMessage(event.message)
+            HomeEvents.OnTaskComplete -> onTaskComplete()
+        }
+    }
+
+    HomeScreenContent(
+        state = state,
+        onAction = viewModel::onAction,
+    )
+}
+
+@Composable
+private fun HomeScreenContent(
+    state: HomeState,
+    onAction: (HomeActions) -> Unit,
+) {
+    Scaffold {
+        // Build UI using state and onAction
+    }
+}
+```
+
+Now call it in your `NavigationModule`:
+
+```kotlin title="Navigation Module"
+navigation<StarterScreens.Home> {
+    val navigator = StarterNavigator.getCurrent()
+    HomeScreen(onTaskComplete = { navigator.navigateUp() })
+}
+```
+
+!!! warning "State vs Individual Parameters"
+    Passing individual variables like `username: String` is fine for tiny screens, but for larger screens it's much better to just pass `state` and `onAction`.
