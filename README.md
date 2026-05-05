@@ -26,6 +26,10 @@
 
 ## Overview
 
+<img width="1536" height="1024" alt="ChatGPT Image May 5, 2026, 06_24_13 PM" src="https://github.com/user-attachments/assets/375ae461-367a-49fd-87ed-98cea7427a31" />
+
+
+
 KMP Starter Template is a multi-module boilerplate built with:
 
 * Clean Architecture (data / domain / presentation)
