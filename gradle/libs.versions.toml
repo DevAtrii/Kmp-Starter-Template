@@ -9,6 +9,10 @@ android-targetSdk = "36"
 app-version-major = "1"
 app-version-minor = "0"
 app-version-patch = "0"
+# starter libs versions
+lib-version-major = "0"
+lib-version-minor = "4"
+lib-version-patch = "0"
 
 
 # Kotlin Ecosystem

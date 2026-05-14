@@ -7,6 +7,7 @@ repo_url="https://github.com/DevAtrii/Kmp-Starter-Template"
 nav = [
   {"Home" = "index.md"},
   {"Getting Started" = "getting-started.md"},
+  {"Modules" = "modules.md"},
   {"Customization" = [
     "customization/0-metadata.md",
     "customization/1-theme.md",
