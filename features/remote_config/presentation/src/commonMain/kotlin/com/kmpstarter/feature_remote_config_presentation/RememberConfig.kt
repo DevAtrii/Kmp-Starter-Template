@@ -18,12 +18,12 @@ package com.kmpstarter.feature_remote_config_presentation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
-import com.kmpstarter.feature_remote_config_domain.RemoteConfigKeys
+import com.kmpstarter.feature_remote_config_domain.RemoteConfigKey
 import com.kmpstarter.feature_remote_config_domain.logics.GetConfigLogic
 import org.koin.compose.koinInject
 
 @Composable
-fun <T : Any> rememberRemoteConfig(key: RemoteConfigKeys<T>): State<T> {
+fun <T : Any> rememberRemoteConfig(key: RemoteConfigKey<T>): State<T> {
     val getConfig: GetConfigLogic = koinInject()
     return produceState(initialValue = key.defaultValue, key1 = key) {
         value = getConfig(key = key)

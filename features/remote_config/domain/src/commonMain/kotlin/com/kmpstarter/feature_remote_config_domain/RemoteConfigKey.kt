@@ -24,15 +24,27 @@ data class RemoteAppMetadata(
     val versionCode: Int = 50,
 )
 
-sealed class RemoteConfigKeys<T>(
+
+abstract class RemoteConfigKey<T>(
     val key: String,
     open val defaultValue: T,
     val serializer: KSerializer<T>? = null,
-) {
+)
 
+
+/*Example of remote config keys*/
+private sealed class DefaultKey<T>(
+    key: String,
+    defaultValue: T,
+    serializer: KSerializer<T>? = null,
+) : RemoteConfigKey<T>(
+    key = key,
+    defaultValue = defaultValue,
+    serializer = serializer
+) {
     data class Metadata(
         override val defaultValue: RemoteAppMetadata = RemoteAppMetadata(),
-    ) : RemoteConfigKeys<RemoteAppMetadata>(
+    ) : RemoteConfigKey<RemoteAppMetadata>(
         key = "meta_data",
         defaultValue = defaultValue,
         serializer = RemoteAppMetadata.serializer()
@@ -40,25 +52,28 @@ sealed class RemoteConfigKeys<T>(
 
     data class WelcomeText(
         override val defaultValue: String = "Welcome to KMP Starter",
-    ) : RemoteConfigKeys<String>(
+    ) : RemoteConfigKey<String>(
         key = "welcome_text",
         defaultValue = defaultValue
     )
 
     data class ShowOnboarding(
         override val defaultValue: Boolean = true,
-    ) : RemoteConfigKeys<Boolean>(
+    ) : RemoteConfigKey<Boolean>(
         key = "show_onboarding",
         defaultValue = defaultValue
     )
 
     data class MinimumVersion(
         override val defaultValue: Int = 36,
-    ) : RemoteConfigKeys<Int>(
+    ) : RemoteConfigKey<Int>(
         key = "minimum_version",
         defaultValue = defaultValue
     )
 }
+
+
+
 
 
 

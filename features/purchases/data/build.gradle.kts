@@ -50,7 +50,7 @@ kotlin {
         commonMain.dependencies {
             api(projects.features.purchases.domain)
             api(projects.starter.core)
-            implementation(libs.purchases.core)
+            api(libs.purchases.core)
         }
 
         androidMain.dependencies {

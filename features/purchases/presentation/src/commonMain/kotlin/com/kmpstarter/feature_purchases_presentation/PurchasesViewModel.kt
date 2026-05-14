@@ -16,7 +16,6 @@
 package com.kmpstarter.feature_purchases_presentation
 
 import androidx.lifecycle.viewModelScope
-import com.kmpstarter.core.KmpStarter
 import com.kmpstarter.feature_analytics_domain.AppEventsTracker
 import com.kmpstarter.feature_purchases_domain.logics.PurchasesLogics
 import com.kmpstarter.feature_purchases_domain.models.PaywallMetadata
@@ -86,13 +85,13 @@ class PurchasesViewModel(
 
             PurchasesActions.OnPrivacyPolicyClick -> viewModelScope.launch {
                 intentUtils.openUrl(
-                    url = KmpStarter.PRIVACY_POLICY
+                    url = "https://google.com"
                 )
             }
 
             PurchasesActions.OnTermsOfUseClick -> viewModelScope.launch {
                 intentUtils.openUrl(
-                    url = KmpStarter.TERMS_OF_USE
+                    url = "https://google.com"
                 )
             }
         }

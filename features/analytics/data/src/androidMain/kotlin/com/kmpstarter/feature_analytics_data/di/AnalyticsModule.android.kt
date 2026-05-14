@@ -15,8 +15,7 @@
 
 package com.kmpstarter.feature_analytics_data.di
 
-import com.kmpstarter.core.KmpStarter
-import com.kmpstarter.core.platform.platform
+import com.kmpstarter.feature_analytics_data.AnalyticsScope
 import com.kmpstarter.feature_analytics_data.EventsTrackerImpl
 import com.kmpstarter.feature_analytics_domain.EventsTracker
 import com.mixpanel.android.mpmetrics.MixpanelAPI
@@ -27,13 +26,19 @@ import org.koin.dsl.module
 
 actual val platformAnalyticsModule = module {
     single {
-        val mixpanelAPI =  MixpanelAPI.getInstance(
+        val mixpanelAPI = MixpanelAPI.getInstance(
             get(),
-            KmpStarter.MIXPANEL_API_KEY,
-            true
+            AnalyticsScope.apiKey,
+         AnalyticsScope.trackAutomaticEvents
         ).apply {
-            setEnableLogging(platform.debug)
-            flushBatchSize = 3
+            setEnableLogging(AnalyticsScope.logging)
+            flushBatchSize = AnalyticsScope.flushInterval
+            if (AnalyticsScope.enabled) {
+                optInTracking()
+            } else {
+                optOutTracking()
+                flush()
+            }
         }
         mixpanelAPI
     }

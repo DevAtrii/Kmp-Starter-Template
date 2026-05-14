@@ -16,7 +16,7 @@
 package com.kmpstarter.feature_remote_config_domain.logics
 
 import com.kmpstarter.feature_remote_config_domain.RemoteConfig
-import com.kmpstarter.feature_remote_config_domain.RemoteConfigKeys
+import com.kmpstarter.feature_remote_config_domain.RemoteConfigKey
 import com.kmpstarter.feature_remote_config_domain.RemoteConfigRepository
 import com.kmpstarter.feature_remote_config_domain._RemoteConfigInitializerState
 import com.kmpstarter.utils.logging.Log
@@ -35,7 +35,7 @@ class GetConfigLogic(
     private val json = Json { ignoreUnknownKeys = true }
 
     @Suppress("UNCHECKED_CAST")
-    private suspend fun <T : Any> getValue(key: RemoteConfigKeys<T>): T {
+    private suspend fun <T : Any> getValue(key: RemoteConfigKey<T>): T {
         val isInitializingFailed = waitForInitialization()
         if (isInitializingFailed) {
             Log.d(TAG, "invoke: initializingFailed returning default value")
@@ -71,7 +71,7 @@ class GetConfigLogic(
     }
 
     @Suppress("UNCHECKED_CAST")
-    suspend operator fun <T : Any> invoke(key: RemoteConfigKeys<T>): T {
+    suspend operator fun <T : Any> invoke(key: RemoteConfigKey<T>): T {
         return getValue(key = key)
     }
 

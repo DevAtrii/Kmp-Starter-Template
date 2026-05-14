@@ -17,8 +17,10 @@ package com.kmpstarter.core
 
 import com.kmpstarter.core.di.initKoin
 import com.kmpstarter.core.platform.platform
+import com.kmpstarter.feature_analytics_data.initAnalytics
 import com.kmpstarter.feature_purchases_data.initRevenueCat
 import com.kmpstarter.feature_remote_config_domain.RemoteConfig
+import com.revenuecat.purchases.kmp.LogLevel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -50,19 +52,20 @@ fun initKmpApp(
     // Starts Koin. This must happen before any 'inject()' or 'get()' calls.
     initKoin(config = koinConfig)
 
-    // 2. Core SDK Configuration
-    // Sets up the fundamental API keys used by the underlying library modules.
-    KmpStarter.initApp(
-        revenueCatApiKey = AppConstants.REVENUE_CAT_API_KEY,
-        mixPanelApiKey = AppConstants.MIXPANEL_API_TOKEN
-    )
-
-    // 3. Feature-Specific Initialization (YOU CAN INIT OTHER STUFF HERE)
+    // 2. Feature-Specific Initialization (YOU CAN INIT OTHER STUFF HERE)
     // Configures platform-specific billing and remote toggle logic.
-    initRevenueCat()
+    initRevenueCat(
+        apiKey = AppConstants.REVENUE_CAT_API_KEY,
+    ) {
+        logLevel = if (platform.debug) LogLevel.DEBUG else LogLevel.ERROR
+    }
+    initAnalytics(
+        apiKey = AppConstants.MIXPANEL_API_TOKEN
+    ) {
+        logging = platform.debug
+    }
     initRemoteConfig()
 }
-
 
 
 private fun initRemoteConfig() {

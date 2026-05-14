@@ -122,7 +122,6 @@ private fun GlobalSideEffects(
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope = rememberCoroutineScope(),
 ) {
-
     ObserveAsEvents(
         flow = SnackbarController.events,
     ) { snackbarEvent ->

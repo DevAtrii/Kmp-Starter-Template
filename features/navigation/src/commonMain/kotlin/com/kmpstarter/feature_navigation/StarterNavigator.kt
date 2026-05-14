@@ -36,7 +36,7 @@ class StarterNavigator {
     }
 
     @StarterNavigatorDsl
-    fun provideBackStack(backStack: NavBackStack<NavKey>) {
+    internal fun provideBackStack(backStack: NavBackStack<NavKey>) {
         _backStack = backStack
     }
 
