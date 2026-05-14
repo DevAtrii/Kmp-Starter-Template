@@ -20,6 +20,7 @@ plugins {
 dependencies {
     compileOnly(libs.bundles.gradle.plugins)
     compileOnly(libs.kotlin.gradle.plugin.api)
+    compileOnly(libs.vanniktech.maven.publish.impl)
 }
 
 gradlePlugin {
@@ -39,6 +40,10 @@ gradlePlugin {
         registerPlugin(
             id = "com.kmpstarter.plugins.common",
             implementationClass = "CommonPlugin",
+        )
+        registerPlugin(
+            id = "com.kmpstarter.plugins.starterlibrarypublish",
+            implementationClass = "StarterLibraryPublishPlugin",
         )
     }
 }

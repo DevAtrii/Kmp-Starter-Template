@@ -24,4 +24,27 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library) apply false
     alias(libs.plugins.android.lint) apply false
     alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.vanniktech.maven.publish) apply false
+}
+
+subprojects {
+    plugins.withId("org.jetbrains.kotlin.multiplatform") {
+        if (path.startsWith(":starter:")) {
+            pluginManager.apply("com.kmpstarter.plugins.starterlibrarypublish")
+        }
+    }
+}
+
+tasks.register("publishStarterLibrariesToLocalRepository") {
+    group = "publishing"
+    description =
+        "Publishes all :starter:* KMP libraries to .starter-libs (adds a Maven repo under the project root; gitignored)."
+    dependsOn(
+        ":starter:core:publishAllPublicationsToStarterLocalRepository",
+        ":starter:utils:publishAllPublicationsToStarterLocalRepository",
+        ":starter:native:bindings:publishAllPublicationsToStarterLocalRepository",
+        ":starter:ui:utils:publishAllPublicationsToStarterLocalRepository",
+        ":starter:ui:components:publishAllPublicationsToStarterLocalRepository",
+        ":starter:ui:layouts:publishAllPublicationsToStarterLocalRepository",
+    )
 }

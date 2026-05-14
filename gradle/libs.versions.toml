@@ -13,6 +13,8 @@ app-version-patch = "0"
 lib-version-major = "0"
 lib-version-minor = "4"
 lib-version-patch = "0"
+# Maven publish (starter libraries → Central / .starter-libs)
+vanniktech-maven-publish = "0.36.0"
 
 
 # Kotlin Ecosystem
@@ -195,6 +197,7 @@ androidx-runner = { group = "androidx.test", name = "runner", version.ref = "run
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 # Plugins
 kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+vanniktech-maven-publish-impl = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "vanniktech-maven-publish" }
 compose-multiplatform-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-multiplatform" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -232,6 +235,7 @@ build-koin-core = { id = "com.kmpstarter.plugins.koin" }
 build-koin-compose = { id = "com.kmpstarter.plugins.koincompose" }
 build-common = { id = "com.kmpstarter.plugins.common" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech-maven-publish" }
 
 [bundles]
 gradle-plugins = [

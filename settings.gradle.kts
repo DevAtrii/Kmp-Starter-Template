@@ -40,6 +40,15 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        val starterLibsDir = rootDir.resolve(".starter-libs")
+        if (starterLibsDir.exists()) {
+            maven(starterLibsDir.toURI()) {
+                name = "starterLibsLocal"
+                content {
+                    includeGroup("io.github.devatrii")
+                }
+            }
+        }
     }
 }
 

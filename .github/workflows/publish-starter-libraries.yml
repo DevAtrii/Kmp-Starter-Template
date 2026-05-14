@@ -1,0 +1,52 @@
+# Publishes all :starter:* KMP libraries to Maven Central (Sonatype Central Portal).
+#
+# Required repository secrets (Settings → Secrets and variables → Actions):
+#   MAVEN_CENTRAL_USERNAME   — Central Portal user token username
+#   MAVEN_CENTRAL_PASSWORD   — Central Portal user token password
+#   SIGNING_KEY              — ASCII-armored GPG secret key (full block including BEGIN/END lines)
+#   SIGNING_PASSWORD         — Passphrase for that key (empty string if none)
+#
+# Gradle reads these via ORG_GRADLE_PROJECT_* (see StarterLibraryPublishPlugin and
+# https://vanniktech.github.io/gradle-maven-publish-plugin/central/).
+#
+# Version is defined in gradle/libs.versions.toml (lib-version-major/minor/patch).
+# Namespace io.github.devatrii must be verified on https://central.sonatype.com/
+
+name: Publish starter libraries to Maven Central
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+      ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+      ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
+      ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Publish to Maven Central
+        run: |
+          ./gradlew \
+            :starter:core:publishAllPublicationsToMavenCentralRepository \
+            :starter:utils:publishAllPublicationsToMavenCentralRepository \
+            :starter:native:bindings:publishAllPublicationsToMavenCentralRepository \
+            :starter:ui:utils:publishAllPublicationsToMavenCentralRepository \
+            :starter:ui:components:publishAllPublicationsToMavenCentralRepository \
+            :starter:ui:layouts:publishAllPublicationsToMavenCentralRepository \
+            --no-configuration-cache \
+            --stacktrace
