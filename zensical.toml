@@ -39,7 +39,6 @@ nav = [
 
 
 [project.theme]
-name = "KMP Starter Docs"
 logo = "assets/logo.webp"
 favicon = "assets/favicon/favicon.ico"
 custom_dir = "docs/overrides"
