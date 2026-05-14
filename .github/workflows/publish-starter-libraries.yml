@@ -11,6 +11,9 @@
 #
 # Version is defined in gradle/libs.versions.toml (lib-version-major/minor/patch).
 # Namespace io.github.devatrii must be verified on https://central.sonatype.com/
+#
+# macOS is required: starter modules compile Kotlin/Native for iOS, and
+# :starter:native:bindings uses spm-kmp (Swift); that fails on Linux runners.
 
 name: Publish starter libraries to Maven Central
 
@@ -19,7 +22,7 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     permissions:
       contents: read
     env:
