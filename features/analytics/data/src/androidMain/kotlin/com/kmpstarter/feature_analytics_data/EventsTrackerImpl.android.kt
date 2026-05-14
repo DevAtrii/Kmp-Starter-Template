@@ -15,6 +15,7 @@
 
 package com.kmpstarter.feature_analytics_data
 
+import com.kmpstarter.feature_analytics_domain.AppEvent
 import com.kmpstarter.feature_analytics_domain.EventsTracker
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +26,13 @@ import org.json.JSONObject
 actual class EventsTrackerImpl(
     private val mixpanelAPI: MixpanelAPI,
 ) :  EventsTracker {
+    actual override suspend fun track(event: AppEvent) {
+        track(
+            event = event.event,
+            properties = event.properties
+        )
+    }
+
     actual override suspend fun track(event: String) = withContext(Dispatchers.IO) {
         if (!isEnabled)
             return@withContext

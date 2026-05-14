@@ -16,7 +16,8 @@
 package com.kmpstarter.feature_purchases_presentation
 
 import androidx.lifecycle.viewModelScope
-import com.kmpstarter.feature_analytics_domain.AppEventsTracker
+import com.kmpstarter.feature_analytics_domain.AppEvents
+import com.kmpstarter.feature_analytics_domain.EventsTracker
 import com.kmpstarter.feature_purchases_domain.logics.PurchasesLogics
 import com.kmpstarter.feature_purchases_domain.models.PaywallMetadata
 import com.kmpstarter.ui_utils.viewmodels.MviViewModel
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
 
 class PurchasesViewModel(
     private val purchasesLogics: PurchasesLogics,
-    private val eventsTracker: AppEventsTracker,
+    private val eventsTracker: EventsTracker,
     private val intentUtils: IntentUtils,
 ) : MviViewModel<PurchasesState, PurchasesActions, PurchasesEvents>() {
 
@@ -122,8 +123,10 @@ class PurchasesViewModel(
                     }
                     val message = err.getPurchaseExceptionMessage()
                     emitEvent(PurchasesEvents.ShowMessage(message))
-                    eventsTracker.trackPurchaseRestoreFailure(
-                        error = err.message ?: "--"
+                    eventsTracker.track(
+                        event = AppEvents.OnPurchaseRestoreFailure(
+                            error = err.message ?: "--"
+                        )
                     )
                 }
         }
@@ -147,7 +150,11 @@ class PurchasesViewModel(
                             isPurchasing = false
                         )
                     }
-                    eventsTracker.trackPurchaseSuccess(selectedProduct.id)
+                    eventsTracker.track(
+                        event = AppEvents.OnPurchaseSuccess(
+                            productId = selectedProduct.id
+                        )
+                    )
                 }.onFailure { err ->
                     _state.update {
                         it.copy(
@@ -157,10 +164,13 @@ class PurchasesViewModel(
                     }
                     val message = err.getPurchaseExceptionMessage()
                     emitEvent(PurchasesEvents.ShowMessage(message))
-                    eventsTracker.trackPurchaseFailure(
-                        productId = selectedProduct.id,
-                        error = err.message ?: "--"
+                    eventsTracker.track(
+                        event = AppEvents.OnPurchaseFailure(
+                            productId = selectedProduct.id,
+                            error = err.message ?: "--"
+                        )
                     )
+
                 }
         }
     }
@@ -216,8 +226,10 @@ class PurchasesViewModel(
                     }
                     val message = err.getPurchaseExceptionMessage()
                     emitEvent(PurchasesEvents.ShowMessage(message))
-                    eventsTracker.trackPurchaseProductsFailure(
-                        error = err.message ?: "--"
+                    eventsTracker.track(
+                        event = AppEvents.OnPurchaseProductsFailure(
+                            error = err.message ?: "--"
+                        )
                     )
                 }
         }

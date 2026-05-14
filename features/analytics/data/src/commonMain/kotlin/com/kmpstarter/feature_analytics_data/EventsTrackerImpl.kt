@@ -15,11 +15,13 @@
 
 package com.kmpstarter.feature_analytics_data
 
+import com.kmpstarter.feature_analytics_domain.AppEvent
 import com.kmpstarter.feature_analytics_domain.EventsTracker
 
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 expect class EventsTrackerImpl : EventsTracker {
+    override suspend fun track(event: AppEvent)
     override suspend fun track(event: String)
     override suspend fun track(event: String, pair: Pair<String, Any>?)
     override suspend fun track(

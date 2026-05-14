@@ -27,6 +27,9 @@ interface EventsTracker {
         get() = true
 
     suspend fun track(
+        event: AppEvent,
+    )
+    suspend fun track(
         event: String,
     )
 

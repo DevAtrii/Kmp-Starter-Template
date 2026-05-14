@@ -16,7 +16,8 @@
 package com.kmpstarter.feature_core_presentation.viewmodels
 
 import androidx.lifecycle.viewModelScope
-import com.kmpstarter.feature_analytics_domain.AppEventsTracker
+import com.kmpstarter.feature_analytics_domain.AppEvents
+import com.kmpstarter.feature_analytics_domain.EventsTracker
 import com.kmpstarter.feature_core_domain.logics.OnboardingLogics
 import com.kmpstarter.ui_utils.viewmodels.MviViewModel
 import kotlinx.coroutines.Job
@@ -46,7 +47,7 @@ sealed class OnboardingActions {
 
 class OnboardingViewModel(
     private val onboardingLogics: OnboardingLogics,
-    private val eventsTracker: AppEventsTracker,
+    private val eventsTracker: EventsTracker,
 ) : MviViewModel<OnboardingState, OnboardingActions, OnboardingEvents>() {
 
     companion object {
@@ -108,7 +109,11 @@ class OnboardingViewModel(
     private fun onFinish() {
         setOnboarded(true)
         viewModelScope.launch {
-            eventsTracker.trackTrafficSource(source = _state.value.selectedTrafficSource ?: "--")
+            eventsTracker.track(
+                event = AppEvents.TrackTrafficSource(
+                    source = _state.value.selectedTrafficSource ?: "--"
+                )
+            )
             emitEvent(OnboardingEvents.Finish)
         }
     }

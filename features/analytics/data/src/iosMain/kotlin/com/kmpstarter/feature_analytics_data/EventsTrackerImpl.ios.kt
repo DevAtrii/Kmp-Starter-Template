@@ -15,6 +15,7 @@
 
 package com.kmpstarter.feature_analytics_data
 
+import com.kmpstarter.feature_analytics_domain.AppEvent
 import com.kmpstarter.feature_analytics_domain.EventsTracker
 import interop.MixPanelBridge
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -26,7 +27,13 @@ import kotlinx.coroutines.withContext
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class EventsTrackerImpl(
     private val mixPanelBridge: MixPanelBridge,
-) :  EventsTracker {
+) : EventsTracker {
+    actual override suspend fun track(event: AppEvent) {
+        track(
+            event = event.event,
+            properties = event.properties
+        )
+    }
 
 
     init {
