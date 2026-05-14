@@ -18,13 +18,27 @@ package com.kmpstarter.feature_remote_config_domain
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 
-@Serializable
-data class RemoteAppMetadata(
-    val versionName: String = "0.5.0",
-    val versionCode: Int = 50,
-)
-
-
+/**
+ * Base contract for all Remote Config keys.
+ *
+ * Each implementation represents single remote config entry.
+ *
+ * Example generated keys:
+ * - "meta_data"
+ * - "welcome_text"
+ * - "show_onboarding"
+ * - "minimum_version"
+ *
+ * See [ConfigKeys]:
+ * - [ConfigKeys.Metadata]
+ * - [ConfigKeys.WelcomeText]
+ * - [ConfigKeys.ShowOnboarding]
+ * - [ConfigKeys.MinimumVersion]
+ *
+ * @param key Unique remote config key stored in provider.
+ * @param defaultValue Fallback value used when remote value unavailable.
+ * @param serializer Optional serializer for complex objects.
+ */
 abstract class RemoteConfigKey<T>(
     val key: String,
     open val defaultValue: T,
@@ -33,7 +47,16 @@ abstract class RemoteConfigKey<T>(
 
 
 /*Example of remote config keys*/
-private sealed class DefaultKey<T>(
+
+
+@Serializable
+private data class RemoteAppMetadata(
+    val versionName: String = "0.5.0",
+    val versionCode: Int = 50,
+)
+
+
+private sealed class ConfigKeys<T>(
     key: String,
     defaultValue: T,
     serializer: KSerializer<T>? = null,

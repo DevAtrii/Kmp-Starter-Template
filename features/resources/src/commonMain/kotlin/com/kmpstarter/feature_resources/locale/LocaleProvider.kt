@@ -26,67 +26,11 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.kmpstarter.ui_utils.datastore.rememberMutableDataStoreState
 import com.kmpstarter.utils.logging.Log
 
-//
-/* viewmodel approach
-internal class LocaleViewModel(
-    private val appDataStore: AppDataStore,
-    private val default: StarterLocales?,
-) : ViewModel() {
-
-    val dataStore = appDataStore.dataStore
-
-    val languageCode = dataStore
-        .data
-        .map { prefs -> prefs[localeKey] }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000L),
-            getDefaultLocale()
-        )
-
-    fun switchLanguage(languageCode: String) {
-        viewModelScope.launch {
-            dataStore.edit { mutablePrefs ->
-                mutablePrefs[localeKey] = languageCode
-            }
-        }
-    }
-
-}
-@Composable
-fun rememberMutableStarterLocaleDataStore(default: StarterLocales?): MutableState<String?> {
-
-    val vm: LocaleViewModel = koinViewModel {
-        parametersOf(default)
-    }
-    val languageCode = vm.languageCode.collectAsState()
-    return remember(languageCode) {
-        object : MutableState<String?> {
-            override var value: String?
-                get() = languageCode.value
-                set(value) {
-                    if (value != null) {
-                        vm.switchLanguage(value)
-                    } else {
-                        // remove
-                    }
-                }
-
-            override fun component1(): String? = value
-
-            override fun component2(): (String?) -> Unit = {
-                value = it
-            }
-        }
-    }
-}
-*/
-
 
 internal val localeKey = stringPreferencesKey("app_locale")
 
 @Composable
-fun rememberMutableStarterLocaleDataStore(default: StarterLocales?): MutableState<String?> {
+fun rememberMutableStarterLocaleDataStore(default: StarterLocale?): MutableState<String?> {
     val value = rememberMutableDataStoreState(
         key = localeKey,
         defaultValue = default?.langCode
@@ -97,28 +41,32 @@ fun rememberMutableStarterLocaleDataStore(default: StarterLocales?): MutableStat
 
 
 @Composable
-fun rememberStarterLocaleDataStore(default: StarterLocales?): State<String?> {
+fun rememberStarterLocaleDataStore(default: StarterLocale?): State<String?> {
     return rememberMutableStarterLocaleDataStore(default = default)
 }
 
 @Composable
 fun rememberStarterActiveLocale(
-    overrideDefault: StarterLocales? = null,
-): StarterLocales {
+    overrideDefault: StarterLocale? = null,
+): StarterLocale {
     val localeState = rememberStarterLocaleDataStore(overrideDefault)
 
     // Priority is User Pref -> overrideDefault -> System Default
     val activeLocale = remember(localeState.value) {
-        if (localeState.value != null) return@remember StarterLocales.findByLangCode(
-            langCode = localeState.value!!
-        ) ?: StarterLocales.DEFAULT
+        if (localeState.value != null) {
+            val language = StarterLocales.findBy(
+                langCode = localeState.value!!
+            )
+            if (language != null)
+                return@remember language
+        }
 
 
         val systemRaw = getDefaultLocale().replace("-", "_")
 
         // Find by full code, fallback to base language (e.g., en_US -> en)
-        StarterLocales.findByLangCode(systemRaw)
-            ?: StarterLocales.findByLangCode(systemRaw.substringBefore("_"))
+        StarterLocales.findBy(systemRaw)
+            ?: StarterLocales.findBy(systemRaw.substringBefore("_"))
             ?: StarterLocales.DEFAULT // Ultimate fallback
     }
 
@@ -144,11 +92,16 @@ fun rememberStarterActiveLocale(
  */
 @Composable
 fun LocaleProvider(
-    overrideDefault: StarterLocales? = null,
+    locales: Set<StarterLocale> = emptySet(),
+    overrideDefault: StarterLocale? = null,
     content: @Composable () -> Unit,
 ) {
     // Priority is User Pref -> overrideDefault -> System Default
     val activeLocale = rememberStarterActiveLocale(overrideDefault = overrideDefault)
+
+    LaunchedEffect(locales) {
+        StarterLocales.add(locales)
+    }
 
     CompositionLocalProvider(
         LocalAppLocale provides activeLocale.langCode,
@@ -156,10 +109,7 @@ fun LocaleProvider(
         CompositionLocalProvider(
             LocalLayoutDirection provides activeLocale.layoutDirection,
         ) {
-                content()
-            // key(activeLocale) {
-            //    content()
-            // }
+            content()
         }
     }
 }

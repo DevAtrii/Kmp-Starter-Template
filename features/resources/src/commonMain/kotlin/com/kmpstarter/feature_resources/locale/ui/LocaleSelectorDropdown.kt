@@ -57,7 +57,7 @@ fun LocaleSelectorDropdown(
                 isExpanded = it
             }
         ) {
-            StarterLocales.entries.forEachIndexed { index, locale ->
+            StarterLocales.locales.forEach { locale ->
                 CupertinoDropdownItem(
                     text = locale.displayName.toActualString(),
                     onClick = {
@@ -65,7 +65,7 @@ fun LocaleSelectorDropdown(
                         isExpanded = false
                     },
                     isSelected = locale == args.currentLocale,
-                    showDivider = index != StarterLocales.entries.lastIndex
+                    showDivider = locale != StarterLocales.locales.lastOrNull()
                 )
             }
         }

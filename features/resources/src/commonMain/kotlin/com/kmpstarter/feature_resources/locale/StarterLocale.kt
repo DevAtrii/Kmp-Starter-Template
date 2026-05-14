@@ -18,10 +18,32 @@ package com.kmpstarter.feature_resources.locale
 import androidx.compose.ui.unit.LayoutDirection
 import com.kmpstarter.feature_resources.Res
 import com.kmpstarter.feature_resources.lang_en
-import com.kmpstarter.feature_resources.lang_es
-import com.kmpstarter.feature_resources.lang_hi
-import com.kmpstarter.feature_resources.lang_ur
 import org.jetbrains.compose.resources.StringResource
+
+
+object StarterLocales {
+
+    val DEFAULT = StarterLocale("🇺🇸", "en", Res.string.lang_en)
+
+    private val _locales = mutableSetOf(DEFAULT)
+    val locales get() = _locales.toSet()
+
+
+    fun add(locale: StarterLocale) = _locales.add(locale)
+    fun add(locales: Iterable<StarterLocale>) = _locales.addAll(locales)
+
+    fun findBy(langCode: String): StarterLocale? {
+        return _locales.find { it.langCode.equals(langCode, ignoreCase = true) }
+    }
+
+}
+
+data class StarterLocale(
+    val emoji: String,
+    val langCode: String,
+    val displayName: StringResource,
+    val layoutDirection: LayoutDirection = LayoutDirection.Ltr,
+)
 
 
 /**
@@ -32,6 +54,7 @@ import org.jetbrains.compose.resources.StringResource
  * - Country-specific locale: use "_" between language and country
  *   Example: "es_AR" (Spanish - Argentina)
  */
+/*
 enum class StarterLocales(
     val emoji: String,
     val langCode: String,
@@ -47,18 +70,22 @@ enum class StarterLocales(
     ;
 
     companion object {
-        /**
-         * fallback
-         * */
+        */
+/**
+ * fallback
+ * *//*
+
         val DEFAULT = ENGLISH
 
-        /**
-         * finds a locale by its language code
-         */
-        fun findByLangCode(langCode: String): StarterLocales? {
+        */
+/**
+ * finds a locale by its language code
+ *//*
+
+        fun findBy(langCode: String): StarterLocales? {
             return entries.find { it.langCode.equals(langCode, ignoreCase = true) }
         }
     }
 
 
-}
+}*/

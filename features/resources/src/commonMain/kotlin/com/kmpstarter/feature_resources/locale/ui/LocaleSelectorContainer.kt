@@ -19,12 +19,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.kmpstarter.feature_resources.locale.StarterLocale
 import com.kmpstarter.feature_resources.locale.StarterLocales
 import com.kmpstarter.feature_resources.locale.rememberMutableStarterLocaleDataStore
 
 data class LocaleSelectorArgs(
-    val currentLocale: StarterLocales,
-    val onLocaleSelected: (StarterLocales) -> Unit,
+    val currentLocale: StarterLocale,
+    val onLocaleSelected: (StarterLocale) -> Unit,
 )
 
 @Composable
@@ -34,7 +35,7 @@ fun LocaleSelectorContainer(
     var _localeLangCode by rememberMutableStarterLocaleDataStore(default = null)
     val args = remember(_localeLangCode) {
         LocaleSelectorArgs(
-            currentLocale = _localeLangCode?.let { StarterLocales.findByLangCode(it) }
+            currentLocale = _localeLangCode?.let { StarterLocales.findBy(it) }
                 ?: StarterLocales.DEFAULT,
             onLocaleSelected = { locale ->
                 _localeLangCode = locale.langCode

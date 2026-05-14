@@ -23,7 +23,7 @@ import com.kmpstarter.feature_navigation.utils.rememberNavBackStack
 import kotlinx.serialization.modules.subclass
 
 @Composable
-fun rememberStarterBackStack(vararg initialScreens: NavKey): NavBackStack<NavKey> {
+internal fun rememberStarterBackStack(vararg initialScreens: NavKey): NavBackStack<NavKey> {
     val backstack = rememberNavBackStack(
         elements = initialScreens
     ) {

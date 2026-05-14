@@ -32,7 +32,6 @@ import com.kmpstarter.feature_purchases_domain.di.purchasesDomainModule
 import com.kmpstarter.feature_purchases_presentation.di.purchasesPresentationModule
 import com.kmpstarter.feature_remote_config_data.di.remoteConfigDataModule
 import com.kmpstarter.feature_remote_config_domain.di.remoteConfigDomainModule
-import com.kmpstarter.feature_resources.di.resourceModule
 import com.kmpstarter.feature_your_feature_data.di.featureYourDataModule
 import com.kmpstarter.feature_your_feature_domain.di.featureYourDomainModule
 import com.kmpstarter.feature_your_feature_presentation.di.featureYourPresentationModule
@@ -64,7 +63,6 @@ private val starterModules = module {
         /*Feature: RemoteConfig*/
         remoteConfigDataModule,
         remoteConfigDomainModule,
-        resourceModule,
         /*Feature: Notifications*/
         notificationsCoreModule,
         notificationsLocalModule,

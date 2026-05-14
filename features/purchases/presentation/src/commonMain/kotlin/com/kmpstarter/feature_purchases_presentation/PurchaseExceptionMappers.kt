@@ -25,7 +25,7 @@ import com.kmpstarter.feature_resources.starter_purchase_error_restore_failed
 import com.kmpstarter.feature_resources.starter_purchase_error_user_not_signed_in
 import org.jetbrains.compose.resources.StringResource
 
-internal suspend fun Throwable.getPurchaseExceptionMessage(): StringResource {
+internal fun Throwable.getPurchaseExceptionMessage(): StringResource {
     if (this !is PurchaseException)
         return Res.string.error_generic
 

@@ -30,12 +30,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.LayoutDirection
 import com.kmpstarter.core.KmpAppInitializer
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
 import com.kmpstarter.feature_navigation.StarterNavigation
 import com.kmpstarter.feature_navigation.screens.StarterScreens
+import com.kmpstarter.feature_resources.Res
+import com.kmpstarter.feature_resources.lang_es
+import com.kmpstarter.feature_resources.lang_hi
+import com.kmpstarter.feature_resources.lang_ur
 import com.kmpstarter.feature_resources.locale.LocaleProvider
+import com.kmpstarter.feature_resources.locale.StarterLocale
 import com.kmpstarter.feature_resources.locale.StarterLocales
 import com.kmpstarter.theme.ApplicationTheme
 import com.kmpstarter.ui_utils.composition_locals.LocalThemeMode
@@ -47,6 +53,30 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+
+
+private object AppConfig {
+    const val FORCE_UPDATE = true
+
+
+    val supportedLocales = setOf(
+        StarterLocale(
+            "🇵🇰",
+            "ur",
+            Res.string.lang_ur,
+            LayoutDirection.Rtl
+        ),
+        StarterLocale("🇮🇳", "hi", Res.string.lang_hi),
+        StarterLocale("🇪🇸", "es", Res.string.lang_es),
+    )
+
+    /*
+    // or add like this instead of passing to LocaleProvider
+    init {
+        StarterLocales.add(supportedLocales)
+    }
+    */
+}
 
 /**
  * The main entry point of the application UI.
@@ -85,10 +115,11 @@ private fun MainApp(
     )
 
     AppUpdateProvider(
-        force = true
+        force = AppConfig.FORCE_UPDATE
     ) {
         LocaleProvider(
-            overrideDefault = StarterLocales.ENGLISH
+            locales = AppConfig.supportedLocales,
+            overrideDefault = StarterLocales.findBy("en"),
         ) {
             CompositionLocalProvider(LocalThemeMode provides currentThemeMode) {
                 ApplicationTheme(

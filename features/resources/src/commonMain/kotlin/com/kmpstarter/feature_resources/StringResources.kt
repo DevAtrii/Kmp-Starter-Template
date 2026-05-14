@@ -30,6 +30,7 @@ fun StringResource.isEmpty() = this == Res.string.empty_string
 @Composable
 fun StringResource.toActualString() = stringResource(resource = this)
 
+@Suppress("ParamsComparedByRef")
 @Composable
 fun StringResource.toActualString(vararg formatArgs: Any) =
     stringResource(resource = this, formatArgs = formatArgs)
