@@ -50,7 +50,7 @@ fun PurchasesScreen(
     viewModel: PurchasesViewModel = koinViewModel(),
     onNavigate: () -> Unit,
     onProductsLoadFailure: (Throwable) -> Unit = {},
-    onPurchaseFailure: (Throwable) -> Unit = {},
+    onPurchaseFailure: (Throwable, ProductId) -> Unit = {_,_->},
     onRestoreFailure: (Throwable) -> Unit = {},
     onPurchaseSuccess: (ProductId) -> Unit = {},
 ) {
@@ -60,7 +60,7 @@ fun PurchasesScreen(
     ObserveAsEvents(flow = viewModel.uiEvents) { event ->
         when (event) {
             is PurchasesEvents.OnProductsLoadFailure -> onProductsLoadFailure(event.exception)
-            is PurchasesEvents.OnPurchaseFailure -> onPurchaseFailure(event.exception)
+            is PurchasesEvents.OnPurchaseFailure -> onPurchaseFailure(event.exception,event.productId)
             is PurchasesEvents.OnPurchaseSuccess -> onPurchaseSuccess(event.productId)
             is PurchasesEvents.OnRestoreFailure -> onRestoreFailure(event.exception)
         }

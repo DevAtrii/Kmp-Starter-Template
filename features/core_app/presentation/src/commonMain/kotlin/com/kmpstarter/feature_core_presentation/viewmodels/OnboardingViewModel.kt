@@ -16,7 +16,7 @@
 package com.kmpstarter.feature_core_presentation.viewmodels
 
 import androidx.lifecycle.viewModelScope
-import com.kmpstarter.feature_analytics_domain.AppEvents
+import com.kmpstarter.feature_core_domain.AppEvents
 import com.kmpstarter.feature_analytics_domain.EventsTracker
 import com.kmpstarter.feature_core_domain.logics.OnboardingLogics
 import com.kmpstarter.ui_utils.viewmodels.MviViewModel

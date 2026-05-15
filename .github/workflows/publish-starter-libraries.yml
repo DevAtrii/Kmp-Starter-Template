@@ -1,4 +1,4 @@
-# Publishes all :starter:* KMP libraries to Maven Central (Sonatype Central Portal).
+# Publishes all KMP libraries (starter + features) to Maven Central (Sonatype Central Portal).
 #
 # Required repository secrets (Settings → Secrets and variables → Actions):
 #   MAVEN_CENTRAL_USERNAME   — Central Portal user token username
@@ -6,16 +6,15 @@
 #   SIGNING_KEY              — ASCII-armored GPG secret key (full block including BEGIN/END lines)
 #   SIGNING_PASSWORD         — Passphrase for that key (empty string if none)
 #
-# Gradle reads these via ORG_GRADLE_PROJECT_* (see StarterLibraryPublishPlugin and
+# Gradle reads these via ORG_GRADLE_PROJECT_* (see KmpLibraryPublishPlugin and
 # https://vanniktech.github.io/gradle-maven-publish-plugin/central/).
 #
 # Version is defined in gradle/libs.versions.toml (lib-version-major/minor/patch).
 # Namespace io.github.devatrii must be verified on https://central.sonatype.com/
 #
-# macOS is required: starter modules compile Kotlin/Native for iOS, and
-# :starter:native:bindings uses spm-kmp (Swift); that fails on Linux runners.
+# macOS is required: Kotlin/Native (iOS) and :starter:native:bindings (spm-kmp / Swift).
 
-name: Publish starter libraries to Maven Central
+name: Publish KMP libraries to Maven Central
 
 on:
   workflow_dispatch:
@@ -44,12 +43,4 @@ jobs:
 
       - name: Publish to Maven Central
         run: |
-          ./gradlew \
-            :starter:core:publishAllPublicationsToMavenCentralRepository \
-            :starter:utils:publishAllPublicationsToMavenCentralRepository \
-            :starter:native:bindings:publishAllPublicationsToMavenCentralRepository \
-            :starter:ui:utils:publishAllPublicationsToMavenCentralRepository \
-            :starter:ui:components:publishAllPublicationsToMavenCentralRepository \
-            :starter:ui:layouts:publishAllPublicationsToMavenCentralRepository \
-            --no-configuration-cache \
-            --stacktrace
+          ./gradlew publishKmpLibrariesToMavenCentral --no-configuration-cache --stacktrace

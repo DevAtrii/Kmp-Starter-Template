@@ -43,7 +43,11 @@ gradlePlugin {
         )
         registerPlugin(
             id = "com.kmpstarter.plugins.starterlibrarypublish",
-            implementationClass = "StarterLibraryPublishPlugin",
+            implementationClass = "KmpLibraryPublishPlugin",
+        )
+        registerPlugin(
+            id = "com.kmpstarter.plugins.kmplibrarypublish",
+            implementationClass = "KmpLibraryPublishPlugin",
         )
     }
 }

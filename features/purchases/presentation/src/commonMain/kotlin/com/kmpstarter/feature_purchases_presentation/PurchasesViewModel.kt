@@ -153,7 +153,7 @@ class PurchasesViewModel(
                             isPurchasing = false
                         )
                     }
-                    emitEvent(PurchasesEvents.OnPurchaseFailure(err))
+                    emitEvent(PurchasesEvents.OnPurchaseFailure(err, selectedProduct.id))
                 }
         }
     }

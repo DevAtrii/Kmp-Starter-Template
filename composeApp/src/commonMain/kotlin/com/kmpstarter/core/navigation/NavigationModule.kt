@@ -15,12 +15,17 @@
 
 package com.kmpstarter.core.navigation
 
+import androidx.compose.runtime.rememberCoroutineScope
 import com.kmpstarter.core.ui.screens.WelcomeScreen
+import com.kmpstarter.feature_analytics_domain.EventsTracker
+import com.kmpstarter.feature_core_domain.AppEvents
 import com.kmpstarter.feature_core_presentation.screens.OnboardingV1Screen
 import com.kmpstarter.feature_core_presentation.screens.SplashScreen
 import com.kmpstarter.feature_navigation.StarterNavigator
 import com.kmpstarter.feature_navigation.di.navigationCoreModule
 import com.kmpstarter.feature_purchases_presentation.ui.screens.PurchasesScreen
+import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.module
 import org.koin.dsl.navigation3.navigation
@@ -69,10 +74,49 @@ val navigationModule = module {
 
     navigation<AppScreens.Purchases> { route ->
         val navigator = StarterNavigator.getCurrent()
+        val eventsTracker: EventsTracker = koinInject()
+        val scope = rememberCoroutineScope()
         PurchasesScreen(
             paywall = starterDefaultPaywallV1(),
             onNavigate = {
                 navigator.navigateUp()
+            },
+            onProductsLoadFailure = {
+                scope.launch {
+                    eventsTracker.track(
+                        event = AppEvents.OnPurchaseProductsLoadFailure(
+                            error = it.message ?: "--"
+                        )
+                    )
+                }
+            },
+            onPurchaseFailure = { err, id ->
+                scope.launch {
+                    eventsTracker.track(
+                        event = AppEvents.OnPurchaseFailure(
+                            error = err.message ?: "--",
+                            productId = id
+                        )
+                    )
+                }
+            },
+            onRestoreFailure = {
+                scope.launch {
+                    eventsTracker.track(
+                        event = AppEvents.OnPurchaseRestoreFailure(
+                            error = it.message ?: "--"
+                        )
+                    )
+                }
+            },
+            onPurchaseSuccess = {
+                scope.launch {
+                    eventsTracker.track(
+                        event = AppEvents.OnPurchaseSuccess(
+                            it
+                        )
+                    )
+                }
             },
         )
     }

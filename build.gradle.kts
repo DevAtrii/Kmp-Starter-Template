@@ -27,24 +27,65 @@ plugins {
     alias(libs.plugins.vanniktech.maven.publish) apply false
 }
 
+// Keep in sync with KmpLibraryPublishPlugin.PUBLISHABLE_MODULE_PATHS
+private val publishableKmpModules =
+    listOf(
+        ":starter:core",
+        ":starter:utils",
+        ":starter:native:bindings",
+        ":starter:ui:utils",
+        ":starter:ui:components",
+        ":starter:ui:layouts",
+        ":features:navigation",
+        ":features:analytics:data",
+        ":features:analytics:domain",
+        ":features:core_app:data",
+        ":features:core_app:domain",
+        ":features:core_app:presentation",
+        ":features:locale",
+        ":features:remote_config:data",
+        ":features:remote_config:domain",
+        ":features:remote_config:presentation",
+        ":features:purchases:data",
+        ":features:purchases:domain",
+        ":features:purchases:presentation",
+        ":features:notifications:core",
+        ":features:notifications:local",
+        ":features:notifications:push",
+    )
+
 subprojects {
     plugins.withId("org.jetbrains.kotlin.multiplatform") {
-        if (path.startsWith(":starter:")) {
-            pluginManager.apply("com.kmpstarter.plugins.starterlibrarypublish")
+        if (project.path in publishableKmpModules) {
+            pluginManager.apply("com.kmpstarter.plugins.kmplibrarypublish")
         }
     }
 }
 
-tasks.register("publishStarterLibrariesToLocalRepository") {
+tasks.register("publishKmpLibrariesToLocalRepository") {
     group = "publishing"
     description =
-        "Publishes all :starter:* KMP libraries to .starter-libs (adds a Maven repo under the project root; gitignored)."
+        "Publishes all KMP libraries (starter + features) to .starter-libs (gitignored Maven repo at project root)."
     dependsOn(
-        ":starter:core:publishAllPublicationsToStarterLocalRepository",
-        ":starter:utils:publishAllPublicationsToStarterLocalRepository",
-        ":starter:native:bindings:publishAllPublicationsToStarterLocalRepository",
-        ":starter:ui:utils:publishAllPublicationsToStarterLocalRepository",
-        ":starter:ui:components:publishAllPublicationsToStarterLocalRepository",
-        ":starter:ui:layouts:publishAllPublicationsToStarterLocalRepository",
+        publishableKmpModules.map { "$it:publishAllPublicationsToStarterLocalRepository" },
     )
+}
+
+tasks.register("publishKmpLibrariesToMavenCentral") {
+    group = "publishing"
+    description = "Publishes all KMP libraries (starter + features) to Maven Central."
+    dependsOn(
+        publishableKmpModules.map { "$it:publishAllPublicationsToMavenCentralRepository" },
+    )
+}
+
+// Backward-compatible aliases
+tasks.register("publishStarterLibrariesToLocalRepository") {
+    group = "publishing"
+    dependsOn("publishKmpLibrariesToLocalRepository")
+}
+
+tasks.register("publishAllKmpLibrariesToLocalRepository") {
+    group = "publishing"
+    dependsOn("publishKmpLibrariesToLocalRepository")
 }
