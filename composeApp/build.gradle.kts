@@ -95,9 +95,9 @@ kotlin {
             // resources
             implementation(projects.features.resources)
             // Feature Core
-            implementation(projects.features.core.data)
-            implementation(projects.features.core.domain)
-            implementation(projects.features.core.presentation)
+            implementation(projects.features.coreApp.data)
+            implementation(projects.features.coreApp.domain)
+            implementation(projects.features.coreApp.presentation)
 
             // Feature Your Feature
             implementation(projects.features.yourFeature.data)

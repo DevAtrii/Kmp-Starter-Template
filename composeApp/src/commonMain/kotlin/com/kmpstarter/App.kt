@@ -36,14 +36,14 @@ import com.kmpstarter.core.KmpAppInitializer
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
 import com.kmpstarter.core.navigation.AppScreens
+import com.kmpstarter.feature_locale.LocaleProvider
+import com.kmpstarter.feature_locale.StarterLocale
+import com.kmpstarter.feature_locale.StarterLocales
 import com.kmpstarter.feature_navigation.StarterNavigation
 import com.kmpstarter.feature_resources.Res
 import com.kmpstarter.feature_resources.lang_es
 import com.kmpstarter.feature_resources.lang_hi
 import com.kmpstarter.feature_resources.lang_ur
-import com.kmpstarter.feature_resources.locale.LocaleProvider
-import com.kmpstarter.feature_resources.locale.StarterLocale
-import com.kmpstarter.feature_resources.locale.StarterLocales
 import com.kmpstarter.theme.ApplicationTheme
 import com.kmpstarter.ui_utils.composition_locals.LocalThemeMode
 import com.kmpstarter.ui_utils.side_effects.LaunchOnce

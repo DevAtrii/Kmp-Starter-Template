@@ -63,7 +63,7 @@ kotlin {
                 implementation(libs.kotlin.stdlib)
                 implementation(projects.starter.ui.layouts)
                 implementation(projects.features.yourFeature.domain)
-                implementation(projects.features.core.presentation)
+                implementation(projects.features.coreApp.presentation)
                 implementation(projects.features.resources)
                 implementation(projects.features.navigation)
                 implementation(projects.features.analytics.domain)

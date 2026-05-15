@@ -66,6 +66,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 implementation(projects.starter.ui.components)
+                api(projects.features.locale)
             }
         }
 

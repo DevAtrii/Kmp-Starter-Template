@@ -91,8 +91,9 @@ import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
 import com.kmpstarter.core.events.enums.ThemeMode
 import com.kmpstarter.core.platform.platform
+import com.kmpstarter.feature_locale.ui.LocaleSelectorDropdown
 import com.kmpstarter.feature_resources.Res
-import com.kmpstarter.feature_resources.locale.ui.LocaleSelectorDropdown
+import com.kmpstarter.feature_resources.locale_selector_dd_label
 import com.kmpstarter.feature_resources.toActualString
 import com.kmpstarter.feature_resources.welcome_screen_description
 import com.kmpstarter.feature_resources.welcome_screen_subtitle
@@ -317,7 +318,10 @@ fun WelcomeScreen(
                         ),
                         exit = slideOutVertically() + fadeOut()
                     ) {
-                        LocaleSelectorDropdown(isLast = true)
+                        LocaleSelectorDropdown(
+                            isLast = true,
+                            label = Res.string.locale_selector_dd_label,
+                        )
                     }
 
                     // Features Section

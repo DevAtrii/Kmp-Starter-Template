@@ -57,7 +57,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                api(projects.features.core.domain)
+                api(projects.features.coreApp.domain)
             }
         }
 
