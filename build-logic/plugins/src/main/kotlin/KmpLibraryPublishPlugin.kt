@@ -66,7 +66,7 @@ class KmpLibraryPublishPlugin : Plugin<Project> {
                 developers {
                     developer {
                         id.set("DevAtrii")
-                        name.set("Athar Gul")
+                        name.set("Athar Zaman")
                         url.set("https://github.com/DevAtrii/")
                     }
                 }
@@ -137,28 +137,28 @@ class KmpLibraryPublishPlugin : Plugin<Project> {
                 ":starter:ui:components" -> "starter-ui-components"
                 ":starter:ui:layouts" -> "starter-ui-layouts"
                 // navigation
-                ":features:navigation" -> "kmp-navigation"
+                ":features:navigation" -> "feature-navigation"
                 // analytics
-                ":features:analytics:data" -> "kmp-analytics-data"
-                ":features:analytics:domain" -> "kmp-analytics-domain"
+                ":features:analytics:data" -> "feature-analytics-data"
+                ":features:analytics:domain" -> "feature-analytics-domain"
                 // core
-                ":features:core_app:data" -> "kmp-core-data"
-                ":features:core_app:domain" -> "kmp-core-domain"
-                ":features:core_app:presentation" -> "kmp-core-presentation"
+                ":features:core_app:data" -> "feature-core-data"
+                ":features:core_app:domain" -> "feature-core-domain"
+                ":features:core_app:presentation" -> "feature-core-presentation"
                 // locale
-                ":features:locale" -> "kmp-locale"
+                ":features:locale" -> "feature-locale"
                 // remote config
-                ":features:remote_config:data" -> "kmp-remote-config-data"
-                ":features:remote_config:domain" -> "kmp-remote-config-domain"
-                ":features:remote_config:presentation" -> "kmp-remote-config-presentation"
+                ":features:remote_config:data" -> "feature-remote-config-data"
+                ":features:remote_config:domain" -> "feature-remote-config-domain"
+                ":features:remote_config:presentation" -> "feature-remote-config-presentation"
                 // purchases
-                ":features:purchases:data" -> "kmp-purchases-data"
-                ":features:purchases:domain" -> "kmp-purchases-domain"
-                ":features:purchases:presentation" -> "kmp-purchases-presentation"
+                ":features:purchases:data" -> "feature-purchases-data"
+                ":features:purchases:domain" -> "feature-purchases-domain"
+                ":features:purchases:presentation" -> "feature-purchases-presentation"
                 // notifications
-                ":features:notifications:core" -> "kmp-notifications-core"
-                ":features:notifications:local" -> "kmp-notifications-local"
-                ":features:notifications:push" -> "kmp-notifications-push"
+                ":features:notifications:core" -> "feature-notifications-core"
+                ":features:notifications:local" -> "feature-notifications-local"
+                ":features:notifications:push" -> "feature-notifications-push"
                 else -> error("No Maven artifactId configured for project path: $path")
             }
     }
