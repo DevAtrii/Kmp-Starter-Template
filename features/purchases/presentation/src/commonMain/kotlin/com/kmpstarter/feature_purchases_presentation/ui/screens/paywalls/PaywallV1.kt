@@ -97,31 +97,6 @@ import com.kmpstarter.feature_purchases_domain.models.PaywallMetadata
 import com.kmpstarter.feature_purchases_domain.models.Product
 import com.kmpstarter.feature_purchases_domain.models.ProductId
 import com.kmpstarter.feature_purchases_domain.models.Review
-import com.kmpstarter.feature_resources.Res
-import com.kmpstarter.feature_resources.compose_multiplatform
-import com.kmpstarter.feature_resources.paywall_v1_btn_continue
-import com.kmpstarter.feature_resources.paywall_v1_btn_trial
-import com.kmpstarter.feature_resources.paywall_v1_faqs_title
-import com.kmpstarter.feature_resources.paywall_v1_feature_1
-import com.kmpstarter.feature_resources.paywall_v1_feature_10
-import com.kmpstarter.feature_resources.paywall_v1_feature_11
-import com.kmpstarter.feature_resources.paywall_v1_feature_2
-import com.kmpstarter.feature_resources.paywall_v1_feature_3
-import com.kmpstarter.feature_resources.paywall_v1_feature_4
-import com.kmpstarter.feature_resources.paywall_v1_feature_5
-import com.kmpstarter.feature_resources.paywall_v1_feature_6
-import com.kmpstarter.feature_resources.paywall_v1_feature_7
-import com.kmpstarter.feature_resources.paywall_v1_feature_8
-import com.kmpstarter.feature_resources.paywall_v1_feature_9
-import com.kmpstarter.feature_resources.paywall_v1_purchasing
-import com.kmpstarter.feature_resources.paywall_v1_restore_purchases
-import com.kmpstarter.feature_resources.paywall_v1_reviews_title
-import com.kmpstarter.feature_resources.paywall_v1_title
-import com.kmpstarter.feature_resources.privacy_policy
-import com.kmpstarter.feature_resources.starter_purchases_error_button_try_again
-import com.kmpstarter.feature_resources.starter_purchases_products_not_found
-import com.kmpstarter.feature_resources.terms_of_use
-import com.kmpstarter.ui_utils.resources.toActualString
 import com.kmpstarter.ui_components.animations.FadeIn
 import com.kmpstarter.ui_components.animations.FadeInTokens
 import com.kmpstarter.ui_components.animations.Floating
@@ -135,10 +110,10 @@ import com.kmpstarter.ui_utils.color.fromHex
 import com.kmpstarter.ui_utils.common_composables.HorizontalSpacer
 import com.kmpstarter.ui_utils.common_composables.VerticalSpacer
 import com.kmpstarter.ui_utils.composition_locals.LocalThemeMode
+import com.kmpstarter.ui_utils.resources.toActualString
 import com.kmpstarter.ui_utils.theme.Dimens
 import com.kmpstarter.utils.variables.ifTrue
 import kotlinx.coroutines.delay
-import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 
 private object ScreenTokens {
@@ -146,28 +121,16 @@ private object ScreenTokens {
     const val ERROR_DISMISS_MILLIS = 3000L
 }
 
-private data class PurchaseFeature(
+data class PurchaseFeature(
     val icon: ImageVector,
-    val text: StringResource,
+    val text: org.jetbrains.compose.resources.StringResource,
 )
 
-private val purchaseFeatures = listOf(
-    PurchaseFeature(Icons.Default.AccountTree, Res.string.paywall_v1_feature_1),
-    PurchaseFeature(Icons.Default.Sync, Res.string.paywall_v1_feature_2),
-    PurchaseFeature(Icons.Default.Storage, Res.string.paywall_v1_feature_3),
-    PurchaseFeature(Icons.Default.Api, Res.string.paywall_v1_feature_4),
-    PurchaseFeature(Icons.Default.BugReport, Res.string.paywall_v1_feature_5),
-    PurchaseFeature(Icons.Default.Security, Res.string.paywall_v1_feature_6),
-    PurchaseFeature(Icons.Default.Code, Res.string.paywall_v1_feature_7),
-    PurchaseFeature(Icons.Default.Devices, Res.string.paywall_v1_feature_8),
-    PurchaseFeature(Icons.Default.Update, Res.string.paywall_v1_feature_9),
-    PurchaseFeature(Icons.Default.Extension, Res.string.paywall_v1_feature_10),
-    PurchaseFeature(Icons.Default.RocketLaunch, Res.string.paywall_v1_feature_11),
-)
 
 
 @Composable
 internal fun PaywallV1(
+    ui: PaywallV1UiContent,
     paywallMetadata: PaywallMetadata,
     products: List<Product>,
     selectedProduct: Product? = null,
@@ -200,9 +163,9 @@ internal fun PaywallV1(
             if (products.isEmpty()) {
                 EmptyStateWithAction(
                     heroIcon = Icons.Default.AppsOutage,
-                    title = Res.string.starter_purchases_products_not_found.toActualString(),
+                    title = ui.productsNotFoundTitle.toActualString(),
                     description = "",
-                    buttonText = Res.string.starter_purchases_error_button_try_again.toActualString(),
+                    buttonText = ui.tryAgainButtonText.toActualString(),
                     onClick = onGetProductsClick,
                 )
                 return@Box
@@ -231,7 +194,7 @@ internal fun PaywallV1(
                         Floating {
                             Image(
                                 modifier = Modifier.fillMaxWidth(0.75f).aspectRatio(1.2f),
-                                painter = painterResource(Res.drawable.compose_multiplatform),
+                                painter = painterResource(ui.heroImage),
                                 contentDescription = null
                             )
                         }
@@ -245,7 +208,7 @@ internal fun PaywallV1(
                         delayMillis = FadeInTokens.DELAY_2
                     ) {
                         Text(
-                            text = Res.string.paywall_v1_title.toActualString(),
+                            text = ui.title.toActualString(),
                             style = MaterialTheme.typography.headlineMedium.copy(
                                 fontWeight = FontWeight.Bold
                             ),
@@ -263,7 +226,7 @@ internal fun PaywallV1(
                     FadeIn(
                         delayMillis = FadeInTokens.DELAY_3
                     ) {
-                        FeaturesSection()
+                        FeaturesSection(features = ui.features)
 
                     }
                 }
@@ -292,7 +255,8 @@ internal fun PaywallV1(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = Dimens.paddingMedium),
-                                reviews = paywallMetadata.reviews.toList()
+                                reviewsTitle = ui.reviewsTitle.toActualString(),
+                                reviews = paywallMetadata.reviews.toList(),
                             )
                         }
                     }
@@ -307,7 +271,8 @@ internal fun PaywallV1(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = Dimens.paddingMedium),
-                                faqs = paywallMetadata.faqs.toList()
+                                faqsTitle = ui.faqsTitle.toActualString(),
+                                faqs = paywallMetadata.faqs.toList(),
                             )
                         }
                     }
@@ -337,10 +302,16 @@ internal fun PaywallV1(
                 BottomSection(
                     isPurchasing = isPurchasing,
                     hasTrial = selectedProduct?.isTrial == true,
+                    purchasingText = ui.purchasingText.toActualString(),
+                    trialButtonText = ui.trialButtonText.toActualString(),
+                    continueButtonText = ui.continueButtonText.toActualString(),
+                    restorePurchasesText = ui.restorePurchasesText.toActualString(),
+                    privacyPolicyText = ui.privacyPolicyText.toActualString(),
+                    termsOfUseText = ui.termsOfUseText.toActualString(),
                     onPurchaseClick = onPurchaseClick,
                     onRestoreClick = onRestoreClick,
                     onPrivacyClick = onPrivacyClick,
-                    onTermsClick = onTermsClick
+                    onTermsClick = onTermsClick,
                 )
             }
 
@@ -353,16 +324,17 @@ internal fun PaywallV1(
 
 @Composable
 private fun FeaturesSection(
+    features: List<PurchaseFeature>,
     modifier: Modifier = Modifier,
 ) {
     val cardHeight = 70.dp
     val padding = Dimens.paddingSmall
     val parentHeight = cardHeight * 2f + padding
 
-    val (firstHalf, secondHalf) = remember {
-        val mid = purchaseFeatures.size / 2
-        val first = purchaseFeatures.subList(0, mid)
-        val second = purchaseFeatures.subList(mid, purchaseFeatures.size)
+    val (firstHalf, secondHalf) = remember(features) {
+        val mid = features.size / 2
+        val first = features.subList(0, mid)
+        val second = features.subList(mid, features.size)
         first to second
     }
 
@@ -515,33 +487,46 @@ private fun HorizontalBackgroundMaskedGradient(
 
 @Composable
 private fun BottomSection(
-    modifier: Modifier = Modifier,
     isPurchasing: Boolean,
     hasTrial: Boolean,
+    purchasingText: String,
+    trialButtonText: String,
+    continueButtonText: String,
+    restorePurchasesText: String,
+    privacyPolicyText: String,
+    termsOfUseText: String,
     onPurchaseClick: () -> Unit,
     onRestoreClick: () -> Unit,
     onPrivacyClick: () -> Unit,
     onTermsClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(Dimens.paddingMedium)
     ) {
-        // CTA
-        val text = if (isPurchasing) Res.string.paywall_v1_purchasing.toActualString() else null
+        val text =
+            if (isPurchasing) {
+                purchasingText
+            } else if (hasTrial) {
+                trialButtonText
+            } else {
+                continueButtonText
+            }
         PurchaseCTA(
             enabled = !isPurchasing,
             isPurchasing = isPurchasing,
-            text = text
-                ?: if (hasTrial) Res.string.paywall_v1_btn_trial.toActualString() else Res.string.paywall_v1_btn_continue.toActualString(),
-            onPurchaseClick = onPurchaseClick
+            text = text,
+            onPurchaseClick = onPurchaseClick,
         )
-        // Legal
         LegalSection(
+            restorePurchasesText = restorePurchasesText,
+            privacyPolicyText = privacyPolicyText,
+            termsOfUseText = termsOfUseText,
             onRestoreClick = onRestoreClick,
             onPrivacyClick = onPrivacyClick,
-            onTermsClick = onTermsClick
+            onTermsClick = onTermsClick,
         )
     }
 }
@@ -801,10 +786,13 @@ private fun PurchaseCTA(
 
 @Composable
 private fun LegalSection(
-    modifier: Modifier = Modifier,
+    restorePurchasesText: String,
+    privacyPolicyText: String,
+    termsOfUseText: String,
     onRestoreClick: () -> Unit,
     onPrivacyClick: () -> Unit,
     onTermsClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     FlowRow(
         modifier = modifier.fillMaxWidth(),
@@ -815,7 +803,7 @@ private fun LegalSection(
             modifier = Modifier.weight(1f).clickable {
                 onRestoreClick()
             },
-            text = Res.string.paywall_v1_restore_purchases.toActualString(),
+            text = restorePurchasesText,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.outline,
@@ -825,7 +813,7 @@ private fun LegalSection(
             modifier = Modifier.weight(1f).clickable {
                 onPrivacyClick()
             },
-            text = Res.string.privacy_policy.toActualString(),
+            text = privacyPolicyText,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.outline,
@@ -836,7 +824,7 @@ private fun LegalSection(
             modifier = Modifier.weight(1f).clickable {
                 onTermsClick()
             },
-            text = Res.string.terms_of_use.toActualString(),
+            text = termsOfUseText,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.outline,
@@ -935,15 +923,16 @@ private fun Feature(
 
 @Composable
 private fun ReviewsSection(
-    modifier: Modifier = Modifier,
+    reviewsTitle: String,
     reviews: List<Review>,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
     ) {
         Text(
-            text = Res.string.paywall_v1_reviews_title.toActualString(),
+            text = reviewsTitle,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = Dimens.paddingSmall)
@@ -1012,15 +1001,16 @@ private fun ReviewCard(
 
 @Composable
 private fun FaqSection(
-    modifier: Modifier = Modifier,
+    faqsTitle: String,
     faqs: List<Faq>,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
     ) {
         Text(
-            text = Res.string.paywall_v1_faqs_title.toActualString(),
+            text = faqsTitle,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier

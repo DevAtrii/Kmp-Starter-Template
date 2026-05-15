@@ -70,9 +70,10 @@ val navigationModule = module {
     navigation<AppScreens.Purchases> { route ->
         val navigator = StarterNavigator.getCurrent()
         PurchasesScreen(
+            paywall = starterDefaultPaywallV1(),
             onNavigate = {
                 navigator.navigateUp()
-            }
+            },
         )
     }
 

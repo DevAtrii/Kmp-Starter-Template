@@ -15,9 +15,12 @@
 
 package com.kmpstarter.feature_purchases_presentation
 
-import org.jetbrains.compose.resources.StringResource
+import com.kmpstarter.feature_purchases_domain.models.ProductId
 
 sealed class PurchasesEvents {
 
-    data class ShowMessage(val resource: StringResource) : PurchasesEvents()
+    data class OnProductsLoadFailure(val exception: Throwable) : PurchasesEvents()
+    data class OnPurchaseFailure(val exception: Throwable) : PurchasesEvents()
+    data class OnRestoreFailure(val exception: Throwable) : PurchasesEvents()
+    data class OnPurchaseSuccess(val productId: ProductId) : PurchasesEvents()
 }

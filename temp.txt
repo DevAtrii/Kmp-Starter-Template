@@ -1,0 +1,9 @@
+// Features to publish on Maven
+
+- Navigation
+- Analytics (data,domain)
+- Core (data, domain, presentation)
+- Locale
+- remote_config (data, domain, presentation)
+- purchases (data, domain, presentation)
+- notifications (core, local, push)

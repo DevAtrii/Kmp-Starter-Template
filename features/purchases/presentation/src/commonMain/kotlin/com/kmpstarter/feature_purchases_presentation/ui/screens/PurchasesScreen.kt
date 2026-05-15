@@ -20,50 +20,57 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kmpstarter.core.events.controllers.SnackbarController
 import com.kmpstarter.feature_purchases_domain.models.PaywallMetadata
 import com.kmpstarter.feature_purchases_domain.models.Product
+import com.kmpstarter.feature_purchases_domain.models.ProductId
 import com.kmpstarter.feature_purchases_presentation.PurchasesActions
 import com.kmpstarter.feature_purchases_presentation.PurchasesEvents
 import com.kmpstarter.feature_purchases_presentation.PurchasesViewModel
 import com.kmpstarter.feature_purchases_presentation.ui.PurchasesDiscountV1Dialog
 import com.kmpstarter.feature_purchases_presentation.ui.screens.paywalls.PaywallV1
-import com.kmpstarter.ui_layouts.empty.EmptyStateWithAction
+import com.kmpstarter.feature_purchases_presentation.ui.screens.paywalls.PaywallV1UiContent
 import com.kmpstarter.ui_utils.side_effects.LaunchOnce
 import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
 import com.kmpstarter.utils.logging.Log
-import org.jetbrains.compose.resources.getString
 import org.koin.compose.viewmodel.koinViewModel
+
+sealed class Paywalls {
+
+    data class V1(
+        val ui: PaywallV1UiContent,
+    ) : Paywalls()
+}
 
 @Composable
 fun PurchasesScreen(
+    paywall: Paywalls,
     viewModel: PurchasesViewModel = koinViewModel(),
     onNavigate: () -> Unit,
+    onProductsLoadFailure: (Throwable) -> Unit = {},
+    onPurchaseFailure: (Throwable) -> Unit = {},
+    onRestoreFailure: (Throwable) -> Unit = {},
+    onPurchaseSuccess: (ProductId) -> Unit = {},
 ) {
     LaunchOnce {
         viewModel.onAction(PurchasesActions.LoadProducts)
     }
     ObserveAsEvents(flow = viewModel.uiEvents) { event ->
         when (event) {
-            is PurchasesEvents.ShowMessage -> {
-                val message = getString(event.resource)
-                SnackbarController.sendAlert(message = message)
-            }
+            is PurchasesEvents.OnProductsLoadFailure -> onProductsLoadFailure(event.exception)
+            is PurchasesEvents.OnPurchaseFailure -> onPurchaseFailure(event.exception)
+            is PurchasesEvents.OnPurchaseSuccess -> onPurchaseSuccess(event.productId)
+            is PurchasesEvents.OnRestoreFailure -> onRestoreFailure(event.exception)
         }
     }
 
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
 
     var showDiscountDialog by remember {
         mutableStateOf(false)
     }
-
-
 
     LaunchedEffect(state.isPurchased) {
         if (state.isPurchased) {
@@ -71,9 +78,8 @@ fun PurchasesScreen(
         }
     }
 
-
-
-    PurchasesV1ScreenContent(
+    PurchasesPaywallContent(
+        paywall = paywall,
         paywallMetadata = state.paywallMetadata,
         selectedProduct = state.selectedProduct,
         products = state.products,
@@ -99,13 +105,13 @@ fun PurchasesScreen(
             viewModel.onAction(PurchasesActions.StartPurchase)
         },
         onCloseClick = {
-            if (state.isPurchasing)
-                return@PurchasesV1ScreenContent
+            if (state.isPurchasing) return@PurchasesPaywallContent
 
-            if (state.discountProduct != null)
+            if (state.discountProduct != null) {
                 showDiscountDialog = true
-            else
+            } else {
                 onNavigate()
+            }
         },
     )
 
@@ -121,10 +127,11 @@ fun PurchasesScreen(
                 viewModel.onAction(action = PurchasesActions.StartPurchase)
             },
             onDismiss = {
-                if (state.isPurchasing)
-                    return@PurchasesDiscountV1Dialog
+                if (state.isPurchasing) return@PurchasesDiscountV1Dialog
 
-                viewModel.onAction(action = PurchasesActions.UpdateSelectedProduct(product = state.products.lastOrNull()))
+                viewModel.onAction(
+                    action = PurchasesActions.UpdateSelectedProduct(product = state.products.lastOrNull()),
+                )
                 showDiscountDialog = false
                 onNavigate()
             },
@@ -132,28 +139,9 @@ fun PurchasesScreen(
     }
 }
 
-/**
- * Composable that displays the purchases/paywall screen based on the provided metadata version.
- *
- * This function delegates to the appropriate paywall UI (e.g., [PaywallV1]) depending on
- * the `paywallMetadata.version`.
- *
- * @param paywallMetadata Metadata containing version and configuration for the paywall.
- * @param products List of available in-app products to display.
- * @param selectedProduct The currently selected product, if any.
- * @param isProductsLoading True if the product list is currently loading.
- * @param isRestoring True if purchase restoration is in progress.
- * @param isPurchasing True if a purchase is in progress.
- * @param onPurchaseClick Callback invoked when the user taps the purchase button.
- * @param onProductSelected Callback invoked when the user selects a product.
- * @param onGetProductsClick Callback invoked to refresh or fetch products.
- * @param onRestoreClick Callback invoked when the user taps restore purchases.
- * @param onPrivacyClick Callback invoked when the user taps the privacy policy link.
- * @param onTermsClick Callback invoked when the user taps the terms & conditions link.
- * @param onCloseClick Callback invoked when the user closes the paywall screen.
- */
 @Composable
-private fun PurchasesV1ScreenContent(
+private fun PurchasesPaywallContent(
+    paywall: Paywalls,
     paywallMetadata: PaywallMetadata,
     products: List<Product>,
     selectedProduct: Product? = null,
@@ -168,40 +156,25 @@ private fun PurchasesV1ScreenContent(
     onTermsClick: () -> Unit,
     onCloseClick: () -> Unit,
 ) {
+    when (paywall) {
+        is Paywalls.V1 ->
+            PaywallV1(
+                ui = paywall.ui,
+                paywallMetadata = paywallMetadata,
+                products = products,
+                selectedProduct = selectedProduct,
+                isProductsLoading = isProductsLoading,
+                isRestoring = isRestoring,
+                isPurchasing = isPurchasing,
+                onPurchaseClick = onPurchaseClick,
+                onProductSelected = onProductSelected,
+                onGetProductsClick = onGetProductsClick,
+                onRestoreClick = onRestoreClick,
+                onPrivacyClick = onPrivacyClick,
+                onTermsClick = onTermsClick,
+                onCloseClick = onCloseClick,
+            )
 
-
-    when (paywallMetadata.version) {
-        1 -> PaywallV1(
-            paywallMetadata = paywallMetadata,
-            products = products,
-            selectedProduct = selectedProduct,
-            isProductsLoading = isProductsLoading,
-            isRestoring = isRestoring,
-            isPurchasing = isPurchasing,
-            onPurchaseClick = onPurchaseClick,
-            onProductSelected = onProductSelected,
-            onGetProductsClick = onGetProductsClick,
-            onRestoreClick = onRestoreClick,
-            onPrivacyClick = onPrivacyClick,
-            onTermsClick = onTermsClick,
-            onCloseClick = onCloseClick
-        )
-
-        /* add more paywalls here*/
-
-        else -> InvalidVersion()
+        /* add more paywalls here */
     }
-
-}
-
-
-@Composable
-private fun InvalidVersion(modifier: Modifier = Modifier) {
-    EmptyStateWithAction(
-        title = "Invalid Version",
-        description = "Please enter valid version number in your purchases dashboard",
-        buttonText = "----",
-        onClick = { },
-        modifier = modifier
-    )
 }
