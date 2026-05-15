@@ -109,7 +109,7 @@ starter-ui-utils = { module = "io.github.devatrii:starter-ui-utils", version.ref
 starter-ui-components = { module = "io.github.devatrii:starter-ui-components", version.ref = "starter" }
 starter-ui-layouts = { module = "io.github.devatrii:starter-ui-layouts", version.ref = "starter" }
 
-# Features (Maven artifactId uses the `feature-` prefix)
+# Features
 starter-feature-navigation = { module = "io.github.devatrii:feature-navigation", version.ref = "starter" }
 starter-feature-analytics-data = { module = "io.github.devatrii:feature-analytics-data", version.ref = "starter" }
 starter-feature-analytics-domain = { module = "io.github.devatrii:feature-analytics-domain", version.ref = "starter" }
