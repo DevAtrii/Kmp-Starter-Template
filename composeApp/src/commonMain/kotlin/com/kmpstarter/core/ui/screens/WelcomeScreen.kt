@@ -94,7 +94,7 @@ import com.kmpstarter.core.platform.platform
 import com.kmpstarter.feature_locale.ui.LocaleSelectorDropdown
 import com.kmpstarter.feature_resources.Res
 import com.kmpstarter.feature_resources.locale_selector_dd_label
-import com.kmpstarter.feature_resources.toActualString
+import com.kmpstarter.ui_utils.resources.toActualString
 import com.kmpstarter.feature_resources.welcome_screen_description
 import com.kmpstarter.feature_resources.welcome_screen_subtitle
 import com.kmpstarter.feature_resources.welcome_screen_title

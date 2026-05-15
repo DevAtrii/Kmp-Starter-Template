@@ -121,7 +121,7 @@ import com.kmpstarter.feature_resources.privacy_policy
 import com.kmpstarter.feature_resources.starter_purchases_error_button_try_again
 import com.kmpstarter.feature_resources.starter_purchases_products_not_found
 import com.kmpstarter.feature_resources.terms_of_use
-import com.kmpstarter.feature_resources.toActualString
+import com.kmpstarter.ui_utils.resources.toActualString
 import com.kmpstarter.ui_components.animations.FadeIn
 import com.kmpstarter.ui_components.animations.FadeInTokens
 import com.kmpstarter.ui_components.animations.Floating

@@ -13,18 +13,11 @@
  *
  */
 
-package com.kmpstarter.feature_resources
+package com.kmpstarter.ui_utils.resources
 
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
-
-object StarterStringRes {
-    val empty = Res.string.empty_string
-}
-
-
-fun StringResource.isEmpty() = this == Res.string.empty_string
 
 
 @Composable

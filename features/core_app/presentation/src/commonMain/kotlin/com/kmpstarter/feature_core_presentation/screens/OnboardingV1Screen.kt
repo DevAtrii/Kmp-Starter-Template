@@ -83,7 +83,7 @@ import com.kmpstarter.feature_resources.starter_onboarding_source_reddit
 import com.kmpstarter.feature_resources.starter_onboarding_source_social_media
 import com.kmpstarter.feature_resources.starter_onboarding_source_whatsapp
 import com.kmpstarter.feature_resources.starter_onboarding_source_youtube
-import com.kmpstarter.feature_resources.toActualString
+import com.kmpstarter.ui_utils.resources.toActualString
 import com.kmpstarter.ui_components.animations.FadeIn
 import com.kmpstarter.ui_components.animations.FadeInTokens
 import com.kmpstarter.ui_components.animations.Floating

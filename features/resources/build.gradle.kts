@@ -65,7 +65,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                implementation(projects.starter.ui.components)
+                api(projects.starter.ui.utils)
                 api(projects.features.locale)
             }
         }
