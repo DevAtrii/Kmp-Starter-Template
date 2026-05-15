@@ -98,7 +98,7 @@ Artifacts are published under **`io.github.devatrii`**. They are not fully stabl
 
 ```toml
 [versions]
-starter = "0.4.0"
+starter = "0.4.1"
 
 [libraries]
 # Starter

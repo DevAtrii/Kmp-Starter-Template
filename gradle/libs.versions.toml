@@ -12,7 +12,7 @@ app-version-patch = "0"
 # starter libs versions
 lib-version-major = "0"
 lib-version-minor = "4"
-lib-version-patch = "0"
+lib-version-patch = "1"
 # Maven publish (starter libraries → Central / .starter-libs)
 vanniktech-maven-publish = "0.36.0"
 
