@@ -62,7 +62,7 @@ actual class IntentUtils {
         }
     }
 
-    actual fun copyToClipboard(text: String) {
+    actual fun writeToClipboard(text: String) {
         UIPasteboard.generalPasteboard.string = text
     }
 
@@ -79,7 +79,7 @@ actual class IntentUtils {
         )
     }
 
-    actual fun getClipboardText() = UIPasteboard.generalPasteboard.string
+    actual fun readFromClipboard() = UIPasteboard.generalPasteboard.string
 
     actual fun sendEmail(email: String, subject: String, body: String) {
         if (!MFMailComposeViewController.canSendMail()) {

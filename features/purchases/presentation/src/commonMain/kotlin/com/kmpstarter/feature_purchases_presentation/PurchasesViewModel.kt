@@ -83,13 +83,13 @@ class PurchasesViewModel(
 
             PurchasesActions.OnPrivacyPolicyClick -> viewModelScope.launch {
                 intentUtils.openUrl(
-                    url = "https://google.com"
+                    url = "https://google.com",
                 )
             }
 
             PurchasesActions.OnTermsOfUseClick -> viewModelScope.launch {
                 intentUtils.openUrl(
-                    url = "https://google.com"
+                    url = "https://google.com",
                 )
             }
         }

@@ -27,7 +27,7 @@ import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.enums.ThemeMode
 import org.koin.compose.koinInject
 
-fun ThemeMode.getIcon() = when(this) {
+fun ThemeMode.getIcon() = when (this) {
     ThemeMode.LIGHT -> Icons.Default.LightMode
     ThemeMode.DARK -> Icons.Default.DarkMode
     ThemeMode.SYSTEM -> Icons.Default.SettingsBrightness
@@ -36,8 +36,8 @@ fun ThemeMode.getIcon() = when(this) {
 
 @Composable
 fun isAppInDarkTheme(
-    themeDataStore: ThemeDataStore = koinInject(),
 ): Boolean {
+    val themeDataStore: ThemeDataStore = koinInject()
     val currentThemeMode by themeDataStore.themeMode.collectAsState(
         initial = ThemeDataStore.DEFAULT_THEME_MODE
     )

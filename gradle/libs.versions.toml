@@ -12,7 +12,7 @@ app-version-patch = "0"
 # starter libs versions
 lib-version-major = "0"
 lib-version-minor = "4"
-lib-version-patch = "1"
+lib-version-patch = "2"
 # Maven publish (starter libraries → Central / .starter-libs)
 vanniktech-maven-publish = "0.36.0"
 
@@ -94,8 +94,9 @@ material = "1.13.0"
 
 # ios deps using spm-for-kmp Plugin
 ios-mixpanel-swift = "5.2.0"
-
+browser = "1.10.0"
 [libraries]
+androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
 # ios deps using spm-for-kmp Plugin
 ios-mixpanel-swift = { name = "Mixpanel", group = "https://github.com/mixpanel/mixpanel-swift.git", version.ref="ios-mixpanel-swift" }
 # Compose

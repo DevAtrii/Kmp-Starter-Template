@@ -29,6 +29,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kmpstarter.App
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.enums.ThemeMode
+import com.kmpstarter.ui_utils.providers.ProvideActivityScope
 import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
 import org.koin.compose.koinInject
 
@@ -40,8 +41,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
-            AndroidSideEffects()
-            App()
+            ProvideActivityScope(activity = activity) {
+                AndroidSideEffects()
+                App()
+            }
         }
     }
 

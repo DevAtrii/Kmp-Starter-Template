@@ -37,10 +37,10 @@ expect class IntentUtils {
      */
     fun openAccessibility(): Boolean
 
-    fun copyToClipboard(text: String)
+    fun writeToClipboard(text: String)
     fun shareText(text: String)
 
-    fun getClipboardText(): String?
+    fun readFromClipboard(): String?
 
     fun sendEmail(email: String, subject: String, body: String)
 }

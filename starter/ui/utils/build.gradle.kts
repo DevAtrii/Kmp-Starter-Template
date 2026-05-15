@@ -73,6 +73,7 @@ kotlin {
                 implementation(libs.play.app.review.ktx)
                 implementation(libs.play.app.update.ktx)
                 implementation(libs.kotlinx.coroutines.play.services)
+                implementation(libs.androidx.browser)
             }
         }
 

@@ -31,7 +31,7 @@ actual class IntentUtils(
     actual fun openUrl(url: String): Boolean {
         return try {
             val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
             true
         } catch (e: Exception) {
@@ -42,7 +42,7 @@ actual class IntentUtils(
     actual fun openAccessibility(): Boolean {
         return try {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
             true
         } catch (e: Exception) {
@@ -50,7 +50,7 @@ actual class IntentUtils(
         }
     }
 
-    actual fun copyToClipboard(text: String) {
+    actual fun writeToClipboard(text: String) {
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("text", text)
         clipboard.setPrimaryClip(clip)
@@ -68,7 +68,7 @@ actual class IntentUtils(
         )
     }
 
-    actual fun getClipboardText(): String? {
+    actual fun readFromClipboard(): String? {
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         return clipboard.primaryClip?.getItemAt(0)?.text?.toString()
     }

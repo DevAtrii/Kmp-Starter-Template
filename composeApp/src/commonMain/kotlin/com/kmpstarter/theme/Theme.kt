@@ -16,12 +16,12 @@
 package com.kmpstarter.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import com.kmpstarter.ui_utils.theme.getDynamicColorScheme
 
 
 val lightScheme =
@@ -103,8 +103,7 @@ val darkScheme =
     )
 
 
-@Composable
-expect fun getDynamicColorScheme(darkTheme: Boolean): ColorScheme?
+
 
 
 

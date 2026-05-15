@@ -13,9 +13,10 @@
  *
  */
 
-package com.kmpstarter.theme
+package com.kmpstarter.ui_utils.theme
 
 import android.os.Build
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
