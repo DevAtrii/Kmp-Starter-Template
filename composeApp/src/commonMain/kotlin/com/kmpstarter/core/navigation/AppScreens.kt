@@ -13,25 +13,22 @@
  *
  */
 
-package com.kmpstarter.feature_navigation.screens
+package com.kmpstarter.core.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
-
-// define your screens inside screens package
-
 @Serializable
-sealed class StarterScreens : NavKey {
+sealed class AppScreens : NavKey {
     @Serializable
-    data object Welcome : StarterScreens()
+    data object Welcome : AppScreens()
 
     @Serializable
-    data object Splash : StarterScreens()
+    data object Splash : AppScreens()
 
     @Serializable
-    data object Onboarding : StarterScreens()
+    data object Onboarding : AppScreens()
 
     @Serializable
-    data object Purchases : StarterScreens()
+    data object Purchases : AppScreens()
 }

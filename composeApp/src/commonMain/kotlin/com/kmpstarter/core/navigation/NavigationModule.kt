@@ -20,7 +20,6 @@ import com.kmpstarter.feature_core_presentation.screens.OnboardingV1Screen
 import com.kmpstarter.feature_core_presentation.screens.SplashScreen
 import com.kmpstarter.feature_navigation.StarterNavigator
 import com.kmpstarter.feature_navigation.di.navigationCoreModule
-import com.kmpstarter.feature_navigation.screens.StarterScreens
 import com.kmpstarter.feature_purchases_presentation.ui.screens.PurchasesScreen
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.module
@@ -31,44 +30,44 @@ val navigationModule = module {
     includes(navigationCoreModule)
 
 
-    navigation<StarterScreens.Welcome> { route ->
+    navigation<AppScreens.Welcome> { route ->
         val navigator = StarterNavigator.getCurrent()
         WelcomeScreen(
             onGetStartedClick = {
                 navigator.navigateTo(
-                    route = StarterScreens.Purchases
+                    route = AppScreens.Purchases
                 )
             }
         )
     }
 
-    navigation<StarterScreens.Splash> { route ->
+    navigation<AppScreens.Splash> { route ->
         val navigator = StarterNavigator.getCurrent()
         SplashScreen(
             onNavigate = {
                 navigator.popAndNavigate(
-                    route = StarterScreens.Welcome
+                    route = AppScreens.Welcome
                 )
             },
             onNavigateToOnboarding = {
                 navigator.popAndNavigate(
-                    route = StarterScreens.Onboarding
+                    route = AppScreens.Onboarding
                 )
             }
         )
     }
-    navigation<StarterScreens.Onboarding> { route ->
+    navigation<AppScreens.Onboarding> { route ->
         val navigator = StarterNavigator.getCurrent()
         OnboardingV1Screen(
             onNavigate = {
                 navigator.popAndNavigate(
-                    route = StarterScreens.Welcome
+                    route = AppScreens.Welcome
                 )
             }
         )
     }
 
-    navigation<StarterScreens.Purchases> { route ->
+    navigation<AppScreens.Purchases> { route ->
         val navigator = StarterNavigator.getCurrent()
         PurchasesScreen(
             onNavigate = {

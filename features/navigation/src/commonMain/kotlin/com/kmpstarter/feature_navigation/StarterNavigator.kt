@@ -27,6 +27,7 @@ annotation class StarterNavigatorDsl // just to highlight code in IDE
 class StarterNavigator {
 
     private lateinit var _backStack: NavBackStack<NavKey>
+    val backStack: NavBackStack<NavKey> get() = _backStack
 
     companion object {
         @Composable

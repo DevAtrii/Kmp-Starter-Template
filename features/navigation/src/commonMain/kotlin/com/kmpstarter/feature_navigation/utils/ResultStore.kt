@@ -19,7 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.retain.retain
 import androidx.compose.runtime.saveable.Saver
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -105,6 +105,6 @@ val LocalResultStore = compositionLocalOf<ResultStore> {
 }
 
 @Composable
-fun rememberResultStore() = remember {
+fun rememberResultStore() = retain {
     ResultStore()
 }

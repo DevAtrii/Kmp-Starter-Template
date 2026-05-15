@@ -31,11 +31,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.navigation3.runtime.NavKey
 import com.kmpstarter.core.KmpAppInitializer
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
+import com.kmpstarter.core.navigation.AppScreens
 import com.kmpstarter.feature_navigation.StarterNavigation
-import com.kmpstarter.feature_navigation.screens.StarterScreens
 import com.kmpstarter.feature_resources.Res
 import com.kmpstarter.feature_resources.lang_es
 import com.kmpstarter.feature_resources.lang_hi
@@ -52,13 +53,33 @@ import com.kmpstarter.utils.starter.ExperimentalStarterApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.subclass
 import org.koin.compose.koinInject
 
-
+/**
+ * App level static configuration.
+ *
+ * Contains:
+ * - feature flags
+ * - supported locales
+ * - navigation serialization setup
+ */
 private object AppConfig {
+
+    /**
+     * Enables force update flow.
+     *
+     * When `true`, app can block usage until
+     * minimum required version installed.
+     */
     const val FORCE_UPDATE = true
 
-
+    /**
+     * List of supported app locales.
+     *
+     * Used by locale picker and localization system.
+     */
     val supportedLocales = setOf(
         StarterLocale(
             "🇵🇰",
@@ -66,12 +87,37 @@ private object AppConfig {
             Res.string.lang_ur,
             LayoutDirection.Rtl
         ),
-        StarterLocale("🇮🇳", "hi", Res.string.lang_hi),
-        StarterLocale("🇪🇸", "es", Res.string.lang_es),
+        StarterLocale(
+            "🇮🇳",
+            "hi",
+            Res.string.lang_hi
+        ),
+        StarterLocale(
+            "🇪🇸",
+            "es",
+            Res.string.lang_es
+        ),
     )
 
+    /**
+     * Registers all navigation destinations
+     * for polymorphic serialization.
+     *
+     * Required for navigation state restoration
+     * and screen serialization.
+     */
+    val navigationPolymorphicBuilder: PolymorphicModuleBuilder<NavKey>.() -> Unit = {
+        subclass(AppScreens.Welcome::class)
+        subclass(AppScreens.Splash::class)
+        subclass(AppScreens.Onboarding::class)
+        subclass(AppScreens.Purchases::class)
+    }
+
     /*
-    // or add like this instead of passing to LocaleProvider
+    // Alternative locale registration approach.
+    // Can register globally instead of passing
+    // locales to LocaleProvider.
+
     init {
         StarterLocales.add(supportedLocales)
     }
@@ -134,7 +180,8 @@ private fun MainApp(
                         }
                     ) { _: PaddingValues ->
                         StarterNavigation(
-                            StarterScreens.Splash,
+                            AppScreens.Splash,
+                            builderAction = AppConfig.navigationPolymorphicBuilder,
                             modifier = Modifier
                         )
                     }
