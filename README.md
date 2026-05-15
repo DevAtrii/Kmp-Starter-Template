@@ -87,6 +87,58 @@ Open `iosApp/iosApp.xcodeproj` in Xcode to run on iOS.
 
 ---
 
+## Libraries (under construction)
+
+We are working to ship **KMP Starter** as published Maven libraries so existing projects can adopt modules incrementally (starter utilities, UI, and feature layers) without cloning the full template.
+
+Artifacts are published under **`io.github.devatrii`**. They are not fully stable yet—APIs and module boundaries may change between releases.
+
+
+**Example `libs.versions.toml` for consumers:**
+
+```toml
+[versions]
+starter = "0.4.0"
+
+[libraries]
+# Starter
+starter-core = { module = "io.github.devatrii:starter-core", version.ref = "starter" }
+starter-utils = { module = "io.github.devatrii:starter-utils", version.ref = "starter" }
+starter-native-bindings = { module = "io.github.devatrii:starter-native-bindings", version.ref = "starter" }
+starter-ui-utils = { module = "io.github.devatrii:starter-ui-utils", version.ref = "starter" }
+starter-ui-components = { module = "io.github.devatrii:starter-ui-components", version.ref = "starter" }
+starter-ui-layouts = { module = "io.github.devatrii:starter-ui-layouts", version.ref = "starter" }
+
+# Features (Maven artifactId uses the `feature-` prefix)
+starter-feature-navigation = { module = "io.github.devatrii:feature-navigation", version.ref = "starter" }
+starter-feature-analytics-data = { module = "io.github.devatrii:feature-analytics-data", version.ref = "starter" }
+starter-feature-analytics-domain = { module = "io.github.devatrii:feature-analytics-domain", version.ref = "starter" }
+starter-feature-core-data = { module = "io.github.devatrii:feature-core-data", version.ref = "starter" }
+starter-feature-core-domain = { module = "io.github.devatrii:feature-core-domain", version.ref = "starter" }
+starter-feature-core-presentation = { module = "io.github.devatrii:feature-core-presentation", version.ref = "starter" }
+starter-feature-locale = { module = "io.github.devatrii:feature-locale", version.ref = "starter" }
+starter-feature-remote-config-data = { module = "io.github.devatrii:feature-remote-config-data", version.ref = "starter" }
+starter-feature-remote-config-domain = { module = "io.github.devatrii:feature-remote-config-domain", version.ref = "starter" }
+starter-feature-remote-config-presentation = { module = "io.github.devatrii:feature-remote-config-presentation", version.ref = "starter" }
+starter-feature-purchases-data = { module = "io.github.devatrii:feature-purchases-data", version.ref = "starter" }
+starter-feature-purchases-domain = { module = "io.github.devatrii:feature-purchases-domain", version.ref = "starter" }
+starter-feature-purchases-presentation = { module = "io.github.devatrii:feature-purchases-presentation", version.ref = "starter" }
+starter-feature-notifications-core = { module = "io.github.devatrii:feature-notifications-core", version.ref = "starter" }
+starter-feature-notifications-local = { module = "io.github.devatrii:feature-notifications-local", version.ref = "starter" }
+starter-feature-notifications-push = { module = "io.github.devatrii:feature-notifications-push", version.ref = "starter" }
+```
+
+**Example dependency:**
+
+```kotlin
+implementation(libs.starter.core)
+implementation(libs.starter.feature.purchases.presentation)
+```
+
+Catalog aliases use dots in Kotlin (`starter-core` → `libs.starter.core`). Adjust names to match your catalog if you prefer different aliases.
+
+---
+
 ## License & Usage
 
 You are free to:

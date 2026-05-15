@@ -14,7 +14,7 @@
 #
 # macOS is required: Kotlin/Native (iOS) and :starter:native:bindings (spm-kmp / Swift).
 
-name: Publish KMP libraries to Maven Central
+name: Publish libraries to Maven Central
 
 on:
   workflow_dispatch:
