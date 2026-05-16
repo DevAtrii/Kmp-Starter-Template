@@ -1,0 +1,15 @@
+# Publishes io.github.devatrii:feature-notifications-local to Maven Central.
+# Secrets: MAVEN_CENTRAL_USERNAME, MAVEN_CENTRAL_PASSWORD, SIGNING_KEY, SIGNING_PASSWORD
+
+name: Publish feature-notifications-local
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    uses: ./.github/workflows/publish/reusable-maven-central.yml
+    secrets: inherit
+    with:
+      gradle_module: ":features:notifications:local"
+      artifact_id: "feature-notifications-local"

@@ -1,0 +1,15 @@
+# Publishes io.github.devatrii:feature-purchases-presentation to Maven Central.
+# Secrets: MAVEN_CENTRAL_USERNAME, MAVEN_CENTRAL_PASSWORD, SIGNING_KEY, SIGNING_PASSWORD
+
+name: Publish feature-purchases-presentation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    uses: ./.github/workflows/publish/reusable-maven-central.yml
+    secrets: inherit
+    with:
+      gradle_module: ":features:purchases:presentation"
+      artifact_id: "feature-purchases-presentation"

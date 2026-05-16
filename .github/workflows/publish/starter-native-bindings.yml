@@ -1,0 +1,15 @@
+# Publishes io.github.devatrii:starter-native-bindings to Maven Central.
+# Secrets: MAVEN_CENTRAL_USERNAME, MAVEN_CENTRAL_PASSWORD, SIGNING_KEY, SIGNING_PASSWORD
+
+name: Publish starter-native-bindings
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    uses: ./.github/workflows/publish/reusable-maven-central.yml
+    secrets: inherit
+    with:
+      gradle_module: ":starter:native:bindings"
+      artifact_id: "starter-native-bindings"
