@@ -53,13 +53,13 @@ import com.kmpstarter.ui_utils.theme.Dimens
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun GoogleSignInButtonUI(
-    inLoading: Boolean,
+    isLoading: Boolean,
     icon: Painter,
     onGoogleSignInClick: () -> Unit,
 ) {
     val screenWidth = getScreenSize().width.value
     val buttonWidth by animateFloatAsState(
-        targetValue = if (inLoading) 56f else screenWidth - 32f,
+        targetValue = if (isLoading) 56f else screenWidth - 32f,
         animationSpec =
             spring(
                 dampingRatio = Spring.DampingRatioMediumBouncy,
@@ -70,7 +70,7 @@ fun GoogleSignInButtonUI(
 
     OutlinedButton(
         onClick = onGoogleSignInClick,
-        enabled = !inLoading,
+        enabled = !isLoading,
         modifier =
             Modifier
                 .width(buttonWidth.dp)
@@ -86,12 +86,12 @@ fun GoogleSignInButtonUI(
             ),
         contentPadding =
             PaddingValues(
-                horizontal = if (inLoading) 0.dp else 16.dp,
+                horizontal = if (isLoading) 0.dp else 16.dp,
                 vertical = 0.dp,
             ),
     ) {
         AnimatedContent(
-            targetState = inLoading,
+            targetState = isLoading,
             transitionSpec = {
                 fadeIn(
                     animationSpec = tween(220, delayMillis = 90),
