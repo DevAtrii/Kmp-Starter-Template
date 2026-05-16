@@ -1,6 +1,9 @@
 # Publishes all KMP libraries (starter + features) to Maven Central (Sonatype Central Portal).
 # Per-module workflows: .github/workflows/publish-maven-<artifact-id>.yml (workflow_dispatch each).
 #
+# CI runs 3 parallel macOS jobs (starter / features-base / features-ui) to cut wall-clock time.
+# Local: ./gradlew publishKmpLibrariesToMavenCentral
+#
 # Required repository secrets (Settings → Secrets and variables → Actions):
 #   MAVEN_CENTRAL_USERNAME   — Central Portal user token username
 #   MAVEN_CENTRAL_PASSWORD   — Central Portal user token password
@@ -22,7 +25,19 @@ on:
 
 jobs:
   publish:
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - shard: starter
+            gradle_task: publishKmpLibrariesStarterShardToMavenCentral
+          - shard: features-base
+            gradle_task: publishKmpLibrariesFeaturesBaseShardToMavenCentral
+          - shard: features-ui
+            gradle_task: publishKmpLibrariesFeaturesUiShardToMavenCentral
     runs-on: macos-latest
+    timeout-minutes: 30
     permissions:
       contents: read
     env:
@@ -30,18 +45,26 @@ jobs:
       ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
       ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
       ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
+      GRADLE_OPTS: -Dorg.gradle.daemon=true -Dorg.gradle.parallel=true -Dorg.gradle.caching=true
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
         with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: 'gradle'
+          java-version: "17"
+          cache-read-only: false
 
-      - name: Publish to Maven Central
+      - name: Publish shard (${{ matrix.shard }})
         run: |
-          ./gradlew publishKmpLibrariesToMavenCentral --no-configuration-cache --stacktrace
+          ./gradlew ${{ matrix.gradle_task }} \
+            --parallel \
+            --build-cache \
+            -x test \
+            -x allTests \
+            -x lint \
+            -x lintAnalyze \
+            -x lintReport \
+            --stacktrace
