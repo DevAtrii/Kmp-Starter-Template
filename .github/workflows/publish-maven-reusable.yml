@@ -4,7 +4,7 @@
 # Secrets (repository): MAVEN_CENTRAL_USERNAME, MAVEN_CENTRAL_PASSWORD,
 #   SIGNING_KEY, SIGNING_PASSWORD — see publish-starter-libraries.yml
 
-name: Reusable — publish module to Maven Central
+name: Publish Maven (reusable)
 
 on:
   workflow_call:

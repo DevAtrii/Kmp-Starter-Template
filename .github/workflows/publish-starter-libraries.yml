@@ -1,5 +1,5 @@
 # Publishes all KMP libraries (starter + features) to Maven Central (Sonatype Central Portal).
-# Per-module workflows: .github/workflows/publish/<artifact-id>.yml (workflow_dispatch each).
+# Per-module workflows: .github/workflows/publish-maven-<artifact-id>.yml (workflow_dispatch each).
 #
 # Required repository secrets (Settings → Secrets and variables → Actions):
 #   MAVEN_CENTRAL_USERNAME   — Central Portal user token username

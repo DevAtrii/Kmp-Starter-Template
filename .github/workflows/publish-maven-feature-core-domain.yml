@@ -8,7 +8,7 @@ on:
 
 jobs:
   publish:
-    uses: ./.github/workflows/publish/reusable-maven-central.yml
+    uses: ./.github/workflows/publish-maven-reusable.yml
     secrets: inherit
     with:
       gradle_module: ":features:core_app:domain"
