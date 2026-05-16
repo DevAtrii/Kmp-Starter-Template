@@ -43,4 +43,5 @@ expect class IntentUtils {
     fun readFromClipboard(): String?
 
     fun sendEmail(email: String, subject: String, body: String)
+    fun printNativeView( view: Any,jobName: String = "Document")
 }

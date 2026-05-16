@@ -21,7 +21,9 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.print.PrintManager
 import android.provider.Settings
+import android.webkit.WebView
 import androidx.core.net.toUri
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
@@ -92,6 +94,22 @@ actual class IntentUtils(
         } catch (e: Exception) {
             // Handle case where no email app is available
             e.printStackTrace()
+        }
+    }
+
+    actual fun printNativeView(view: Any,jobName: String ) {
+        if (view !is WebView) {
+            println("printNativeView: Invalid View, only WebView supported")
+            return
+        }
+
+        (view.context as? Activity)?.runOnUiThread {
+            val printManager =
+                view.context.getSystemService(Context.PRINT_SERVICE) as? PrintManager
+            printManager?.let {
+                val printAdapter = view.createPrintDocumentAdapter(jobName)
+                it.print(jobName, printAdapter, null)
+            }
         }
     }
 }

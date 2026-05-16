@@ -29,6 +29,11 @@ import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
 import platform.UIKit.UIApplicationOpenSettingsURLString
 import platform.UIKit.UIPasteboard
+import platform.UIKit.UIPrintInfo
+import platform.UIKit.UIPrintInfoOutputType
+import platform.UIKit.UIPrintInteractionController
+import platform.UIKit.UIView
+import platform.UIKit.viewPrintFormatter
 import platform.darwin.NSObject
 
 
@@ -96,6 +101,22 @@ actual class IntentUtils {
 
         val rootVC = UIApplication.sharedApplication.keyWindow?.rootViewController
         rootVC?.presentViewController(mail, animated = true, completion = null)
+    }
+
+    actual fun printNativeView(view: Any, jobName: String) {
+        val uiView = view as? UIView ?: return
+
+        val printController = UIPrintInteractionController.sharedPrintController()
+
+        val printInfo = UIPrintInfo.printInfo().apply {
+            outputType = UIPrintInfoOutputType.UIPrintInfoOutputGeneral
+            this.jobName = jobName
+        }
+
+        printController.printInfo = printInfo
+        printController.printFormatter = uiView.viewPrintFormatter()
+
+        printController.presentAnimated(true, completionHandler = null)
     }
 
 }
