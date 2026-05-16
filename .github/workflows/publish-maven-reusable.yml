@@ -21,7 +21,6 @@ on:
 jobs:
   publish:
     runs-on: macos-latest
-    timeout-minutes: 30
     permissions:
       contents: read
     env:
@@ -29,26 +28,20 @@ jobs:
       ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
       ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
       ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
-      GRADLE_OPTS: -Dorg.gradle.daemon=true -Dorg.gradle.parallel=true -Dorg.gradle.caching=true
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
           java-version: "17"
-          cache-read-only: false
+          distribution: "temurin"
+          cache: "gradle"
 
       - name: Publish ${{ inputs.artifact_id }} to Maven Central
         run: |
           ./gradlew "${{ inputs.gradle_module }}:publishAllPublicationsToMavenCentralRepository" \
-            --parallel \
-            --build-cache \
-            -x test \
-            -x allTests \
-            -x lint \
-            -x lintAnalyze \
-            -x lintReport \
+            --no-configuration-cache \
             --stacktrace
