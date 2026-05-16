@@ -1,0 +1,15 @@
+# Publishes io.github.devatrii:starter-ui-utils to Maven Central.
+# Secrets: MAVEN_CENTRAL_USERNAME, MAVEN_CENTRAL_PASSWORD, SIGNING_KEY, SIGNING_PASSWORD
+
+name: Publish starter-ui-utils
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    uses: ./.github/workflows/publish/reusable-maven-central.yml
+    secrets: inherit
+    with:
+      gradle_module: ":starter:ui:utils"
+      artifact_id: "starter-ui-utils"
