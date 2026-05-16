@@ -15,4 +15,4 @@
 
 package com.kmpstarter.feature_remote_config_data
 
-expect fun platform(): String
+internal expect fun platform(): String

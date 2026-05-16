@@ -15,4 +15,4 @@
 
 package com.kmpstarter.feature_notifications_local
 
-expect fun platform(): String
+internal expect fun platform(): String

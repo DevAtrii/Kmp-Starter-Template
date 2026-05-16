@@ -15,6 +15,7 @@
 
 package com.kmpstarter.ui_components.top_bars
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,8 +37,9 @@ import androidx.compose.ui.text.font.FontWeight
 fun SimpleNavigationTopBar(
     modifier: Modifier = Modifier,
     title: String,
-    onNavigationClick: () -> Unit,
-    navigationIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    actions: @Composable RowScope.() -> Unit = {},
+    onNavigationClick: (() -> Unit) = {},
+    navigationIcon: ImageVector? = Icons.AutoMirrored.Filled.ArrowBack,
     scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
 
@@ -52,14 +54,17 @@ fun SimpleNavigationTopBar(
                 )
             )
         },
+        actions = actions,
         navigationIcon = {
-            IconButton(
-                onClick = onNavigationClick
-            ) {
-                Icon(
-                    imageVector = navigationIcon,
-                    contentDescription = null
-                )
+            if (navigationIcon != null) {
+                IconButton(
+                    onClick = onNavigationClick
+                ) {
+                    Icon(
+                        imageVector = navigationIcon,
+                        contentDescription = null
+                    )
+                }
             }
         }
     )
@@ -80,7 +85,7 @@ fun SimpleMediumNavigationTopBar(
     MediumTopAppBar(
         modifier = modifier,
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = MaterialTheme.colorScheme.background,
         ),
         title = {
             Text(

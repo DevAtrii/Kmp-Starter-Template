@@ -28,7 +28,7 @@ plugins {
 }
 
 // Keep in sync with KmpLibraryPublishPlugin.PUBLISHABLE_MODULE_PATHS
-private val publishableKmpModules =
+private val publishableStarterModules =
     listOf(
         ":starter:core",
         ":starter:utils",
@@ -36,23 +36,34 @@ private val publishableKmpModules =
         ":starter:ui:utils",
         ":starter:ui:components",
         ":starter:ui:layouts",
-        ":features:navigation",
+    )
+
+private val publishableFeaturesBaseModules =
+    listOf(
         ":features:analytics:data",
         ":features:analytics:domain",
         ":features:core_app:data",
         ":features:core_app:domain",
-        ":features:core_app:presentation",
         ":features:locale",
         ":features:remote_config:data",
         ":features:remote_config:domain",
-        ":features:remote_config:presentation",
         ":features:purchases:data",
         ":features:purchases:domain",
-        ":features:purchases:presentation",
         ":features:notifications:core",
         ":features:notifications:local",
         ":features:notifications:push",
     )
+
+private val publishableFeaturesUiModules =
+    listOf(
+        ":features:navigation",
+        ":features:core_app:presentation",
+        ":features:remote_config:presentation",
+        ":features:purchases:presentation",
+    )
+
+private val publishableKmpModules =
+    publishableStarterModules + publishableFeaturesBaseModules + publishableFeaturesUiModules
 
 subprojects {
     plugins.withId("org.jetbrains.kotlin.multiplatform") {
@@ -71,11 +82,32 @@ tasks.register("publishKmpLibrariesToLocalRepository") {
     )
 }
 
+fun publishAllToMavenCentralTaskName(modules: List<String>) =
+    modules.map { "$it:publishAllPublicationsToMavenCentralRepository" }
+
+tasks.register("publishKmpLibrariesStarterShardToMavenCentral") {
+    group = "publishing"
+    description = "CI shard: starter modules → Maven Central."
+    dependsOn(publishAllToMavenCentralTaskName(publishableStarterModules))
+}
+
+tasks.register("publishKmpLibrariesFeaturesBaseShardToMavenCentral") {
+    group = "publishing"
+    description = "CI shard: feature data/domain/infra modules → Maven Central."
+    dependsOn(publishAllToMavenCentralTaskName(publishableFeaturesBaseModules))
+}
+
+tasks.register("publishKmpLibrariesFeaturesUiShardToMavenCentral") {
+    group = "publishing"
+    description = "CI shard: feature presentation/navigation modules → Maven Central."
+    dependsOn(publishAllToMavenCentralTaskName(publishableFeaturesUiModules))
+}
+
 tasks.register("publishKmpLibrariesToMavenCentral") {
     group = "publishing"
     description = "Publishes all KMP libraries (starter + features) to Maven Central."
     dependsOn(
-        publishableKmpModules.map { "$it:publishAllPublicationsToMavenCentralRepository" },
+        publishAllToMavenCentralTaskName(publishableKmpModules),
     )
 }
 

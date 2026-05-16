@@ -1,18 +1,3 @@
-/*
- *
- *  *
- *  *  * Copyright (c) 2026
- *  *  *
- *  *  * Author: Athar Gul
- *  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
- *  *  * YouTube: https://www.youtube.com/@devatrii/videos
- *  *  *
- *  *  * All rights reserved.
- *  *
- *  *
- *
- */
-
 package com.kmpstarter.ui_components.text
 
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +12,7 @@ import androidx.compose.ui.Modifier
 import com.kmpstarter.ui_utils.theme.Dimens
 
 @Composable
-fun TextBetweenDividers(
+fun DividerWithText(
     modifier: Modifier = Modifier,
     text: String,
 ) {

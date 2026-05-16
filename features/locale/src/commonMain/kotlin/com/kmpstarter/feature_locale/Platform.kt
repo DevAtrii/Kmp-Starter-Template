@@ -1,3 +1,3 @@
 package com.kmpstarter.feature_locale
 
-expect fun platform(): String
+internal expect fun platform(): String

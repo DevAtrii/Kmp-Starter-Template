@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-expect fun platform(): String
+internal expect fun platform(): String
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Preview( showBackground = true)

@@ -32,6 +32,7 @@ fun ScrollableColumn(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     reverseLayout: Boolean = false,
+    clearFocusOnScroll: Boolean = true,
     state: LazyListState = rememberLazyListState(),
     verticalArrangement: Arrangement.Vertical =
         if (!reverseLayout) Arrangement.Top else Arrangement.Bottom,
@@ -42,6 +43,7 @@ fun ScrollableColumn(
         state = state,
         modifier = modifier,
         fillMaxSize = false,
+        clearFocusOnScroll = clearFocusOnScroll,
         contentPadding = contentPadding,
         reverseLayout = reverseLayout,
     ) {

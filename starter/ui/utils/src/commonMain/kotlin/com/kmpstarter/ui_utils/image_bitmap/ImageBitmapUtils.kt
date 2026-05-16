@@ -15,7 +15,11 @@
 
 package com.kmpstarter.ui_utils.image_bitmap
 
+import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import com.kmpstarter.utils.byte_array.toBase64
 import com.kmpstarter.utils.exception.EnumException
 import kotlinx.coroutines.Dispatchers
@@ -229,6 +233,35 @@ suspend fun ImageBitmap.toBase64String(
     )?.toBase64()
 }
 
+fun ImageBitmap.resize(
+    size: IntSize,
+) = resize(
+    width = size.width,
+    height = size.height
+)
+
+fun ImageBitmap.resize(
+    width: Int,
+    height: Int,
+): ImageBitmap {
+    // Create a new bitmap with target size
+    val resized = ImageBitmap(width, height, colorSpace = this.colorSpace)
+
+    // Create a canvas to draw into the target bitmap
+    val canvas = Canvas(resized)
+
+    // Draw original image scaled to new dimensions
+    canvas.drawImageRect(
+        image = this,
+        srcOffset = IntOffset.Zero,
+        srcSize = IntSize(this.width, this.height),
+        dstOffset = IntOffset.Zero,
+        dstSize = IntSize(width, height),
+        paint = Paint(),
+    )
+
+    return resized
+}
 
 expect suspend fun ImageBitmap.Companion.fromByteArray(bytes: ByteArray): ImageBitmap?
 
