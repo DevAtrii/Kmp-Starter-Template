@@ -18,47 +18,47 @@ vanniktech-maven-publish = "0.36.0"
 
 
 # Kotlin Ecosystem
-calfFilePicker = "0.9.0"
-coil = "3.3.0"
-kotlin = "2.3.10"
-kotlinx-datetime = "0.7.1"
-kotlinx-serialization-json = "1.10.0"
-coroutines = "1.10.2"
+calfFilePicker = "0.12.0"
+coil = "3.4.0"
+kotlin = "2.3.21"
+kotlinx-datetime = "0.8.0"
+kotlinx-serialization-json = "1.11.0"
+coroutines = "1.11.0"
 
 # Compose & UI
-compose-multiplatform = "1.10.1"
+compose-multiplatform = "1.11.0"
 compose-material3 = "1.10.0-alpha05"
 compose-material3-icons-extended = "1.7.3"
-androidx-activity-compose = "1.12.4"
-androidx-lifecycle = "2.9.6"
+androidx-activity-compose = "1.13.0"
+androidx-lifecycle = "2.10.0"
 navigation-compose = "2.9.2"
 
 
 # Firebase & Authentication
-firebase-bom = "34.9.0"
+firebase-bom = "34.13.0"
 gitlive-firebase = "2.4.0"
 kmpauth-google = "2.3.1"
 google-services = "4.4.4"
 
 # Networking
-ktor = "3.4.0"
+ktor = "3.4.3"
 
 # Dependency Injection
-koin = "4.2.0-alpha3"
-navigation3Ui = "1.0.0-alpha06"
-lifecycleViewmodelNavigation3 = "2.10.0-alpha08"
+koin = "4.2.1"
+navigation3 = "1.1.1"
+navigation3-lifecycle-viewmodel = "2.10.0"
 
 # Google Play Services
-play-services-ads = "24.9.0"
+play-services-ads = "25.2.0"
 play-update-ktx = "2.1.0"
 play-review-ktx = "2.0.2"
 
 # RevenueCat Purchases
 #noinspection GradleDependency
-purchases-kmp = "2.5.1+17.33.1"
+purchases-kmp = "3.0.0"
 
 # Data Storage
-data-store = "1.2.0"
+data-store = "1.2.1"
 
 # Database
 room = "2.8.4"
@@ -70,30 +70,31 @@ androidx-test-ext = "1.3.0"
 
 # Utilities
 logging = "2.0.3"
-atomic-fu = "0.31.0"
+atomic-fu = "0.32.1"
 stately-common = "2.1.0"
 
 #Accompinist
 accompanist-system-ui-controller = "0.36.0"
 
 swift-klib = "0.6.4"
-spm-kmp = "1.4.8"
+spm-kmp = "1.9.2"
 
 # notifications
 alarmee = "2.6.0"
-onesignal = "5.6.1"
+onesignal = "5.9.0"
 
-mixpanel-android = "8.3.0"
+mixpanel-android = "8.7.0"
 runner = "1.7.0"
 core = "1.7.0"
-coreKtx = "1.17.0"
+coreKtx = "1.18.0"
 junit = "4.13.2"
 espressoCore = "3.7.0"
 appcompat = "1.7.1"
-material = "1.13.0"
+material = "1.14.0"
 
 # ios deps using spm-for-kmp Plugin
 ios-mixpanel-swift = "5.2.0"
+
 browser = "1.10.0"
 [libraries]
 androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
@@ -148,8 +149,8 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 koin-navigation3 = { module = "io.insert-koin:koin-compose-navigation3", version.ref = "koin" }
-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation3Ui" }
-lifecycle-viewmodel-navigation3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNavigation3" }
+navigation3 = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
+navigation3-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "navigation3-lifecycle-viewmodel" }
 
 # Kotlinx Libraries
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }

@@ -82,6 +82,39 @@ abstract class MviViewModel<STATE, ACTIONS, EVENTS>(
      * ``` kotlin
      * override val initialState get() = ProfileState()
      * ```
+     *
+     * WARNING:
+     * Avoid directly reading values from SavedStateHandle inside [initialState].
+     *
+     * Example of problematic usage:
+     * ```kotlin
+     * override val initialState get() = State(
+     *     currency = savedStateHandle.get("currency")
+     * )
+     * ```
+     *
+     * In some cases, SavedStateHandle values may not be fully available during
+     * state initialization, which can result in unexpected null values and crashes like:
+     *
+     * ```text
+     * Parameter specified as non-null is null
+     * ```
+     *
+     * Recommended approach:
+     * Read SavedStateHandle values first, then update state inside `init {}`.
+     *
+     * Example:
+     * ```kotlin
+     * override val initialState = State()
+     *
+     * init {
+     *     val currency = savedStateHandle.get<String>("currency") ?: "USD"
+     *
+     *     _state.update{
+     *        it.copy(currency = currency)
+     *     }
+     * }
+     * ```
      */
     abstract val initialState: STATE
 
@@ -130,7 +163,7 @@ abstract class MviViewModel<STATE, ACTIONS, EVENTS>(
      * Triggers a one-time UI event inside viewModelScope.
      * @param event The event to be dispatched to the UI.
      */
-    protected   fun emitEventInViewModel(event: EVENTS) {
+    protected fun emitEventInViewModel(event: EVENTS) {
         viewModelScope.launch {
             emitEvent(event = event)
         }
@@ -138,5 +171,5 @@ abstract class MviViewModel<STATE, ACTIONS, EVENTS>(
 }
 
 
-sealed class DummyActions {}
-sealed class DummyEvents {}
+sealed class DummyActions
+sealed class DummyEvents

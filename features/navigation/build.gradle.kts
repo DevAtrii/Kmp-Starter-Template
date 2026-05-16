@@ -57,8 +57,8 @@ kotlin {
         commonMain {
             dependencies {
                 api(libs.koin.navigation3)
-                api(libs.navigation3.ui)
-                api(libs.lifecycle.viewmodel.navigation3)
+                api(libs.navigation3)
+                api(libs.navigation3.lifecycle.viewmodel)
             }
         }
 

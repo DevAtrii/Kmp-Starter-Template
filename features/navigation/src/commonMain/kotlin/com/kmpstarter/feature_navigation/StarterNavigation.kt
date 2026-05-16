@@ -30,9 +30,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.scene.Scene
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigationevent.NavigationEvent
-import com.kmpstarter.feature_navigation.utils.defaultPopTransitionSpec
-import com.kmpstarter.feature_navigation.utils.defaultPredictivePopTransitionSpec
-import com.kmpstarter.feature_navigation.utils.defaultTransitionSpec
+import com.kmpstarter.feature_navigation.utils.Nav3Transitions
 import com.kmpstarter.feature_navigation.utils.rememberNavBackStack
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import org.koin.compose.navigation3.koinEntryProvider
@@ -48,14 +46,14 @@ fun StarterNavigation(
         rememberViewModelStoreNavEntryDecorator(),
     ),
     transitionSpec: AnimatedContentTransitionScope<Scene<Any>>.() -> ContentTransform =
-        defaultTransitionSpec(),
+        Nav3Transitions.horizontalSlideParallax(),
     popTransitionSpec: AnimatedContentTransitionScope<Scene<Any>>.() -> ContentTransform =
-        defaultPopTransitionSpec(),
+        Nav3Transitions.horizontalSlideParallaxPop(),
     predictivePopTransitionSpec:
     AnimatedContentTransitionScope<Scene<Any>>.(
         @NavigationEvent.SwipeEdge Int,
     ) -> ContentTransform =
-        defaultPredictivePopTransitionSpec(),
+        Nav3Transitions.predictiveHorizontalSlideParallax(),
     modifier: Modifier = Modifier,
 ) = StarterNavigation(
     initialScreens = initialScreens.toTypedArray(),
@@ -77,14 +75,14 @@ fun StarterNavigation(
         rememberViewModelStoreNavEntryDecorator(),
     ),
     transitionSpec: AnimatedContentTransitionScope<Scene<Any>>.() -> ContentTransform =
-        defaultTransitionSpec(),
+        Nav3Transitions.horizontalSlideParallax(),
     popTransitionSpec: AnimatedContentTransitionScope<Scene<Any>>.() -> ContentTransform =
-        defaultPopTransitionSpec(),
+        Nav3Transitions.horizontalSlideParallaxPop(),
     predictivePopTransitionSpec:
     AnimatedContentTransitionScope<Scene<Any>>.(
         @NavigationEvent.SwipeEdge Int,
     ) -> ContentTransform =
-        defaultPredictivePopTransitionSpec(),
+        Nav3Transitions.predictiveHorizontalSlideParallax(),
     modifier: Modifier = Modifier,
 ) {
     val backStack: NavBackStack<NavKey> = rememberNavBackStack(
@@ -92,7 +90,7 @@ fun StarterNavigation(
         builderAction = builderAction
     )
     val navigator: StarterNavigator = StarterNavigator.getCurrent()
-    val entryProvider = koinEntryProvider()
+    val entryProvider = koinEntryProvider<Any>()
 
 
     LaunchedEffect(backStack) {

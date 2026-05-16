@@ -31,7 +31,7 @@ import org.koin.dsl.module
 import org.koin.dsl.navigation3.navigation
 
 @OptIn(KoinExperimentalAPI::class)
-val navigationModule = module {
+val appNavigationModule = module {
     includes(navigationCoreModule)
 
 

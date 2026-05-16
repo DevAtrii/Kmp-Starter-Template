@@ -140,6 +140,8 @@ fun App() {
 
     GlobalSideEffects(snackbarHostState = snackbarHostState)
     MainApp(snackbarHostState = snackbarHostState)
+
+
 }
 
 /**
