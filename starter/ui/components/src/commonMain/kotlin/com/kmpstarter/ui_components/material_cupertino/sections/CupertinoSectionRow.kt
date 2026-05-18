@@ -15,15 +15,21 @@
 
 package com.kmpstarter.ui_components.material_cupertino.sections
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
@@ -37,6 +43,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -47,6 +54,99 @@ import androidx.compose.ui.unit.dp
 import com.kmpstarter.ui_components.material_cupertino.dropdown.CupertinoDropdownMenu
 import com.kmpstarter.ui_components.material_cupertino.switchs.CupertinoSwitch
 import com.kmpstarter.ui_utils.theme.Dimens
+
+// stepper
+
+@Composable
+fun CupertinoSectionRow(
+    modifier: Modifier = Modifier,
+    label: String,
+    icon: ImageVector,
+    value: Int,
+    iconTint: Color = MaterialTheme.colorScheme.primary,
+    isLast: Boolean = false,
+    onIncrement: () -> Unit,
+    onDecrement: () -> Unit,
+) {
+    CupertinoSectionRow(
+        modifier = modifier,
+        label = label,
+        icon = icon,
+        iconTint = iconTint,
+        isLast = isLast,
+        customValueContent = {
+            // iOS-style stepper with "- | value | +" layout
+            IOSStepper(
+                modifier = Modifier.fillMaxSize(),
+                value = value,
+                onIncrement = onIncrement,
+                onDecrement = onDecrement
+            )
+        }
+    )
+}
+
+
+/**
+ * iOS-style stepper component with "- | value | +" layout
+ */
+@Composable
+private fun IOSStepper(
+    value: Int,
+    onIncrement: () -> Unit,
+    onDecrement: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End,
+        modifier = modifier.padding(start = 4.dp)
+    ) {
+        // Decrement button
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                .clickable { onDecrement() },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "−",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold
+            )
+        }
+
+        // Value display
+        Text(
+            text = value.toString(),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(horizontal = 12.dp).widthIn(min = 24.dp, max = 56.dp),
+            textAlign = TextAlign.Center
+        )
+
+        // Increment button
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                .clickable { onIncrement() },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "+",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold
+            )
+        }
+    }
+}
+
 
 
 @Composable
@@ -182,6 +282,7 @@ private fun CupertinoSectionRow(
     labelColor: Color = MaterialTheme.colorScheme.onSurface,
     valueColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     onClick: () -> Unit = {},
+    customValueContent: (@Composable RowScope.() -> Unit)? = null,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -222,7 +323,15 @@ private fun CupertinoSectionRow(
                 overflow = TextOverflow.Ellipsis
             )
 
-            if (value.isNotEmpty() || showSwitch || showChevron) {
+            if (customValueContent != null)
+                Row(
+                    modifier = Modifier.weight(2f),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    customValueContent()
+                }
+            else if (value.isNotEmpty() || showSwitch || showChevron) {
                 Spacer(modifier = Modifier.width(12.dp))
                 Row(
                     modifier = Modifier.weight(1f),

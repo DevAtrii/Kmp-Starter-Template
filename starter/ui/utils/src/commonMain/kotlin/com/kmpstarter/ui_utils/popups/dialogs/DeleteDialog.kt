@@ -1,15 +1,13 @@
 /*
  *
+ *  * Copyright (c) 2025
  *  *
- *  *  * Copyright (c) 2026
- *  *  *
- *  *  * Author: Athar Gul
- *  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
- *  *  * YouTube: https://www.youtube.com/@devatrii/videos
- *  *  *
- *  *  * All rights reserved.
+ *  * Author: Athar Gul
+ *  * GitHub: https://github.com/DevAtrii
+ *  * YouTube: https://www.youtube.com/@devatrii/videos
  *  *
- *  *
+ *  * All rights reserved.
+ *
  *
  */
 
@@ -25,7 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -38,10 +36,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.kmpstarter.ui_utils.common_composables.HorizontalSpacer
 import com.kmpstarter.ui_utils.common_composables.VerticalSpacer
 import com.kmpstarter.ui_utils.theme.Dimens
 
@@ -64,6 +62,8 @@ fun DeleteDialog(
     message: String = "Are you sure you want to delete this item? This action cannot be undone.",
     confirmText: String = "Delete",
     cancelText: String = "Cancel",
+    icon: ImageVector = Icons.Rounded.Warning,
+    confirmButtonIcon: ImageVector = Icons.Rounded.Delete,
     confirmButtonEnabled: Boolean = true,
     cancelButtonEnabled: Boolean = true,
     onConfirmDelete: () -> Unit,
@@ -78,6 +78,8 @@ fun DeleteDialog(
             confirmButtonEnabled = confirmButtonEnabled,
             cancelButtonEnabled = cancelButtonEnabled,
             message = message,
+            icon = icon,
+            confirmButtonIcon = confirmButtonIcon,
             confirmText = confirmText,
             cancelText = cancelText,
             onConfirmDelete = onConfirmDelete,
@@ -104,6 +106,8 @@ private fun DeleteDialogContent(
     cancelButtonEnabled: Boolean = true,
     title: String,
     message: String,
+    icon: ImageVector,
+    confirmButtonIcon: ImageVector,
     confirmText: String,
     cancelText: String,
     onConfirmDelete: () -> Unit,
@@ -127,7 +131,7 @@ private fun DeleteDialogContent(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.Warning,
+                    imageVector = icon,
                     contentDescription = "Warning",
                     modifier = Modifier.size(32.dp),
                     tint = MaterialTheme.colorScheme.onErrorContainer
@@ -138,13 +142,14 @@ private fun DeleteDialogContent(
         VerticalSpacer(Dimens.paddingSmall)
 
         // Title
-        Text(
-            text = title,
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.Center
-        )
+        if (title.isNotEmpty())
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center
+            )
 
         // Message
         Text(
@@ -193,11 +198,11 @@ private fun DeleteDialogContent(
                 shape = RoundedCornerShape(Dimens.buttonRadius)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Delete,
+                    imageVector = confirmButtonIcon,
                     contentDescription = "Delete",
                     modifier = Modifier.size(18.dp)
                 )
-                HorizontalSpacer(Dimens.paddingExtraSmall)
+                VerticalSpacer(Dimens.paddingExtraSmall)
                 Text(
                     text = confirmText,
                     style = MaterialTheme.typography.labelLarge,
