@@ -29,11 +29,59 @@ import kotlinx.serialization.Serializable
  * - "show_onboarding"
  * - "minimum_version"
  *
- * See [ConfigKeys]:
- * - [ConfigKeys.Metadata]
- * - [ConfigKeys.WelcomeText]
- * - [ConfigKeys.ShowOnboarding]
- * - [ConfigKeys.MinimumVersion]
+ * Example:
+ * ```kotlin
+ * @Serializable
+ * private data class RemoteAppMetadata(
+ *     val versionName: String = "0.5.0",
+ *     val versionCode: Int = 50,
+ * )
+ *
+ * private sealed class ConfigKeys<T>(
+ *     key: String,
+ *     defaultValue: T,
+ *     serializer: KSerializer<T>? = null,
+ * ) : RemoteConfigKey<T>(
+ *     key = key,
+ *     defaultValue = defaultValue,
+ *     serializer = serializer
+ * ) {
+ *     data class Metadata(
+ *         override val defaultValue: RemoteAppMetadata = RemoteAppMetadata(),
+ *     ) : RemoteConfigKey<RemoteAppMetadata>(
+ *         key = "meta_data",
+ *         defaultValue = defaultValue,
+ *         serializer = RemoteAppMetadata.serializer()
+ *     )
+ *
+ *     data class WelcomeText(
+ *         override val defaultValue: String = "Welcome to KMP Starter",
+ *     ) : RemoteConfigKey<String>(
+ *         key = "welcome_text",
+ *         defaultValue = defaultValue
+ *     )
+ *
+ *     data class ShowOnboarding(
+ *         override val defaultValue: Boolean = true,
+ *     ) : RemoteConfigKey<Boolean>(
+ *         key = "show_onboarding",
+ *         defaultValue = defaultValue
+ *     )
+ *
+ *     data class MinimumVersion(
+ *         override val defaultValue: Int = 36,
+ *     ) : RemoteConfigKey<Int>(
+ *         key = "minimum_version",
+ *         defaultValue = defaultValue
+ *     )
+ * }
+ *
+ * val metadata = ConfigKeys.Metadata()
+ * val welcomeText = ConfigKeys.WelcomeText()
+ * val showOnboarding = ConfigKeys.ShowOnboarding()
+ * val minimumVersion = ConfigKeys.MinimumVersion()
+ * ```
+ *
  *
  * @param key Unique remote config key stored in provider.
  * @param defaultValue Fallback value used when remote value unavailable.
@@ -44,60 +92,6 @@ abstract class RemoteConfigKey<T>(
     open val defaultValue: T,
     val serializer: KSerializer<T>? = null,
 )
-
-
-/*Example of remote config keys*/
-
-
-@Serializable
-private data class RemoteAppMetadata(
-    val versionName: String = "0.5.0",
-    val versionCode: Int = 50,
-)
-
-
-private sealed class ConfigKeys<T>(
-    key: String,
-    defaultValue: T,
-    serializer: KSerializer<T>? = null,
-) : RemoteConfigKey<T>(
-    key = key,
-    defaultValue = defaultValue,
-    serializer = serializer
-) {
-    data class Metadata(
-        override val defaultValue: RemoteAppMetadata = RemoteAppMetadata(),
-    ) : RemoteConfigKey<RemoteAppMetadata>(
-        key = "meta_data",
-        defaultValue = defaultValue,
-        serializer = RemoteAppMetadata.serializer()
-    )
-
-    data class WelcomeText(
-        override val defaultValue: String = "Welcome to KMP Starter",
-    ) : RemoteConfigKey<String>(
-        key = "welcome_text",
-        defaultValue = defaultValue
-    )
-
-    data class ShowOnboarding(
-        override val defaultValue: Boolean = true,
-    ) : RemoteConfigKey<Boolean>(
-        key = "show_onboarding",
-        defaultValue = defaultValue
-    )
-
-    data class MinimumVersion(
-        override val defaultValue: Int = 36,
-    ) : RemoteConfigKey<Int>(
-        key = "minimum_version",
-        defaultValue = defaultValue
-    )
-}
-
-
-
-
 
 
 

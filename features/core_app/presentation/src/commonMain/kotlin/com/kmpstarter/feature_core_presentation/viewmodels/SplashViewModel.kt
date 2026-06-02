@@ -17,7 +17,7 @@ package com.kmpstarter.feature_core_presentation.viewmodels
 
 import androidx.lifecycle.viewModelScope
 import com.kmpstarter.feature_core_domain.logics.OnboardingLogics
-import com.kmpstarter.ui_utils.viewmodels.DummyActions
+import com.kmpstarter.ui_utils.viewmodels.MviActions
 import com.kmpstarter.ui_utils.viewmodels.MviViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -44,7 +44,7 @@ internal sealed class SplashEvents {
 
 internal class SplashViewModel(
     private val onboardingLogics: OnboardingLogics,
-) : MviViewModel<SplashState, DummyActions, SplashEvents>() {
+) : MviViewModel<SplashState, MviActions, SplashEvents>() {
 
     companion object {
         private const val TAG = "SplashViewModel"
@@ -54,7 +54,7 @@ internal class SplashViewModel(
     override val initialState: SplashState
         get() = SplashState()
 
-    override fun onAction(action: DummyActions) {
+    override fun onAction(action: MviActions) {
         // do nothing
     }
 

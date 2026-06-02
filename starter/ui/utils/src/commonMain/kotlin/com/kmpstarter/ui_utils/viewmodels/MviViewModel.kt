@@ -171,5 +171,5 @@ abstract class MviViewModel<STATE, ACTIONS, EVENTS>(
 }
 
 
-sealed class DummyActions
-sealed class DummyEvents
+sealed class MviActions
+sealed class MviEvents
