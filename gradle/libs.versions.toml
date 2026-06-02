@@ -94,7 +94,7 @@ material = "1.14.0"
 
 # ios deps using spm-for-kmp Plugin
 ios-mixpanel-swift = "5.2.0"
-
+kotlin-wrappers = "2026.6.0"
 browser = "1.10.0"
 [libraries]
 androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
@@ -206,6 +206,10 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+wrappers-browser = { module = "org.jetbrains.kotlin-wrappers:kotlin-browser", version.ref = "kotlin-wrappers" }
+
+
+
 [plugins]
 # Android Plugins
 android-application = { id = "com.android.application", version.ref = "agp" }
