@@ -65,6 +65,7 @@ kotlin {
     sourceSets {
 
         androidMain.dependencies {
+            implementation("org.maplibre.gl:android-sdk:11.0.0")
         }
         commonMain.dependencies {
             // local modules

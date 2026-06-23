@@ -58,6 +58,8 @@ kotlin {
                 implementation(libs.kotlin.stdlib)
                 implementation(projects.starter.core)
                 api(projects.features.core.domain)
+                implementation(projects.features.database)
+                implementation(libs.kotlinx.datetime)
             }
         }
 

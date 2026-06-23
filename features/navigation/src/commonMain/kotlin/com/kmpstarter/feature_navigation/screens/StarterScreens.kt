@@ -34,4 +34,7 @@ sealed class StarterScreens : NavKey {
 
     @Serializable
     data object Purchases : StarterScreens()
+
+    @Serializable
+    data object Timeline : StarterScreens()
 }

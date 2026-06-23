@@ -16,6 +16,7 @@
 package com.kmpstarter.core.navigation
 
 import com.kmpstarter.core.ui.screens.WelcomeScreen
+import com.kmpstarter.core.ui.screens.TimelineScreen
 import com.kmpstarter.feature_core_presentation.screens.OnboardingV1Screen
 import com.kmpstarter.feature_core_presentation.screens.SplashScreen
 import com.kmpstarter.feature_navigation.StarterNavigator
@@ -36,7 +37,7 @@ val navigationModule = module {
         WelcomeScreen(
             onGetStartedClick = {
                 navigator.navigateTo(
-                    route = StarterScreens.Purchases
+                    route = StarterScreens.Timeline
                 )
             }
         )
@@ -72,6 +73,15 @@ val navigationModule = module {
         val navigator = StarterNavigator.getCurrent()
         PurchasesScreen(
             onNavigate = {
+                navigator.navigateUp()
+            }
+        )
+    }
+
+    navigation<StarterScreens.Timeline> { route ->
+        val navigator = StarterNavigator.getCurrent()
+        TimelineScreen(
+            onBackClick = {
                 navigator.navigateUp()
             }
         )

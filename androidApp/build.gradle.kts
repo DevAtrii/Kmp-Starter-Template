@@ -83,4 +83,7 @@ dependencies {
 
     implementation(projects.composeApp)
     implementation(libs.accompanist.system.ui.controller)
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation("org.maplibre.gl:android-sdk:11.0.0")
+    implementation(project(":features:database"))
 }

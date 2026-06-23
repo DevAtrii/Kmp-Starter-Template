@@ -29,5 +29,8 @@ val databaseModule = module {
             databaseProvider = get()
         )
     }
+    single { get<KmpStarterDatabase>().tripDao() }
+    single { get<KmpStarterDatabase>().gpsPointDao() }
+    single { get<KmpStarterDatabase>().recordDao() }
 }
 
