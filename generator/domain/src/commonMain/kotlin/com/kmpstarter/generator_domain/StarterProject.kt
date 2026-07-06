@@ -24,12 +24,13 @@ enum class ProjectMode {
 
 @Serializable
 data class StarterProject(
+    val workingDir: String = ".",
     val projectName: String,
     val packageName: String,
     val mode: ProjectMode = ProjectMode.LIB,
     val featureName: String? = null,
     val includeWorkflows: Boolean = true,
-    val modules: List<StarterModules> = listOf(),
+    val modules: List<StarterModules> = StarterModules.all(),
 )
 
 interface BaseModule {
@@ -38,6 +39,64 @@ interface BaseModule {
 
 @Serializable
 sealed class StarterModules : BaseModule {
+
+    companion object {
+        fun all() = listOf(
+            /** Features **/
+
+            // Analytics
+            Features.Analytics.Data,
+            Features.Analytics.Domain,
+
+            // Core
+            Features.Core.Data,
+            Features.Core.Domain,
+            Features.Core.Presentation,
+
+            // Database
+            Features.Database,
+
+            // Locale
+            Features.Locale,
+
+            // Navigation
+            Features.Navigation,
+
+            // Notifications
+            Features.Notifications.Core,
+            Features.Notifications.Local,
+            Features.Notifications.Push,
+
+            // Purchases
+            Features.Purchases.Data,
+            Features.Purchases.Domain,
+            Features.Purchases.Presentation,
+
+            // Remote Config
+            Features.RemoteConfig.Data,
+            Features.RemoteConfig.Domain,
+            Features.RemoteConfig.Presentation,
+
+            // Resources
+            Features.Resources,
+
+            /** Starter **/
+
+            // Core
+            Starter.Core,
+
+            // Bindings
+            Starter.Bindings,
+
+            // UI
+            Starter.Ui.Utils,
+            Starter.Ui.Components,
+            Starter.Ui.Layouts,
+
+            // Utils
+            Starter.Utils,
+        )
+    }
 
     @Serializable
     sealed class Features : StarterModules() {

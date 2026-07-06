@@ -86,6 +86,7 @@ include(":features:core:presentation")
 include(":features:core:domain")
 include(":features:core:data")
 include(":features:locale")
+// tooling
 include(":generator:data")
 include(":generator:domain")
 include(":generator:cli")

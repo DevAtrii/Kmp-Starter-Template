@@ -22,6 +22,26 @@ private const val DEFAULT_PACKAGE_NAME = "com.kmpstarter"
 
 interface StarterProjectsRepository {
 
+    companion object {
+        const val STARTER_FOLDER = ".starter"
+
+        val TOOLING_SOURCE_CODE_FOLDERS = listOf(
+            "docs",
+            "generator",
+            "site",
+        )
+        val TOOLING_SOURCE_CODE_FILES = listOf(
+            "zensical.toml",
+            "mkdocs.yml",
+        )
+        val TOOLING_SETTINGS_GRADLE_MODULES = listOf(
+            ":generator:data",
+            ":generator:domain",
+            ":generator:web",
+            ":generator:cli",
+        )
+    }
+
     suspend fun generate(project: StarterProject): Result<ProjectZip>
 
     suspend fun includeModule(
