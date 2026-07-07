@@ -31,10 +31,35 @@ data class StarterProject(
     val featureName: String? = null,
     val includeWorkflows: Boolean = true,
     val modules: List<StarterModules> = StarterModules.all(),
-)
+) {
+    fun getFeatureNameAsPascalCasing(): String =
+        featureName
+            ?.split('_', '-', ' ')
+            ?.filter { it.isNotBlank() }
+            ?.joinToString("") { part ->
+                part.replaceFirstChar(Char::uppercase)
+            }
+            .orEmpty()
+}
 
 interface BaseModule {
     fun dependencies(): List<StarterModules>
+
+    fun getGradleDep(): String {
+        val clazz = this::class
+        val raw = clazz.toString()
+            .replace("class com.kmpstarter.generator_domain.StarterModules$", "")
+            .lowercase()
+        // todo improve this one to handle `remote_config` -> `remoteConfig` scenarios
+        val dep = "projects."+ raw.replace("$",".")
+        return dep
+    }
+}
+
+fun main() {
+    val module = StarterModules.Features.Analytics.Data
+    println("MODULE=====")
+    println(module.getGradleDep())
 }
 
 @Serializable
@@ -102,6 +127,7 @@ sealed class StarterModules : BaseModule {
     sealed class Features : StarterModules() {
         @Serializable
         sealed class Analytics : Features() {
+            @Serializable
             data object Data : Analytics() {
                 override fun dependencies(): List<StarterModules> = listOf(
                     Domain,

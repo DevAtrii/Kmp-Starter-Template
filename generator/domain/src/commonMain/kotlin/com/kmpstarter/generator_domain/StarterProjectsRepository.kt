@@ -40,6 +40,31 @@ interface StarterProjectsRepository {
             ":generator:web",
             ":generator:cli",
         )
+        /** when ProjectMode.LIB then keep these modules & add rest as library*/
+        val LIB_MODE_DELETABLE_MODULES = listOf(
+            ":features:analytics:data",
+            ":features:analytics:domain",
+            ":features:core:data",
+            ":features:core:domain",
+            ":features:core:presentation",
+            ":features:locale",
+            ":features:navigation",
+            ":features:notifications:core",
+            ":features:notifications:local",
+            ":features:notifications:push",
+            ":features:purchases:data",
+            ":features:purchases:domain",
+            ":features:purchases:presentation",
+            ":features:remote_config:data",
+            ":features:remote_config:domain",
+            ":features:remote_config:presentation",
+            ":starter:core",
+            ":starter:native:bindings",
+            ":starter:ui:utils",
+            ":starter:ui:layouts",
+            ":starter:ui:components",
+            ":starter:utils",
+        )
     }
 
     suspend fun generate(project: StarterProject): Result<ProjectZip>

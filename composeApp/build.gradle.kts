@@ -104,6 +104,9 @@ kotlin {
             implementation(projects.features.yourFeature.domain)
             implementation(projects.features.yourFeature.presentation)
 
+
+            // External Libraries
+
         }
         iosMain.dependencies {
 

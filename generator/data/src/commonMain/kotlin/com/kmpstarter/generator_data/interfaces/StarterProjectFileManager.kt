@@ -31,15 +31,19 @@ interface StarterProjectFileManager {
             }
     }
 
-    suspend fun writeFile(path: FilePath, content: ByteArray):  Result<Unit>
-    suspend fun mkDirs(path: FolderPath):  Result<Unit>
+    fun getCurrentDir(): FolderPath
+
+    suspend fun writeFile(path: FilePath, content: ByteArray): Result<Unit>
+    suspend fun mkDirs(path: FolderPath): Result<Unit>
 
     suspend fun getFiles(path: FolderPath): List<FilePath>
     suspend fun getFile(path: FilePath): Result<ByteArray>
 
     suspend fun delete(path: Path): Result<Unit>
 
-    suspend fun extractZip(path: FilePath, output: FolderPath):  Result<Unit>
+    suspend fun extractZip(path: FilePath, output: FolderPath): Result<Unit>
+
+    suspend fun rename(path: Path, to: String): Result<Unit>
 
 }
 
