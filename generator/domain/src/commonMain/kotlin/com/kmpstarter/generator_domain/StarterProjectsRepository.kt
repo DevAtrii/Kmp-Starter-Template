@@ -68,6 +68,15 @@ interface StarterProjectsRepository {
             ":starter:ui:components",
             ":starter:utils",
         )
+
+        /**Modules that aren't published on maven but can be added to project regardless of ProjectMode**/
+        val LOCAL_MODULES = listOf(
+            ":features:core_app:data",
+            ":features:core_app:domain",
+            ":features:core_app:presentation",
+            ":features:database",
+            ":features:resources",
+        )
     }
 
     suspend fun generate(project: StarterProject): Result<ProjectZip>

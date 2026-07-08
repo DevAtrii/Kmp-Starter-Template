@@ -21,4 +21,5 @@ import kotlinx.serialization.Serializable
 data class StarterJson(
     val packageName: String,
     val starterVersion: String,
+    val mode: ProjectMode,
 )

@@ -23,8 +23,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.nio.file.Files
+import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 import kotlin.io.path.deleteIfExists
@@ -150,21 +152,30 @@ actual class FileManagerImpl : StarterProjectFileManager {
         output: FolderPath,
     ): Result<Unit> = io {
         runCatching {
-            ZipInputStream(java.nio.file.Path.of(path).inputStream()).use { zip ->
-                var entry = zip.nextEntry
+            val outputPath = Paths.get(output)
+            Files.createDirectories(outputPath)
 
-                while (entry != null) {
-                    val outputPath = java.nio.file.Path.of(output).resolve(entry.name)
+            ZipFile(path).use { zip ->
+                zip.entries().asSequence().forEach { entry ->
+                    val target = outputPath.resolve(entry.name).normalize()
 
-                    if (entry.isDirectory) {
-                        Files.createDirectories(outputPath)
-                    } else {
-                        outputPath.parent?.let(Files::createDirectories)
-                        outputPath.outputStream().use { zip.copyTo(it) }
+                    require(target.startsWith(outputPath)) {
+                        "Invalid ZIP entry: ${entry.name}"
                     }
 
-                    zip.closeEntry()
-                    entry = zip.nextEntry
+                    if (entry.isDirectory) {
+                        Files.createDirectories(target)
+                    } else {
+                        Files.createDirectories(target.parent)
+
+                        zip.getInputStream(entry).use { input ->
+                            Files.copy(
+                                input,
+                                target,
+                                StandardCopyOption.REPLACE_EXISTING,
+                            )
+                        }
+                    }
                 }
             }
         }

@@ -15,6 +15,7 @@
 
 package com.kmpstarter.generator_domain
 
+import com.kmpstarter.generator_domain.StarterModules.Starter.Native
 import kotlinx.serialization.Serializable
 
 enum class ProjectMode {
@@ -43,35 +44,63 @@ data class StarterProject(
 }
 
 interface BaseModule {
+
     fun dependencies(): List<StarterModules>
 
-    fun getGradleDep(): String {
+    fun moduleGradleDep(mode: ProjectMode): String {
         val clazz = this::class
         val raw = clazz.qualifiedName!!
             .replace("com.kmpstarter.generator_domain.StarterModules.", "")
             .lowercase()
-        // todo improve this one to handle `remote_config` -> `remoteConfig` scenarios
-        val dep = "projects.$raw"
+            .let {
+                if (mode == ProjectMode.LIB) {
+                    it.replace("features", "feature").let { it2 ->
+                        if (it2.startsWith("starter."))
+                            it2.removePrefix("starter.")
+                        else it2
+                    }
+                } else it
+            }
+
+        val prefix = when (mode) {
+            ProjectMode.MODULE -> "projects"
+            ProjectMode.LIB -> "libs.starter"
+        }
+        val dep = "$prefix.$raw"
         return dep
     }
 
-    fun modulePath(): String {
+    fun moduleFilePath(): String {
         val clazz = this::class
         val path = clazz.qualifiedName!!
             .replace("com.kmpstarter.generator_domain.StarterModules.", "")
-            .replace(".","/")
+            .replace(".", "/")
             .lowercase()
         return path
+    }
+
+    fun moduleGradlePath(): String {
+        val clazz = this::class
+        val path = clazz.qualifiedName!!
+            .replace("com.kmpstarter.generator_domain.StarterModules.", "")
+            .replace(".", ":")
+            .lowercase()
+        return ":$path"
     }
 }
 
 fun main() {
-    val module = StarterModules.Features.Analytics.Data
+    val module = StarterModules.Features.Database
     println("\n\n=====MODULE=====")
     println(module::class.qualifiedName)
-    println(module.getGradleDep())
-    println(module.modulePath())
+    println(module.moduleGradleDep(ProjectMode.LIB))
+    println(module.moduleFilePath())
+    println(module.moduleGradlePath())
 }
+
+class ModuleOnlyException(
+    message: String = "This module can only be added as a module.",
+) : IllegalStateException(message)
 
 @Serializable
 sealed class StarterModules : BaseModule {
@@ -83,6 +112,11 @@ sealed class StarterModules : BaseModule {
             // Analytics
             Features.Analytics.Data,
             Features.Analytics.Domain,
+
+            // Core App
+            Features.CoreApp.Data,
+            Features.CoreApp.Domain,
+            Features.CoreApp.Presentation,
 
             // Core
             Features.Core.Data,
@@ -122,7 +156,7 @@ sealed class StarterModules : BaseModule {
             Starter.Core,
 
             // Bindings
-            Starter.Bindings,
+            Native.Bindings,
 
             // UI
             Starter.Ui.Utils,
@@ -149,6 +183,75 @@ sealed class StarterModules : BaseModule {
             data object Domain : Analytics() {
                 override fun dependencies(): List<StarterModules> = listOf()
             }
+        }
+
+        @Serializable
+        sealed class CoreApp : Features() {
+            data object Data : CoreApp() {
+                override fun dependencies(): List<StarterModules> = listOf(
+                    Starter.Core,
+                    Domain,
+                    Core.Domain,
+                )
+
+
+                override fun moduleFilePath(): String {
+                    return "features/core_app/data"
+                }
+
+                override fun moduleGradleDep(mode: ProjectMode): String {
+                    if (mode == ProjectMode.LIB) throw ModuleOnlyException()
+
+                    return "projects.features.coreApp.data"
+                }
+
+                override fun moduleGradlePath(): String {
+                    return ":features:core_app:data"
+                }
+            }
+
+            data object Domain : CoreApp() {
+                override fun dependencies(): List<StarterModules> = listOf(
+                    Analytics.Domain,
+                )
+
+                override fun moduleFilePath(): String {
+                    return "features/core_app/domain"
+                }
+
+                override fun moduleGradleDep(mode: ProjectMode): String {
+                    if (mode == ProjectMode.LIB) throw ModuleOnlyException()
+
+                    return "projects.features.coreApp.domain"
+                }
+                override fun moduleGradlePath(): String {
+                    return ":features:core_app:domain"
+                }
+            }
+
+            data object Presentation : CoreApp() {
+                override fun dependencies(): List<StarterModules> = listOf(
+                    Analytics.Domain,
+                    Resources,
+                    Domain,
+                    Core.Domain,
+                    Starter.Ui.Layouts
+                )
+
+                override fun moduleFilePath(): String {
+                    return "features/core_app/presentation"
+                }
+
+                override fun moduleGradleDep(mode: ProjectMode): String {
+                    if (mode == ProjectMode.LIB) throw ModuleOnlyException()
+
+                    return "projects.features.coreApp.presentation"
+                }
+                override fun moduleGradlePath(): String {
+                    return ":features:core_app:presentation"
+                }
+            }
+
         }
 
         @Serializable
@@ -243,18 +346,57 @@ sealed class StarterModules : BaseModule {
                     Starter.Utils,
                     Domain
                 )
+
+                override fun moduleFilePath(): String {
+                    return "features/remote_config/data"
+                }
+
+                override fun moduleGradleDep(mode: ProjectMode): String {
+                    if (mode == ProjectMode.MODULE) return super.moduleGradleDep(mode)
+
+                    return "libs.starter.feature.remoteConfig.data"
+                }
+                override fun moduleGradlePath(): String {
+                    return ":features:remote_config:data"
+                }
             }
 
             data object Domain : RemoteConfig() {
                 override fun dependencies(): List<StarterModules> = listOf(
                     Starter.Utils,
                 )
+
+                override fun moduleFilePath(): String {
+                    return "features/remote_config/domain"
+                }
+
+                override fun moduleGradleDep(mode: ProjectMode): String {
+                    if (mode == ProjectMode.MODULE) return super.moduleGradleDep(mode)
+
+                    return "libs.starter.feature.remoteConfig.domain"
+                }
+                override fun moduleGradlePath(): String {
+                    return ":features:remote_config:domain"
+                }
             }
 
             data object Presentation : RemoteConfig() {
                 override fun dependencies(): List<StarterModules> = listOf(
                     Domain
                 )
+
+                override fun moduleFilePath(): String {
+                    return "features/remote_config/presentation"
+                }
+
+                override fun moduleGradleDep(mode: ProjectMode): String {
+                    if (mode == ProjectMode.MODULE) return super.moduleGradleDep(mode)
+
+                    return "libs.starter.feature.remoteConfig.presentation"
+                }
+                override fun moduleGradlePath(): String {
+                    return ":features:remote_config:presentation"
+                }
             }
         }
 
@@ -278,9 +420,11 @@ sealed class StarterModules : BaseModule {
             )
         }
 
-        @Serializable
-        data object Bindings : Starter() {
-            override fun dependencies(): List<StarterModules> = listOf()
+        sealed class Native : Starter() {
+            @Serializable
+            data object Bindings : Native() {
+                override fun dependencies(): List<StarterModules> = listOf()
+            }
         }
 
         @Serializable
@@ -311,7 +455,7 @@ sealed class StarterModules : BaseModule {
         @Serializable
         data object Utils : Starter() {
             override fun dependencies(): List<StarterModules> = listOf(
-                Bindings,
+                Native.Bindings,
             )
         }
     }

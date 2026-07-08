@@ -96,6 +96,10 @@ material = "1.14.0"
 ios-mixpanel-swift = "5.2.0"
 kotlin-wrappers = "2026.6.0"
 browser = "1.10.0"
+
+
+starter="0.4.6"
+
 [libraries]
 androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
 # ios deps using spm-for-kmp Plugin
@@ -208,6 +212,34 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 wrappers-browser = { module = "org.jetbrains.kotlin-wrappers:kotlin-browser", version.ref = "kotlin-wrappers" }
 
+
+
+# STARTER LIBRARIES
+# Starter
+starter-core = { module = "io.github.devatrii:starter-core", version.ref = "starter" }
+starter-utils = { module = "io.github.devatrii:starter-utils", version.ref = "starter" }
+starter-native-bindings = { module = "io.github.devatrii:starter-native-bindings", version.ref = "starter" }
+starter-ui-utils = { module = "io.github.devatrii:starter-ui-utils", version.ref = "starter" }
+starter-ui-components = { module = "io.github.devatrii:starter-ui-components", version.ref = "starter" }
+starter-ui-layouts = { module = "io.github.devatrii:starter-ui-layouts", version.ref = "starter" }
+
+# Features
+starter-feature-navigation = { module = "io.github.devatrii:feature-navigation", version.ref = "starter" }
+starter-feature-analytics-data = { module = "io.github.devatrii:feature-analytics-data", version.ref = "starter" }
+starter-feature-analytics-domain = { module = "io.github.devatrii:feature-analytics-domain", version.ref = "starter" }
+starter-feature-core-data = { module = "io.github.devatrii:feature-core-data", version.ref = "starter" }
+starter-feature-core-domain = { module = "io.github.devatrii:feature-core-domain", version.ref = "starter" }
+starter-feature-core-presentation = { module = "io.github.devatrii:feature-core-presentation", version.ref = "starter" }
+starter-feature-locale = { module = "io.github.devatrii:feature-locale", version.ref = "starter" }
+starter-feature-remoteConfig-data = { module = "io.github.devatrii:feature-remote-config-data", version.ref = "starter" }
+starter-feature-remoteConfig-domain = { module = "io.github.devatrii:feature-remote-config-domain", version.ref = "starter" }
+starter-feature-remoteConfig-presentation = { module = "io.github.devatrii:feature-remote-config-presentation", version.ref = "starter" }
+starter-feature-purchases-data = { module = "io.github.devatrii:feature-purchases-data", version.ref = "starter" }
+starter-feature-purchases-domain = { module = "io.github.devatrii:feature-purchases-domain", version.ref = "starter" }
+starter-feature-purchases-presentation = { module = "io.github.devatrii:feature-purchases-presentation", version.ref = "starter" }
+starter-feature-notifications-core = { module = "io.github.devatrii:feature-notifications-core", version.ref = "starter" }
+starter-feature-notifications-local = { module = "io.github.devatrii:feature-notifications-local", version.ref = "starter" }
+starter-feature-notifications-push = { module = "io.github.devatrii:feature-notifications-push", version.ref = "starter" }
 
 
 [plugins]

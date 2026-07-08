@@ -20,6 +20,9 @@ import com.kmpstarter.generator_data.impl.FileManagerImpl
 import com.kmpstarter.generator_data.impl.LocalSourceCodeProvider
 import com.kmpstarter.generator_data.interfaces.StarterProjectFileManager
 import com.kmpstarter.generator_data.interfaces.StarterProjectSourceCodeProvider
+import com.kmpstarter.generator_domain.ProjectMode
+import com.kmpstarter.generator_domain.StarterModules
+import com.kmpstarter.generator_domain.StarterProject
 import com.kmpstarter.generator_domain.StarterProjectsRepository
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.factoryOf
@@ -37,10 +40,54 @@ suspend fun main() {
     startKoin {
         modules(generatorDiModule)
     }
+    val repo: StarterProjectsRepository = KoinPlatform.getKoin().get()
     val fileManager: StarterProjectFileManager = KoinPlatform.getKoin().get()
-    val sourceCodeProvider: StarterProjectSourceCodeProvider = KoinPlatform.getKoin().get()
-    val code = sourceCodeProvider.getSourceCode().getOrThrow()
-    println("code=$code")
-    println("Directory===")
-    println(fileManager.getCurrentDir())
+    fileManager.delete(path = "${fileManager.getCurrentDir()}/.starter/generate-code")
+    val project = StarterProject(
+        projectName = "Notes",
+        packageName = "com.atrii.notes",
+        mode = ProjectMode.LIB,
+        featureName = "notes",
+        includeWorkflows = true,
+        modules = StarterModules.all() - StarterModules.Features.Database
+    )
+
+    println("filePaths ${StarterModules.Features.RemoteConfig.Data.moduleFilePath()}, ${StarterModules.Features.Core.Data.moduleFilePath()}")
+
+    repo.generate(
+        project = project
+    ).onSuccess { zipBytes ->
+        println("Got Source Code: ${zipBytes.size}")
+        val path = "${fileManager.getCurrentDir()}/.starter/generate-code.zip"
+        fileManager.writeFile(
+            path = path,
+            content = zipBytes
+        )
+        fileManager.extractZip(
+            path = path,
+            output = "${fileManager.getCurrentDir()}/.starter/generate-code"
+        )
+    }.onFailure { err ->
+        err.printStackTrace()
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

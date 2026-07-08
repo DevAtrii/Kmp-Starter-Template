@@ -42,6 +42,9 @@ class KmpLibraryPublishPlugin : Plugin<Project> {
         val groupId = "io.github.devatrii"
         val artifactId = mavenArtifactId(path)
 
+//        target.group = groupId
+//        target.version = libVersion
+
         target.plugins.apply("com.vanniktech.maven.publish")
 
         val publishToCentral =
