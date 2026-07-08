@@ -13,10 +13,10 @@
  *
  */
 
-package com.kmpstarter
+package com.kmpstarterapp
 
 import androidx.compose.ui.window.ComposeUIViewController
-import com.kmpstarter.core.initKmpApp
+import com.kmpstarterapp.core.initKmpApp
 
 
 fun mainViewController() = ComposeUIViewController(

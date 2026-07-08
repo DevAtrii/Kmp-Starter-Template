@@ -13,12 +13,12 @@
  *
  */
 
-package com.kmpstarter.core.di
+package com.kmpstarterapp.core.di
 
-import com.kmpstarter.core.KmpAppInitializer
+import com.kmpstarterapp.core.KmpAppInitializer
 import com.kmpstarter.core.datastore.di.dataStoreModule
 import com.kmpstarter.core.events.di.eventsModule
-import com.kmpstarter.core.navigation.appNavigationModule
+import com.kmpstarterapp.core.navigation.appNavigationModule
 import com.kmpstarter.feature_analytics_data.di.analyticsDataModule
 import com.kmpstarter.feature_core_data.di.coreDataModule
 import com.kmpstarter.feature_core_domain.di.coreDomainModule

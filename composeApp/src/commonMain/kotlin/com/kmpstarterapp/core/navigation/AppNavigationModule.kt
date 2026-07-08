@@ -13,10 +13,10 @@
  *
  */
 
-package com.kmpstarter.core.navigation
+package com.kmpstarterapp.core.navigation
 
 import androidx.compose.runtime.rememberCoroutineScope
-import com.kmpstarter.core.ui.screens.WelcomeScreen
+import com.kmpstarterapp.core.ui.screens.WelcomeScreen
 import com.kmpstarter.feature_analytics_domain.EventsTracker
 import com.kmpstarter.feature_core_domain.AppEvents
 import com.kmpstarter.feature_core_presentation.screens.OnboardingV1Screen

@@ -13,7 +13,7 @@
  *
  */
 
-package com.kmpstarter.core
+package com.kmpstarterapp.core
 
 import com.kmpstarter.core.platform.Platform
 import com.kmpstarter.core.platform.platform

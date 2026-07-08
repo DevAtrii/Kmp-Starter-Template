@@ -13,7 +13,7 @@
  *
  */
 
-package com.kmpstarter.core.navigation
+package com.kmpstarterapp.core.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountTree

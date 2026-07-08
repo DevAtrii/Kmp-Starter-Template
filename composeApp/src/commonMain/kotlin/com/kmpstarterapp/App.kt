@@ -13,7 +13,7 @@
  *
  */
 
-package com.kmpstarter
+package com.kmpstarterapp
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,10 +32,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation3.runtime.NavKey
-import com.kmpstarter.core.KmpAppInitializer
+import com.kmpstarterapp.core.KmpAppInitializer
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
-import com.kmpstarter.core.navigation.AppScreens
+import com.kmpstarterapp.core.navigation.AppScreens
 import com.kmpstarter.feature_locale.LocaleProvider
 import com.kmpstarter.feature_locale.StarterLocale
 import com.kmpstarter.feature_locale.StarterLocales
@@ -44,7 +44,7 @@ import com.kmpstarter.feature_resources.Res
 import com.kmpstarter.feature_resources.lang_es
 import com.kmpstarter.feature_resources.lang_hi
 import com.kmpstarter.feature_resources.lang_ur
-import com.kmpstarter.theme.ApplicationTheme
+import com.kmpstarterapp.theme.ApplicationTheme
 import com.kmpstarter.ui_utils.composition_locals.LocalThemeMode
 import com.kmpstarter.ui_utils.side_effects.LaunchOnce
 import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents

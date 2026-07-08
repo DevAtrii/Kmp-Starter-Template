@@ -13,7 +13,7 @@
  *
  */
 
-package com.kmpstarter.theme
+package com.kmpstarterapp.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable

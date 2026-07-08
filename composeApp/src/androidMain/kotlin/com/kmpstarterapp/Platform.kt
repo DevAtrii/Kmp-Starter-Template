@@ -13,6 +13,6 @@
  *
  */
 
-package com.kmpstarter
+package com.kmpstarterapp
 
 // android

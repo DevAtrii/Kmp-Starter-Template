@@ -13,7 +13,7 @@
  *
  */
 
-package com.kmpstarter.core.navigation
+package com.kmpstarterapp.core.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable

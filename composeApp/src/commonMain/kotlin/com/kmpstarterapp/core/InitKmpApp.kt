@@ -13,9 +13,9 @@
  *
  */
 
-package com.kmpstarter.core
+package com.kmpstarterapp.core
 
-import com.kmpstarter.core.di.initKoin
+import com.kmpstarterapp.core.di.initKoin
 import com.kmpstarter.core.platform.platform
 import com.kmpstarter.feature_analytics_data.initAnalytics
 import com.kmpstarter.feature_purchases_data.initRevenueCat

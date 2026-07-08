@@ -13,7 +13,7 @@
  *
  */
 
-package com.kmpstarter.core
+package com.kmpstarterapp.core
 
 import androidx.compose.runtime.Stable
 import com.kmpstarter.feature_purchases_domain.logics.PurchasesLogics
@@ -103,7 +103,10 @@ internal class KmpAppInitializer(
      * the billing backend (Purchases) or syncing user-specific settings.
      */
     private fun onAuthSessionStarted() {
-        Log.i(TAG, "onAuthSessionStarted: User session detected. Synchronizing auth-related tasks...")
+        Log.i(
+            TAG,
+            "onAuthSessionStarted: User session detected. Synchronizing auth-related tasks..."
+        )
         signInUserToPurchases()
     }
 
@@ -117,10 +120,17 @@ internal class KmpAppInitializer(
             purchasesLogics
                 .getProducts()
                 .onSuccess { products ->
-                    Log.i(TAG, "getProducts: Successfully fetched and cached ${products.size} products.")
+                    Log.i(
+                        TAG,
+                        "getProducts: Successfully fetched and cached ${products.size} products."
+                    )
                 }
                 .onFailure { err ->
-                    Log.e(TAG, "getProducts: Failed to fetch products during startup. Error: ${err.message}", err)
+                    Log.e(
+                        TAG,
+                        "getProducts: Failed to fetch products during startup. Error: ${err.message}",
+                        err
+                    )
                 }
         }
     }
