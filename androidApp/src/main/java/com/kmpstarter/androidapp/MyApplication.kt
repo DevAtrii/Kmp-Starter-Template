@@ -16,7 +16,7 @@
 package com.kmpstarter.androidapp
 
 import android.app.Application
-import com.kmpstarter.core.initKmpApp
+import com.kmpstarterapp.core.initKmpApp
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 

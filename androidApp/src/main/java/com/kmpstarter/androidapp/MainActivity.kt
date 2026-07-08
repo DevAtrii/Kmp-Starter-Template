@@ -26,11 +26,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.kmpstarter.App
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.enums.ThemeMode
 import com.kmpstarter.ui_utils.providers.ProvideActivityScope
 import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
+import com.kmpstarterapp.App
 import org.koin.compose.koinInject
 
 class MainActivity : ComponentActivity() {
