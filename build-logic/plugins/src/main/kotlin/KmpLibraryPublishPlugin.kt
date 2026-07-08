@@ -110,10 +110,6 @@ class KmpLibraryPublishPlugin : Plugin<Project> {
                 // analytics
                 ":features:analytics:data",
                 ":features:analytics:domain",
-                // core (reusable library layer; core_app stays local/unpublished)
-                ":features:core:data",
-                ":features:core:domain",
-                ":features:core:presentation",
                 // locale
                 ":features:locale",
                 // remote config
