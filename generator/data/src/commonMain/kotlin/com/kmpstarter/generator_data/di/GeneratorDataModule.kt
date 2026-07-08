@@ -49,7 +49,11 @@ suspend fun main() {
         mode = ProjectMode.LIB,
         featureName = "notes",
         includeWorkflows = true,
-        modules = StarterModules.all() - StarterModules.Features.Database
+        modules = StarterModules.all() - setOf(
+            StarterModules.Features.Database,
+            StarterModules.Features.RemoteConfig.Data,
+            StarterModules.Features.RemoteConfig.Domain,
+        )
     )
 
     println("filePaths ${StarterModules.Features.RemoteConfig.Data.moduleFilePath()}, ${StarterModules.Features.Core.Data.moduleFilePath()}")

@@ -48,9 +48,6 @@ interface StarterProjectsRepository {
         val LIB_MODE_DELETABLE_MODULES = listOf(
             ":features:analytics:data",
             ":features:analytics:domain",
-            ":features:core:data",
-            ":features:core:domain",
-            ":features:core:presentation",
             ":features:locale",
             ":features:navigation",
             ":features:notifications:core",

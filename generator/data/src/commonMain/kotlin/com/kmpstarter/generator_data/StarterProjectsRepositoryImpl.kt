@@ -70,7 +70,7 @@ class StarterProjectsRepositoryImpl(
 
         // Step 4
         configureProjectModules(project = project, sourceCode = sourceCode).getOrThrow()
-        configureKoinModules(project = project).getOrThrow()
+        configureGradlePlugins(project = project).getOrThrow()
 
         // Step 5
         configureYourFeature(project = project).getOrThrow()
@@ -133,13 +133,57 @@ class StarterProjectsRepositoryImpl(
 
         }
 
-    /**remove unused KOIN modules inisde initKoin.kt**/
-    private suspend fun configureKoinModules(project: StarterProject): Result<Unit> = runCatching {
-        return@runCatching
-//        val initKoinPath =
-//            "$currentWorkingDir/composeApp/src/commonMain/kotlin/com/kmpstarterapp/core/di/InitKoin.kt"
-//        val content = fileManager.getFileAs(initKoinPath).getOrThrow()
-    }
+    /**remove plugins when not needed like google-services etc**/
+    private suspend fun configureGradlePlugins(project: StarterProject): Result<Unit> =
+        runCatching {
+
+            // removing google-services plugin
+            configureRemoteConfigForPlugins(project = project).getOrThrow()
+
+
+            // later add more plugins logic
+        }
+
+    private suspend fun configureRemoteConfigForPlugins(project: StarterProject): Result<Unit> =
+        runCatching {
+            if (StarterModules.Features.RemoteConfig.Data in project.modules)
+                return@runCatching
+
+            val content = fileManager.getFileAs(
+                path = "$currentWorkingDir/androidApp/build.gradle.kts"
+            ).getOrThrow()
+            val updated = content.replace(
+                "alias(libs.plugins.google.services)",
+                ""
+            )
+            fileManager.writeFile(
+                path = "$currentWorkingDir/androidApp/build.gradle.kts",
+                content = updated.encodeToByteArray()
+            ).getOrThrow()
+
+            if (StarterModules.Features.RemoteConfig.Domain in project.modules)
+                return@runCatching
+
+            // remote config doesn't exist even remove initialization code
+            val initKmpPath = "$currentWorkingDir/composeApp/src/commonMain/kotlin/com/kmpstarterapp/core/InitKmpApp.kt"
+            val initKmpContent = fileManager.getFileAs(path = initKmpPath).getOrThrow()
+            val updatedInitKmpContent = initKmpContent
+                .replace(
+                    Regex(
+                        """private\s+fun\s+initRemoteConfig\(\)\s*\{\s*CoroutineScope\(Dispatchers\.IO\)\.launch\s*\{[\s\S]*?^\s*}\s*^\s*}""",
+                        setOf(RegexOption.MULTILINE)
+                    ),
+                    ""
+                )
+                .replace(
+                    Regex("""^\s*initRemoteConfig\(\)\s*$""", setOf(RegexOption.MULTILINE)),
+                    ""
+                )
+            fileManager.writeFile(
+                path = initKmpPath,
+                content=updatedInitKmpContent.encodeToByteArray()
+            ).getOrThrow()
+        }
 
     /**
      *  Step 5: rename your-feature inside:
@@ -370,7 +414,16 @@ class StarterProjectsRepositoryImpl(
                         line
                     }
 
-                    else -> line
+                    else -> {
+                        // gradle files etc
+                        val fromPackage = if (line.contains("${DEFAULT_PACKAGE_NAME}app")) {
+                            "${DEFAULT_PACKAGE_NAME}app"
+                        } else {
+                            DEFAULT_PACKAGE_NAME
+                        }
+
+                        line.replace(fromPackage, project.packageName)
+                    }
                 }
 
             }
@@ -390,7 +443,7 @@ class StarterProjectsRepositoryImpl(
                 dir.endsWith(oldPath) || dir.endsWith(oldPath + "app") // kmpstarterapp
             }
             .forEach { packageDir ->
-                val suffix = if (packageDir.endsWith("app")) oldPath+"app" else oldPath
+                val suffix = if (packageDir.endsWith("app")) oldPath + "app" else oldPath
                 val sourceRoot = packageDir.removeSuffix(suffix)
                 val newPackageDir = sourceRoot + newPath
                 if (suffix == "app" && !packageDir.contains("__MACOSX"))
