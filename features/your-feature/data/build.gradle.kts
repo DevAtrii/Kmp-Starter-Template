@@ -57,7 +57,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                implementation(projects.features.coreApp.data)
+                implementation(projects.features.core.data)
                 api(projects.features.yourFeature.domain)
                 // add more deps
             }

@@ -57,7 +57,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 implementation(projects.starter.core)
-                api(projects.features.coreApp.domain)
+                api(projects.features.core.domain)
             }
         }
 

@@ -124,11 +124,6 @@ sealed class StarterModules : BaseModule {
             Features.Analytics.Data,
             Features.Analytics.Domain,
 
-            // Core App
-            Features.CoreApp.Data,
-            Features.CoreApp.Domain,
-            Features.CoreApp.Presentation,
-
             // Core
             Features.Core.Data,
             Features.Core.Domain,
@@ -206,94 +201,7 @@ sealed class StarterModules : BaseModule {
             }
         }
 
-        @Serializable
-        sealed class CoreApp : Features() {
-            data object Data : CoreApp() {
-                override val packageName: String = "com.kmpstarter.feature_core_app_data"
 
-                override fun koinModules(): List<String> {
-                    return super.koinModules()
-                }
-
-                override fun dependencies(): List<StarterModules> = listOf(
-                    Starter.Core,
-                    Domain,
-                    Core.Domain,
-                )
-
-
-                override fun moduleFilePath(): String {
-                    return "features/core_app/data"
-                }
-
-                override fun moduleGradleDep(mode: ProjectMode): String {
-                    if (mode == ProjectMode.LIB) throw ModuleOnlyException()
-
-                    return "projects.features.coreApp.data"
-                }
-
-                override fun moduleGradlePath(): String {
-                    return ":features:core_app:data"
-                }
-            }
-
-            data object Domain : CoreApp() {
-                override val packageName: String = "com.kmpstarter.feature_core_app_domain"
-
-                override fun koinModules(): List<String> {
-                    return super.koinModules()
-                }
-
-                override fun dependencies(): List<StarterModules> = listOf(
-                    Analytics.Domain,
-                )
-
-                override fun moduleFilePath(): String {
-                    return "features/core_app/domain"
-                }
-
-                override fun moduleGradleDep(mode: ProjectMode): String {
-                    if (mode == ProjectMode.LIB) throw ModuleOnlyException()
-
-                    return "projects.features.coreApp.domain"
-                }
-
-                override fun moduleGradlePath(): String {
-                    return ":features:core_app:domain"
-                }
-            }
-
-            data object Presentation : CoreApp() {
-                override val packageName: String = "com.kmpstarter.feature_core_app_presentation"
-
-                override fun koinModules(): List<String> {
-                    return super.koinModules()
-                }
-
-                override fun dependencies(): List<StarterModules> = listOf(
-                    Analytics.Domain,
-                    Resources,
-                    Domain,
-                    Core.Domain,
-                    Starter.Ui.Layouts
-                )
-
-                override fun moduleFilePath(): String {
-                    return "features/core_app/presentation"
-                }
-
-                override fun moduleGradleDep(mode: ProjectMode): String {
-                    if (mode == ProjectMode.LIB) throw ModuleOnlyException()
-
-                    return "projects.features.coreApp.presentation"
-                }
-
-                override fun moduleGradlePath(): String {
-                    return ":features:core_app:presentation"
-                }
-            }
-
-        }
 
         @Serializable
         sealed class Core : Features() {

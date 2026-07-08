@@ -72,9 +72,9 @@ interface StarterProjectsRepository {
 
         /**Modules that aren't published on maven but can be added to project regardless of ProjectMode**/
         val LOCAL_MODULES = listOf(
-            ":features:core_app:data",
-            ":features:core_app:domain",
-            ":features:core_app:presentation",
+            ":features:core:data",
+            ":features:core:domain",
+            ":features:core:presentation",
             ":features:database",
             ":features:resources",
         )
