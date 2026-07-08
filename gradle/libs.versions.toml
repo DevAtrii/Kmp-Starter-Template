@@ -12,7 +12,7 @@ app-version-patch = "0"
 # starter libs versions
 lib-version-major = "0"
 lib-version-minor = "4"
-lib-version-patch = "6"
+lib-version-patch = "7"
 # Maven publish (starter libraries → Central / .starter-libs)
 vanniktech-maven-publish = "0.36.0"
 
@@ -98,7 +98,7 @@ kotlin-wrappers = "2026.6.0"
 browser = "1.10.0"
 
 
-starter="0.4.6"
+starter="0.4.7"
 
 [libraries]
 androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }

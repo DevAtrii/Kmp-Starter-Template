@@ -110,10 +110,10 @@ class KmpLibraryPublishPlugin : Plugin<Project> {
                 // analytics
                 ":features:analytics:data",
                 ":features:analytics:domain",
-                // core (app layer — onboarding, splash, shared domain/data)
-                ":features:core_app:data",
-                ":features:core_app:domain",
-                ":features:core_app:presentation",
+                // core (reusable library layer; core_app stays local/unpublished)
+                ":features:core:data",
+                ":features:core:domain",
+                ":features:core:presentation",
                 // locale
                 ":features:locale",
                 // remote config
@@ -145,9 +145,9 @@ class KmpLibraryPublishPlugin : Plugin<Project> {
                 ":features:analytics:data" -> "feature-analytics-data"
                 ":features:analytics:domain" -> "feature-analytics-domain"
                 // core
-                ":features:core_app:data" -> "feature-core-data"
-                ":features:core_app:domain" -> "feature-core-domain"
-                ":features:core_app:presentation" -> "feature-core-presentation"
+                ":features:core:data" -> "feature-core-data"
+                ":features:core:domain" -> "feature-core-domain"
+                ":features:core:presentation" -> "feature-core-presentation"
                 // locale
                 ":features:locale" -> "feature-locale"
                 // remote config

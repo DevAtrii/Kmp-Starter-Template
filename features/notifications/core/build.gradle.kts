@@ -59,7 +59,6 @@ kotlin {
 
                 implementation(libs.alarmee.local)
                 implementation(projects.starter.core)
-                implementation(projects.features.resources)
             }
         }
 
