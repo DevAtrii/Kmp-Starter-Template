@@ -65,7 +65,7 @@ suspend fun main() {
         )
         fileManager.extractZip(
             path = path,
-            output = "${fileManager.getCurrentDir()}/.starter/generate-code"
+            output = "${fileManager.getCurrentDir()}/.starter/code"
         )
     }.onFailure { err ->
         err.printStackTrace()

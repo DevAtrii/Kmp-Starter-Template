@@ -70,6 +70,7 @@ class StarterProjectsRepositoryImpl(
 
         // Step 4
         configureProjectModules(project = project, sourceCode = sourceCode).getOrThrow()
+        configureKoinModules(project = project).getOrThrow()
 
         // Step 5
         configureYourFeature(project = project).getOrThrow()
@@ -129,7 +130,15 @@ class StarterProjectsRepositoryImpl(
                 path = "$currentWorkingDir/$STARTER_JSON_FILE",
                 content = jsonStr.encodeToByteArray()
             ).getOrThrow()
+
         }
+
+    /**remove unused KOIN modules inisde initKoin.kt**/
+    private suspend fun configureKoinModules(project: StarterProject): Result<Unit> = runCatching {
+        val initKoinPath =
+            "$currentWorkingDir/composeApp/src/commonMain/kotlin/com/kmpstarter/core/di/InitKoin.kt"
+        val content = fileManager.getFileAs(initKoinPath).getOrThrow()
+    }
 
     /**
      *  Step 5: rename your-feature inside:
@@ -199,9 +208,13 @@ class StarterProjectsRepositoryImpl(
             ).getOrThrow()
 
             // rename file names
+            val toFileName = filePath.split("/").last().replace(
+                "FeatureYour",
+                "Feature${project.getFeatureNameAsPascalCasing()}"
+            )
             fileManager.rename(
                 path = filePath,
-                to = "Feature${project.getFeatureNameAsPascalCasing()}Module.kt"
+                to = toFileName
             ).getOrThrow()
 
 
@@ -274,6 +287,26 @@ class StarterProjectsRepositoryImpl(
                 to = project.featureName!!.replace("-", "_").lowercase()
             ).getOrThrow()
         }
+
+        // update composeApp/build.gradle.kts
+
+        val composeAppGradlePath = "$currentWorkingDir/composeApp/build.gradle.kts"
+        val composeAppGradleContent = fileManager.getFileAs(composeAppGradlePath).getOrThrow()
+        val yourFeatureDeps = buildString {
+            appendLine("implementation(projects.features.${project.featureName}.data)")
+            appendLine("implementation(projects.features.${project.featureName}.domain)")
+            appendLine("implementation(projects.features.${project.featureName}.presentation)")
+        }
+        val updatedComposeAppGradleContent = buildString {
+            val parts = composeAppGradleContent.split("// External Libraries")
+            append(parts[0])
+            append(yourFeatureDeps)
+            append(parts[1])
+        }
+        fileManager.writeFile(
+            path = composeAppGradlePath,
+            content = updatedComposeAppGradleContent.encodeToByteArray()
+        ).getOrThrow()
     }
 
     private suspend fun configurePackageName(project: StarterProject): Result<Unit> = runCatching {
@@ -299,12 +332,39 @@ class StarterProjectsRepositoryImpl(
                 isSource && !isTooling
             }
 
+        val localModules = StarterModules.all().filter {
+            it.moduleGradlePath() in LOCAL_MODULES
+        }
+        val nonLocalModulesPackageName = StarterModules.all().filter {
+            it.moduleGradlePath() !in LOCAL_MODULES
+        }.map {
+            it.packageName
+        }
+
         allFiles.forEach { codeFile ->
             val fileContent = fileManager.getFileAs(path = codeFile).getOrThrow()
-            val updated = fileContent.replace(
-                DEFAULT_PACKAGE_NAME,
-                project.packageName
-            )
+            val updated = fileContent.split("\n").joinToString("\n") { line ->
+
+                when {
+                    line.startsWith("package ") -> line.replace(
+                        DEFAULT_PACKAGE_NAME,
+                        project.packageName
+                    )
+
+                    line.startsWith("import ") -> {
+                        nonLocalModulesPackageName.find {
+                            line.startsWith("import $it")
+                        } ?: return@joinToString line.replace(
+                            DEFAULT_PACKAGE_NAME,
+                            project.packageName
+                        )
+                        line
+                    }
+
+                    else -> line
+                }
+
+            }
             fileManager.writeFile(
                 path = codeFile,
                 content = updated.encodeToByteArray()
@@ -355,7 +415,6 @@ class StarterProjectsRepositoryImpl(
         project: StarterProject,
         sourceCode: SourceCode,
     ): Result<Unit> = runCatching {
-        // replace starter version inside libs.versions.toml
         if (project.mode == ProjectMode.LIB) {
             // delete extra modules dirs
             val moduleDirs = LIB_MODE_DELETABLE_MODULES.map {
@@ -431,7 +490,6 @@ class StarterProjectsRepositoryImpl(
             // updating other modules build gradle to add modules as library
             val ignoredBuildGradleFiles = setOf(
                 "composeApp/build.gradle.kts",
-                "androidApp/build.gradle.kts",
                 "build-logic/build.gradle.kts",
                 "build-logic/plugins/build.gradle.kts",
                 "build.gradle.kts",

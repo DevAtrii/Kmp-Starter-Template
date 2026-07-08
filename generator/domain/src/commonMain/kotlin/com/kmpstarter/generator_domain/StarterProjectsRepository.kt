@@ -32,6 +32,7 @@ interface StarterProjectsRepository {
             "docs",
             "generator",
             "site",
+            ".git"
         )
         val TOOLING_SOURCE_CODE_FILES = listOf(
             "zensical.toml",

@@ -81,6 +81,9 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 
-    implementation(projects.composeApp)
     implementation(libs.accompanist.system.ui.controller)
+
+    implementation(projects.composeApp)
+    implementation(projects.starter.core)
+    implementation(projects.starter.ui.utils)
 }
