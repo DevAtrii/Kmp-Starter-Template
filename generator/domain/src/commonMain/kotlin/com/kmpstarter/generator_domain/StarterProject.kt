@@ -209,7 +209,7 @@ sealed class StarterModules : BaseModule {
         @Serializable
         sealed class CoreApp : Features() {
             data object Data : CoreApp() {
-                override val packageName: String = "com.kmpstarter.feature_core_data"
+                override val packageName: String = "com.kmpstarter.feature_core_app_data"
 
                 override fun koinModules(): List<String> {
                     return super.koinModules()
@@ -238,7 +238,7 @@ sealed class StarterModules : BaseModule {
             }
 
             data object Domain : CoreApp() {
-                override val packageName: String = "com.kmpstarter.feature_core_domain"
+                override val packageName: String = "com.kmpstarter.feature_core_app_domain"
 
                 override fun koinModules(): List<String> {
                     return super.koinModules()
@@ -264,7 +264,7 @@ sealed class StarterModules : BaseModule {
             }
 
             data object Presentation : CoreApp() {
-                override val packageName: String = "com.kmpstarter.feature_core_presentation"
+                override val packageName: String = "com.kmpstarter.feature_core_app_presentation"
 
                 override fun koinModules(): List<String> {
                     return super.koinModules()

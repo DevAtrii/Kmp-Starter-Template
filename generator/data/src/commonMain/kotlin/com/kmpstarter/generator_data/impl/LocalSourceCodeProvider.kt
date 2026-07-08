@@ -24,7 +24,7 @@ class LocalSourceCodeProvider(
 ) : StarterProjectSourceCodeProvider {
     override suspend fun getSourceCode(): Result<SourceCode> = runCatching {
         val arr = fileManager.getFile(
-            fileManager.getCurrentDir() + "/temp-inmem-code.zip"
+            fileManager.getCurrentDir() + "/Archive.zip"
         ).getOrThrow()
 
         SourceCode(

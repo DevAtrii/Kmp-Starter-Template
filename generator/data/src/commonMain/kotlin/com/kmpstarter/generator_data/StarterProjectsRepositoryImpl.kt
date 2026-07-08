@@ -111,7 +111,7 @@ class StarterProjectsRepositoryImpl(
          * Step 9: zip everything inside `workingDir`, return as byteArr & delete everything inside `workingDir`
          * */
     }.onFailure { _ ->
-        fileManager.delete(path = currentWorkingDir).getOrThrow()
+        //fileManager.delete(path = currentWorkingDir).getOrThrow()
     }
 
 
@@ -135,9 +135,10 @@ class StarterProjectsRepositoryImpl(
 
     /**remove unused KOIN modules inisde initKoin.kt**/
     private suspend fun configureKoinModules(project: StarterProject): Result<Unit> = runCatching {
-        val initKoinPath =
-            "$currentWorkingDir/composeApp/src/commonMain/kotlin/com/kmpstarter/core/di/InitKoin.kt"
-        val content = fileManager.getFileAs(initKoinPath).getOrThrow()
+        return@runCatching
+//        val initKoinPath =
+//            "$currentWorkingDir/composeApp/src/commonMain/kotlin/com/kmpstarterapp/core/di/InitKoin.kt"
+//        val content = fileManager.getFileAs(initKoinPath).getOrThrow()
     }
 
     /**
@@ -223,7 +224,7 @@ class StarterProjectsRepositoryImpl(
         // replacing package name inside sourceFiles
         listOf(
             "$currentWorkingDir/features/your-feature",
-            "$currentWorkingDir/composeApp/src/commonMain/kotlin/com/kmpstarter/core/di"
+            "$currentWorkingDir/composeApp/src/commonMain/kotlin/com/kmpstarterapp/core/di"
         ).forEach { path ->
             fileManager.getFilesRecursively(
                 path = path
@@ -265,7 +266,7 @@ class StarterProjectsRepositoryImpl(
         }
         // fix KOIN modules import inside composeApp/di
         val initKtFilePath =
-            "${currentWorkingDir}/composeApp/src/commonMain/kotlin/com/kmpstarter/core/di/InitKoin.kt"
+            "${currentWorkingDir}/composeApp/src/commonMain/kotlin/com/kmpstarterapp/core/di/InitKoin.kt"
         val initKtContent = fileManager.getFileAs(path = initKtFilePath).getOrThrow()
         val updated = initKtContent.replace(
             "featureYour",
@@ -313,7 +314,7 @@ class StarterProjectsRepositoryImpl(
         /** replace package name across project including:
          *      - builds.gradle.kts files
          *      - source files
-         *      - sourceSet folders like composeApp/src/commonMain/kotlin/com/kmpstarter/ -> com/your/packageName etc
+         *      - sourceSet folders like composeApp/src/commonMain/kotlin/com/kmpstarterapp/ -> com/your/packageName etc
          *          - keep in mind the depth of source folders
          * */
         if (project.packageName == DEFAULT_PACKAGE_NAME)
@@ -332,9 +333,7 @@ class StarterProjectsRepositoryImpl(
                 isSource && !isTooling
             }
 
-        val localModules = StarterModules.all().filter {
-            it.moduleGradlePath() in LOCAL_MODULES
-        }
+
         val nonLocalModulesPackageName = StarterModules.all().filter {
             it.moduleGradlePath() !in LOCAL_MODULES
         }.map {
@@ -346,18 +345,28 @@ class StarterProjectsRepositoryImpl(
             val updated = fileContent.split("\n").joinToString("\n") { line ->
 
                 when {
-                    line.startsWith("package ") -> line.replace(
-                        DEFAULT_PACKAGE_NAME,
-                        project.packageName
-                    )
+                    line.startsWith("package ") -> {
+                        val fromPackage = if (line.contains("${DEFAULT_PACKAGE_NAME}app")) {
+                            "${DEFAULT_PACKAGE_NAME}app"
+                        } else {
+                            DEFAULT_PACKAGE_NAME
+                        }
+
+                        line.replace(fromPackage, project.packageName)
+                    }
 
                     line.startsWith("import ") -> {
                         nonLocalModulesPackageName.find {
                             line.startsWith("import $it")
-                        } ?: return@joinToString line.replace(
-                            DEFAULT_PACKAGE_NAME,
-                            project.packageName
-                        )
+                        } ?: return@joinToString line.let {
+                            val fromPackage = if (line.contains("${DEFAULT_PACKAGE_NAME}app")) {
+                                "${DEFAULT_PACKAGE_NAME}app"
+                            } else {
+                                DEFAULT_PACKAGE_NAME
+                            }
+
+                            line.replace(fromPackage, project.packageName)
+                        }
                         line
                     }
 
@@ -378,12 +387,14 @@ class StarterProjectsRepositoryImpl(
 
         fileManager.getDirectoriesRecursively(currentWorkingDir)
             .filter { dir ->
-                dir.endsWith(oldPath)
+                dir.endsWith(oldPath) || dir.endsWith(oldPath + "app") // kmpstarterapp
             }
             .forEach { packageDir ->
-
-                val sourceRoot = packageDir.removeSuffix(oldPath)
+                val suffix = if (packageDir.endsWith("app")) oldPath+"app" else oldPath
+                val sourceRoot = packageDir.removeSuffix(suffix)
                 val newPackageDir = sourceRoot + newPath
+                if (suffix == "app" && !packageDir.contains("__MACOSX"))
+                    println("suffix=$suffix,newPath=$newPath, newPackageDir=$newPackageDir,\nsource=$sourceRoot")
                 fileManager.mkDirs(newPackageDir).getOrThrow()
 
                 fileManager.moveFiles(
