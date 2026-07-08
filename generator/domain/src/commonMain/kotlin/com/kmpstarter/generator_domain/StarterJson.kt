@@ -15,6 +15,9 @@
 
 package com.kmpstarter.generator_domain
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class StarterJson(
     val packageName: String,
     val starterVersion: String,

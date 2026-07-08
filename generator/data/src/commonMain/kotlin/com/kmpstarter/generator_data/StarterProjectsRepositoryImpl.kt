@@ -21,14 +21,18 @@ import com.kmpstarter.generator_data.interfaces.StarterProjectFileManager.Compan
 import com.kmpstarter.generator_data.interfaces.StarterProjectSourceCodeProvider
 import com.kmpstarter.generator_domain.ProjectMode
 import com.kmpstarter.generator_domain.ProjectZip
+import com.kmpstarter.generator_domain.StarterJson
 import com.kmpstarter.generator_domain.StarterModules
 import com.kmpstarter.generator_domain.StarterProject
 import com.kmpstarter.generator_domain.StarterProjectsRepository
+import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.DEFAULT_PACKAGE_NAME
 import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.LIB_MODE_DELETABLE_MODULES
 import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.STARTER_FOLDER
+import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.STARTER_JSON_FILE
 import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.TOOLING_SETTINGS_GRADLE_MODULES
 import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.TOOLING_SOURCE_CODE_FILES
 import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.TOOLING_SOURCE_CODE_FOLDERS
+import kotlinx.serialization.json.Json
 
 class StarterProjectsRepositoryImpl(
     private val fileManager: StarterProjectFileManager,
@@ -37,9 +41,13 @@ class StarterProjectsRepositoryImpl(
     /** This directory will be used temporary for creating project
      * for example workingDir could be `/Users/ahmed/Coding/note-app/.starter/generation`
      * this should be used inside `generate` function**/
-    private val workingDir = fileManager.getCurrentDir() + ".starter/generation"
+    private val workingDir = fileManager.getCurrentDir() + "/.starter/generation"
 
-    override suspend fun generate(project: StarterProject): Result<ProjectZip> {
+    override suspend fun generate(project: StarterProject): Result<ProjectZip> = runCatching {
+        // PreGeneration delete workingDir
+        fileManager.delete(path = workingDir).getOrThrow()
+
+
         // Step 0: Getting SourceCode
         val sourceCode = sourceCodeProvider.getSourceCode().getOrThrow()
         val sourceCodeZipBytes = sourceCode.content
@@ -71,7 +79,13 @@ class StarterProjectsRepositoryImpl(
         // Step 8
         createStarterJson(project = project, sourceCode = sourceCode).getOrThrow()
 
-        // todo zip everything inside workingDir & return as byte array
+        val result = fileManager.createZip(
+            path = workingDir
+        ).getOrThrow()
+
+        fileManager.delete(path = workingDir).getOrThrow()
+        return@runCatching result
+
 
         /**
          * Step 0: Get SourceCodeZip
@@ -94,7 +108,6 @@ class StarterProjectsRepositoryImpl(
          * Step 8: create starter.json to keep track of starter-template version, packageName etc.
          * Step 9: zip everything inside `workingDir`, return as byteArr & delete everything inside `workingDir`
          * */
-        TODO("Not yet implemented")
     }
 
 
@@ -103,7 +116,15 @@ class StarterProjectsRepositoryImpl(
         sourceCode: SourceCode,
     ): Result<Unit> =
         runCatching {
-            TODO("Not yet implemented")
+            val content = StarterJson(
+                packageName = project.packageName,
+                starterVersion = sourceCode.version,
+            )
+            val jsonStr = Json.encodeToString(content)
+            fileManager.writeFile(
+                path = workingDir + STARTER_JSON_FILE,
+                content = jsonStr.encodeToByteArray()
+            ).getOrThrow()
         }
 
     /**
@@ -136,14 +157,6 @@ class StarterProjectsRepositoryImpl(
             project.addModuleInsideSettingsGradleKts(
                 module = module
             )
-        }
-        listOf(
-            "${workingDir}/features/your-feature"
-        ).forEach { dir ->
-            fileManager.rename(
-                path = dir,
-                to = project.featureName!!.replace("-", "_").lowercase()
-            ).getOrThrow()
         }
 
         // rename KOIN modules & file
@@ -185,17 +198,78 @@ class StarterProjectsRepositoryImpl(
             path = initKtFilePath,
             content = updated.encodeToByteArray()
         )
+
+        // renaming module name
+        listOf(
+            "${workingDir}/features/your-feature"
+        ).forEach { dir ->
+            fileManager.rename(
+                path = dir,
+                to = project.featureName!!.replace("-", "_").lowercase()
+            ).getOrThrow()
+        }
     }
 
     private suspend fun configurePackageName(project: StarterProject): Result<Unit> = runCatching {
         /** replace package name across project including:
-         *      - builds.gradle.kts
+         *      - builds.gradle.kts files
          *      - source files
-         *      - source folders like composeApp/src/commonMain/kotlin/com/kmpstarter/ -> com/your/packageName etc
+         *      - sourceSet folders like composeApp/src/commonMain/kotlin/com/kmpstarter/ -> com/your/packageName etc
          *          - keep in mind the depth of source folders
          * */
+        if (project.packageName == DEFAULT_PACKAGE_NAME)
+            return@runCatching
 
-        TODO("Not yet implemented")
+        // rename from source-code files
+        val allFiles = fileManager
+            .getFilesRecursively(path = workingDir)
+            .filter {
+                val isTooling = it.startsWith("$workingDir/$STARTER_FOLDER") ||
+                        it.startsWith("$workingDir/build-logic") ||
+                        it.startsWith("$workingDir/build.gradle.kts") || it.startsWith(
+                    "$workingDir/iosApp"
+                )
+                val isSource = it.endsWith("kt") || it.endsWith("kts")
+                isSource && !isTooling
+            }
+
+        allFiles.forEach { codeFile ->
+            val fileContent = fileManager.getFileAs(path = codeFile).getOrThrow()
+            val updated = fileContent.replace(
+                DEFAULT_PACKAGE_NAME,
+                project.packageName
+            )
+            fileManager.writeFile(
+                path = codeFile,
+                content = updated.encodeToByteArray()
+            ).getOrThrow()
+        }
+
+        // rename source-sets folders
+        val oldPath = DEFAULT_PACKAGE_NAME.replace('.', '/')
+        val newPath = project.packageName.replace('.', '/')
+
+        val moduleRoots = StarterModules.all()
+            .map { "$workingDir/${it.modulePath()}" }
+
+        fileManager.getDirectoriesRecursively(workingDir)
+            .filter { dir ->
+                dir.endsWith(oldPath) && moduleRoots.any { root -> dir.startsWith(root) }
+            }
+            .forEach { packageDir ->
+
+                val sourceRoot = packageDir.removeSuffix(oldPath)
+                val newPackageDir = sourceRoot + newPath
+
+                fileManager.mkDirs(newPackageDir).getOrThrow()
+
+                fileManager.moveFiles(
+                    path = packageDir,
+                    to = newPackageDir
+                ).getOrThrow()
+
+                fileManager.delete(packageDir).getOrThrow()
+            }
     }
 
     private suspend fun configureProjectName(project: StarterProject): Result<Unit> = runCatching {
@@ -227,7 +301,7 @@ class StarterProjectsRepositoryImpl(
             }
 
             moduleDirs.forEach { dir ->
-                val path = workingDir + "/$dir"
+                val path = "$workingDir/$dir"
                 fileManager.delete(path = path).getOrThrow()
             }
 
@@ -243,7 +317,7 @@ class StarterProjectsRepositoryImpl(
                     appendLine("implementation(${module.getGradleDep()})")
                 }
             }
-            val path = workingDir + "/composeApp/build.gradle.kts"
+            val path = "$workingDir/composeApp/build.gradle.kts"
             val buildGradleContent: String = fileManager.getFileAs(path = path).getOrThrow()
 
             val updated = buildGradleContent.replace(
@@ -266,11 +340,12 @@ class StarterProjectsRepositoryImpl(
 
             return@runCatching
         }
+        throw NotImplementedError()
     }
 
     private suspend fun configureGitHubWorkflows(project: StarterProject): Result<Unit> =
         runCatching {
-            val workflowsPath = workingDir + "/.github/workflows"
+            val workflowsPath = "$workingDir/.github/workflows"
             if (!project.includeWorkflows) {
                 fileManager.delete(
                     path = workflowsPath
@@ -280,7 +355,7 @@ class StarterProjectsRepositoryImpl(
 
             val files = fileManager.getFiles(path = workflowsPath)
 
-            files.filter { it.startsWith("publish-") }.forEach { file ->
+            files.filter { it.startsWith("$workflowsPath/publish-") }.forEach { file ->
                 fileManager.delete(
                     path = file
                 ).getOrThrow()

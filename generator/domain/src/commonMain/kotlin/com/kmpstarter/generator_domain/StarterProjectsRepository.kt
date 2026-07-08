@@ -17,13 +17,16 @@ package com.kmpstarter.generator_domain
 
 typealias ProjectZip = ByteArray
 
-private const val DEFAULT_TARGET_MODULE = "composeApp"
-private const val DEFAULT_PACKAGE_NAME = "com.kmpstarter"
+
 
 interface StarterProjectsRepository {
 
     companion object {
+
+        const val DEFAULT_TARGET_MODULE = "composeApp"
+        const val DEFAULT_PACKAGE_NAME = "com.kmpstarter"
         const val STARTER_FOLDER = ".starter"
+        const val STARTER_JSON_FILE = "starter.json"
 
         val TOOLING_SOURCE_CODE_FOLDERS = listOf(
             "docs",

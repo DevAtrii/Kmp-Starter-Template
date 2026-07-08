@@ -34,14 +34,23 @@ interface StarterProjectFileManager {
     fun getCurrentDir(): FolderPath
 
     suspend fun writeFile(path: FilePath, content: ByteArray): Result<Unit>
+
+    /** get all files including subfolders*/
+    suspend fun getFilesRecursively(path: FolderPath): List<FilePath>
     suspend fun mkDirs(path: FolderPath): Result<Unit>
 
+    suspend fun getDirectoriesRecursively(path: FolderPath): List<FolderPath>
+
+    suspend fun moveFiles(path: FolderPath, to: FolderPath): Result<Unit>
+
+    /** returns files with absolute path*/
     suspend fun getFiles(path: FolderPath): List<FilePath>
     suspend fun getFile(path: FilePath): Result<ByteArray>
 
     suspend fun delete(path: Path): Result<Unit>
 
     suspend fun extractZip(path: FilePath, output: FolderPath): Result<Unit>
+    suspend fun createZip(path: Path): Result<ByteArray>
 
     suspend fun rename(path: Path, to: String): Result<Unit>
 

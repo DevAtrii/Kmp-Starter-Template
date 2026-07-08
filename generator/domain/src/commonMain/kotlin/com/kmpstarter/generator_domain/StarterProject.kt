@@ -47,19 +47,30 @@ interface BaseModule {
 
     fun getGradleDep(): String {
         val clazz = this::class
-        val raw = clazz.toString()
-            .replace("class com.kmpstarter.generator_domain.StarterModules$", "")
+        val raw = clazz.qualifiedName!!
+            .replace("com.kmpstarter.generator_domain.StarterModules.", "")
             .lowercase()
         // todo improve this one to handle `remote_config` -> `remoteConfig` scenarios
-        val dep = "projects."+ raw.replace("$",".")
+        val dep = "projects.$raw"
         return dep
+    }
+
+    fun modulePath(): String {
+        val clazz = this::class
+        val path = clazz.qualifiedName!!
+            .replace("com.kmpstarter.generator_domain.StarterModules.", "")
+            .replace(".","/")
+            .lowercase()
+        return path
     }
 }
 
 fun main() {
     val module = StarterModules.Features.Analytics.Data
-    println("MODULE=====")
+    println("\n\n=====MODULE=====")
+    println(module::class.qualifiedName)
     println(module.getGradleDep())
+    println(module.modulePath())
 }
 
 @Serializable

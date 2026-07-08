@@ -17,8 +17,12 @@ package com.kmpstarter.generator_data.interfaces
 
 class SourceCode(
     val version: String,
-    val content: ByteArray
-)
+    val content: ByteArray,
+) {
+    override fun toString(): String {
+        return "SourceCode[version=$version, contentSize=${content.size}]"
+    }
+}
 
 interface StarterProjectSourceCodeProvider {
 
