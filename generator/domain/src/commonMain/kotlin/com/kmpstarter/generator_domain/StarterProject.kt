@@ -50,26 +50,28 @@ interface BaseModule {
     fun dependencies(): List<StarterModules>
 
     fun moduleGradleDep(mode: ProjectMode): String {
-        val clazz = this::class
-        val raw = clazz.qualifiedName!!
+        val segments = this::class.qualifiedName!!
             .replace("com.kmpstarter.generator_domain.StarterModules.", "")
-            .lowercase()
-            .let {
-                if (mode == ProjectMode.LIB) {
-                    it.replace("features", "feature").let { it2 ->
-                        if (it2.startsWith("starter."))
-                            it2.removePrefix("starter.")
-                        else it2
-                    }
-                } else it
+            .split('.')
+
+        val raw = if (mode == ProjectMode.LIB) {
+            segments.joinToString(".") { it.lowercase() }
+                .replace("features", "feature")
+                .let { path ->
+                    if (path.startsWith("starter.")) path.removePrefix("starter.")
+                    else path
+                }
+        } else {
+            segments.joinToString(".") { segment ->
+                segment.replaceFirstChar(Char::lowercaseChar)
             }
+        }
 
         val prefix = when (mode) {
             ProjectMode.MODULE -> "projects"
             ProjectMode.LIB -> "libs.starter"
         }
-        val dep = "$prefix.$raw"
-        return dep
+        return "$prefix.$raw"
     }
 
     fun moduleFilePath(): String {

@@ -355,6 +355,26 @@ class StarterProjectsRepositoryImpl(
         ).getOrThrow()
     }
 
+    private fun replacePackageInLine(
+        line: String,
+        targetPackageName: String,
+        preserveStarterImports: Boolean,
+    ): String {
+        if (preserveStarterImports && line.startsWith("import ")) {
+            val isStarterImport = StarterModules.all()
+                .filter { it.moduleGradlePath() !in LOCAL_MODULES }
+                .any { line.startsWith("import ${it.packageName}") }
+            if (isStarterImport) return line
+        }
+
+        val fromPackage = if (line.contains("${DEFAULT_PACKAGE_NAME}app")) {
+            "${DEFAULT_PACKAGE_NAME}app"
+        } else {
+            DEFAULT_PACKAGE_NAME
+        }
+        return line.replace(fromPackage, targetPackageName)
+    }
+
     private suspend fun configurePackageName(project: StarterProject): Result<Unit> = runCatching {
         /** replace package name across project including:
          *      - builds.gradle.kts files
@@ -364,6 +384,8 @@ class StarterProjectsRepositoryImpl(
          * */
         if (project.packageName == DEFAULT_PACKAGE_NAME)
             return@runCatching
+
+        val preserveStarterImports = project.mode == ProjectMode.LIB
 
         // rename from source-code files
         val allFiles = fileManager
@@ -378,55 +400,14 @@ class StarterProjectsRepositoryImpl(
                 isSource && !isTooling
             }
 
-
-        val nonLocalModulesPackageName = StarterModules.all().filter {
-            it.moduleGradlePath() !in LOCAL_MODULES
-        }.map {
-            it.packageName
-        }
-
         allFiles.forEach { codeFile ->
             val fileContent = fileManager.getFileAs(path = codeFile).getOrThrow()
             val updated = fileContent.split("\n").joinToString("\n") { line ->
-
-                when {
-                    line.startsWith("package ") -> {
-                        val fromPackage = if (line.contains("${DEFAULT_PACKAGE_NAME}app")) {
-                            "${DEFAULT_PACKAGE_NAME}app"
-                        } else {
-                            DEFAULT_PACKAGE_NAME
-                        }
-
-                        line.replace(fromPackage, project.packageName)
-                    }
-
-                    line.startsWith("import ") -> {
-                        nonLocalModulesPackageName.find {
-                            line.startsWith("import $it")
-                        } ?: return@joinToString line.let {
-                            val fromPackage = if (line.contains("${DEFAULT_PACKAGE_NAME}app")) {
-                                "${DEFAULT_PACKAGE_NAME}app"
-                            } else {
-                                DEFAULT_PACKAGE_NAME
-                            }
-
-                            line.replace(fromPackage, project.packageName)
-                        }
-                        line
-                    }
-
-                    else -> {
-                        // gradle files etc
-                        val fromPackage = if (line.contains("${DEFAULT_PACKAGE_NAME}app")) {
-                            "${DEFAULT_PACKAGE_NAME}app"
-                        } else {
-                            DEFAULT_PACKAGE_NAME
-                        }
-
-                        line.replace(fromPackage, project.packageName)
-                    }
-                }
-
+                replacePackageInLine(
+                    line = line,
+                    targetPackageName = project.packageName,
+                    preserveStarterImports = preserveStarterImports,
+                )
             }
             fileManager.writeFile(
                 path = codeFile,
@@ -481,6 +462,17 @@ class StarterProjectsRepositoryImpl(
         sourceCode: SourceCode,
     ): Result<Unit> = runCatching {
         if (project.mode == ProjectMode.LIB) {
+            configureProjectModulesForLibMode(project = project, sourceCode = sourceCode).getOrThrow()
+            return@runCatching
+        }
+
+        configureProjectModulesForModuleMode(project = project).getOrThrow()
+    }
+
+    private suspend fun configureProjectModulesForLibMode(
+        project: StarterProject,
+        sourceCode: SourceCode,
+    ): Result<Unit> = runCatching {
             // delete extra modules dirs
             val moduleDirs = LIB_MODE_DELETABLE_MODULES.map {
                 it.replaceFirst(":", "")
@@ -613,11 +605,195 @@ class StarterProjectsRepositoryImpl(
                 path = libsFilePath,
                 content = updatedLibs.encodeToByteArray()
             )
+    }
 
+    private suspend fun configureProjectModulesForModuleMode(
+        project: StarterProject,
+    ): Result<Unit> = runCatching {
+        val selectedModules = expandSelectedModules(project.modules)
+        val selectedDeps = selectedModules
+            .map { it.moduleGradleDep(ProjectMode.MODULE) }
+            .toSet()
 
-            return@runCatching
+        StarterModules.all().forEach { module ->
+            if (module in selectedModules) return@forEach
+
+            fileManager.delete("$currentWorkingDir/${module.moduleFilePath()}").getOrThrow()
+            removeModuleFromSettingsGradleKts(module = module.moduleGradlePath()).getOrThrow()
         }
-        throw NotImplementedError()
+
+        val composeAppGradlePath = "$currentWorkingDir/composeApp/build.gradle.kts"
+        val composeAppGradleContent = fileManager.getFileAs(composeAppGradlePath).getOrThrow()
+        val updatedComposeApp = composeAppGradleContent.replace(
+            Regex("""(?s)(commonMain\.dependencies\s*\{\s*)(.*?)(\s*// External Libraries)""")
+        ) { match ->
+            buildString {
+                append(match.groupValues[1])
+                append(filterProjectDependencies(match.groupValues[2], selectedDeps))
+                append(match.groupValues[3])
+            }
+        }
+        fileManager.writeFile(
+            path = composeAppGradlePath,
+            content = updatedComposeApp.encodeToByteArray()
+        ).getOrThrow()
+
+        configureKoinModulesForModuleMode(selectedModules).getOrThrow()
+
+        val libsFilePath = "$currentWorkingDir/gradle/libs.versions.toml"
+        val updatedLibs = removeStarterLibrariesFromToml(
+            fileManager.getFileAs(libsFilePath).getOrThrow()
+        )
+        fileManager.writeFile(
+            path = libsFilePath,
+            content = updatedLibs.encodeToByteArray()
+        ).getOrThrow()
+    }
+
+    private fun expandSelectedModules(modules: List<StarterModules>): Set<StarterModules> {
+        val expanded = linkedSetOf<StarterModules>()
+        modules.forEach { module ->
+            collectModulesWithDependencies(module).forEach(expanded::add)
+        }
+        return expanded
+    }
+
+    private fun filterProjectDependencies(
+        dependenciesBlock: String,
+        selectedDeps: Set<String>,
+    ): String =
+        dependenciesBlock.lineSequence()
+            .filter { line ->
+                val projectRef = Regex("""projects\.[\w.]+""").find(line)?.value
+                projectRef == null || projectRef in selectedDeps
+            }
+            .joinToString("\n")
+
+    private fun removeStarterLibrariesFromToml(toml: String): String =
+        toml
+            .replace(Regex("""(?m)^starter\s*=.*\n"""), "")
+            .replace(Regex("""(?s)\n# STARTER LIBRARIES.*?(?=\n\[plugins\])"""), "")
+
+    private suspend fun configureKoinModulesForModuleMode(
+        selectedModules: Set<StarterModules>,
+    ): Result<Unit> = runCatching {
+        val initKoinPath =
+            "$currentWorkingDir/composeApp/src/commonMain/kotlin/com/kmpstarterapp/core/di/InitKoin.kt"
+        var content = fileManager.getFileAs(initKoinPath).getOrThrow()
+
+        KOIN_MODULE_ENTRIES.forEach { entry ->
+            if (entry.starterModule in selectedModules) return@forEach
+
+            content = content.lineSequence()
+                .filterNot { line -> line.trim() == entry.importLine.trim() }
+                .joinToString("\n")
+
+            content = content.replace(
+                Regex("""^\s*${Regex.escape(entry.moduleSymbol)},?\s*$""", RegexOption.MULTILINE),
+                ""
+            )
+        }
+
+        fileManager.writeFile(
+            path = initKoinPath,
+            content = content.encodeToByteArray()
+        ).getOrThrow()
+    }
+
+    private data class KoinModuleEntry(
+        val importLine: String,
+        val moduleSymbol: String,
+        val starterModule: StarterModules,
+    )
+
+    private companion object {
+        val KOIN_MODULE_ENTRIES = listOf(
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.core.datastore.di.dataStoreModule",
+                moduleSymbol = "dataStoreModule",
+                starterModule = StarterModules.Starter.Core,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.core.events.di.eventsModule",
+                moduleSymbol = "eventsModule",
+                starterModule = StarterModules.Starter.Core,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.utils.di.utilsModule",
+                moduleSymbol = "utilsModule",
+                starterModule = StarterModules.Starter.Utils,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.feature_analytics_data.di.analyticsDataModule",
+                moduleSymbol = "analyticsDataModule",
+                starterModule = StarterModules.Features.Analytics.Data,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.feature_core_data.di.coreDataModule",
+                moduleSymbol = "coreDataModule",
+                starterModule = StarterModules.Features.Core.Data,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.feature_core_domain.di.coreDomainModule",
+                moduleSymbol = "coreDomainModule",
+                starterModule = StarterModules.Features.Core.Domain,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.feature_core_presentation.di.corePresentationModule",
+                moduleSymbol = "corePresentationModule",
+                starterModule = StarterModules.Features.Core.Presentation,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.feature_database.di.databaseModule",
+                moduleSymbol = "databaseModule",
+                starterModule = StarterModules.Features.Database,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.feature_notifications_core.notificationsCoreModule",
+                moduleSymbol = "notificationsCoreModule",
+                starterModule = StarterModules.Features.Notifications.Core,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.feature_notifications_local.notificationsLocalModule",
+                moduleSymbol = "notificationsLocalModule",
+                starterModule = StarterModules.Features.Notifications.Local,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.feature_notifications_push.notificationsPushModule",
+                moduleSymbol = "notificationsPushModule",
+                starterModule = StarterModules.Features.Notifications.Push,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.feature_purchases_data.di.purchasesDataModule",
+                moduleSymbol = "purchasesDataModule",
+                starterModule = StarterModules.Features.Purchases.Data,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.feature_purchases_domain.di.purchasesDomainModule",
+                moduleSymbol = "purchasesDomainModule",
+                starterModule = StarterModules.Features.Purchases.Domain,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.feature_purchases_presentation.di.purchasesPresentationModule",
+                moduleSymbol = "purchasesPresentationModule",
+                starterModule = StarterModules.Features.Purchases.Presentation,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.feature_remote_config_data.di.remoteConfigDataModule",
+                moduleSymbol = "remoteConfigDataModule",
+                starterModule = StarterModules.Features.RemoteConfig.Data,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarter.feature_remote_config_domain.di.remoteConfigDomainModule",
+                moduleSymbol = "remoteConfigDomainModule",
+                starterModule = StarterModules.Features.RemoteConfig.Domain,
+            ),
+            KoinModuleEntry(
+                importLine = "import com.kmpstarterapp.core.navigation.appNavigationModule",
+                moduleSymbol = "appNavigationModule",
+                starterModule = StarterModules.Features.Navigation,
+            ),
+        )
     }
 
     private suspend fun configureGitHubWorkflows(project: StarterProject): Result<Unit> =
@@ -823,10 +999,6 @@ content\s*\{
     ): Result<Unit> = runCatching {
         if (targetPackageName == DEFAULT_PACKAGE_NAME) return@runCatching
 
-        val nonLocalModulesPackageName = StarterModules.all()
-            .filter { it.moduleGradlePath() !in LOCAL_MODULES }
-            .map { it.packageName }
-
         val allFiles = modulePaths.flatMap { modulePath ->
             fileManager.getFilesRecursively(modulePath).filter {
                 it.endsWith(".kt") || it.endsWith(".kts")
@@ -836,37 +1008,11 @@ content\s*\{
         allFiles.forEach { codeFile ->
             val fileContent = fileManager.getFileAs(path = codeFile).getOrThrow()
             val updated = fileContent.split("\n").joinToString("\n") { line ->
-                when {
-                    line.startsWith("package ") -> {
-                        val fromPackage = if (line.contains("${DEFAULT_PACKAGE_NAME}app")) {
-                            "${DEFAULT_PACKAGE_NAME}app"
-                        } else {
-                            DEFAULT_PACKAGE_NAME
-                        }
-                        line.replace(fromPackage, targetPackageName)
-                    }
-
-                    line.startsWith("import ") -> {
-                        nonLocalModulesPackageName.find { line.startsWith("import $it") }
-                            ?: line.let {
-                                val fromPackage = if (line.contains("${DEFAULT_PACKAGE_NAME}app")) {
-                                    "${DEFAULT_PACKAGE_NAME}app"
-                                } else {
-                                    DEFAULT_PACKAGE_NAME
-                                }
-                                line.replace(fromPackage, targetPackageName)
-                            }
-                    }
-
-                    else -> {
-                        val fromPackage = if (line.contains("${DEFAULT_PACKAGE_NAME}app")) {
-                            "${DEFAULT_PACKAGE_NAME}app"
-                        } else {
-                            DEFAULT_PACKAGE_NAME
-                        }
-                        line.replace(fromPackage, targetPackageName)
-                    }
-                }
+                replacePackageInLine(
+                    line = line,
+                    targetPackageName = targetPackageName,
+                    preserveStarterImports = true,
+                )
             }
             fileManager.writeFile(
                 path = codeFile,

@@ -43,27 +43,37 @@ suspend fun main() {
     val repo: StarterProjectsRepository = KoinPlatform.getKoin().get()
     val fileManager: StarterProjectFileManager = KoinPlatform.getKoin().get()
 
-    repo.includeModule(
-        workingDir = "/Users/athargul/Coding_2025/App/KMP/KMP-Starter/Code/generator/data/.starter/code",
-        module = StarterModules.Features.RemoteConfig.Domain,
-        mode = ProjectMode.LIB,
-        packageName = null,
-        targetModule = "composeApp"
-    )
-
-    return
+//    repo.includeModule(
+//        workingDir = "/Users/athargul/Coding_2025/App/KMP/KMP-Starter/Code/generator/data/.starter/code",
+//        module = StarterModules.Features.RemoteConfig.Domain,
+//        mode = ProjectMode.LIB,
+//        packageName = null,
+//        targetModule = "composeApp"
+//    )
+//
+//    return
 
     fileManager.delete(path = "${fileManager.getCurrentDir()}/.starter/generate-code")
+//    val project = StarterProject(
+//        projectName = "Notes",
+//        packageName = "com.atrii.notes",
+//        mode = ProjectMode.LIB,
+//        featureName = "notes",
+//        includeWorkflows = true,
+//        modules = StarterModules.all() - setOf(
+//            StarterModules.Features.Database,
+//            StarterModules.Features.RemoteConfig.Data,
+//            StarterModules.Features.RemoteConfig.Domain,
+//        )
+//    )
     val project = StarterProject(
-        projectName = "Notes",
-        packageName = "com.atrii.notes",
-        mode = ProjectMode.LIB,
+        projectName = "MyApp",
+        packageName = "com.example.myapp",
+        mode = ProjectMode.MODULE,
         featureName = "notes",
-        includeWorkflows = true,
         modules = StarterModules.all() - setOf(
             StarterModules.Features.Database,
-            StarterModules.Features.RemoteConfig.Data,
-            StarterModules.Features.RemoteConfig.Domain,
+            // ... deselected modules
         )
     )
 
@@ -87,22 +97,3 @@ suspend fun main() {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
