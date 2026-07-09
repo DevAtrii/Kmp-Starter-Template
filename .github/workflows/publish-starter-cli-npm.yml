@@ -6,6 +6,7 @@
 #   NPM_TOKEN — npm automation token with publish access to @devatrii/starter
 #
 # Local dry-run before publishing:
+#   # Optional: trim settings.gradle.kts to generator modules only (same as CI)
 #   ./gradlew :generator:cli:assembleStarterCliNpm
 #   ./gradlew :generator:cli:starterCliNpmPack
 #   npm install -g ./generator/cli/npm-package
@@ -25,6 +26,30 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Trim settings.gradle.kts to generator modules
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path("settings.gradle.kts")
+          text = path.read_text()
+          marker = 'includeBuild("build-logic")'
+          idx = text.find(marker)
+          if idx < 0:
+              raise SystemExit("Could not find includeBuild(\"build-logic\") in settings.gradle.kts")
+
+          trimmed = text[: idx + len(marker)] + """
+
+          // CLI-only CI build: exclude app/starter/feature modules for faster configuration.
+          include(":generator:data")
+          include(":generator:domain")
+          include(":generator:cli")
+          """
+          path.write_text(trimmed)
+          print("settings.gradle.kts trimmed to generator modules:")
+          print(path.read_text())
+          PY
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
