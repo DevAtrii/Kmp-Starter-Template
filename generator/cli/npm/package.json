@@ -1,0 +1,34 @@
+{
+  "name": "@devatrii/starter",
+  "version": "0.4.7",
+  "description": "KMP Starter CLI — create, init, and include starter modules in Kotlin Multiplatform projects",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DevAtrii/Kmp-Starter-Template.git",
+    "directory": "generator/cli/npm"
+  },
+  "bugs": {
+    "url": "https://github.com/DevAtrii/Kmp-Starter-Template/issues"
+  },
+  "homepage": "https://github.com/DevAtrii/Kmp-Starter-Template#readme",
+  "keywords": [
+    "kotlin",
+    "multiplatform",
+    "kmp",
+    "cli",
+    "starter",
+    "generator"
+  ],
+  "bin": {
+    "starter": "bin/starter.js",
+    "kmp-starter": "bin/starter.js"
+  },
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

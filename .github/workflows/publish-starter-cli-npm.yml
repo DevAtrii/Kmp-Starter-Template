@@ -1,0 +1,49 @@
+# Publishes the KMP Starter CLI fat JAR as @devatrii/starter on npm.
+#
+# Version is read from gradle/libs.versions.toml (lib-version-major/minor/patch).
+#
+# Required repository secret:
+#   NPM_TOKEN — npm automation token with publish access to @devatrii/starter
+#
+# Local dry-run before publishing:
+#   ./gradlew :generator:cli:assembleStarterCliNpm
+#   ./gradlew :generator:cli:starterCliNpmPack
+#   npm install -g ./generator/cli/npm-package
+#   starter --help
+
+name: Publish CLI to npm
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Build npm package
+        run: ./gradlew :generator:cli:assembleStarterCliNpm --no-configuration-cache --stacktrace
+
+      - name: Publish to npm
+        working-directory: generator/cli/npm-package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --ignore-scripts

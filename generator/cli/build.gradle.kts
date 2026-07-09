@@ -1,4 +1,7 @@
+import org.gradle.api.tasks.Copy
+import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.JavaExec
+import org.gradle.api.tasks.bundling.Jar
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
@@ -83,4 +86,97 @@ tasks.withType<JavaExec>().configureEach {
     if (name == "jvmRun" || name == "runJvm") {
         standardInput = System.`in`
     }
+}
+
+val starterCliVersion: String =
+    "${libs.versions.lib.version.major.get()}." +
+        "${libs.versions.lib.version.minor.get()}." +
+        libs.versions.lib.version.patch.get()
+
+val starterCliNpmDir = layout.projectDirectory.dir("npm")
+val starterCliNpmPackageDir = layout.projectDirectory.dir("npm-package")
+
+val starterCliFatJar = tasks.register<Jar>("starterCliFatJar") {
+    group = "distribution"
+    description = "Builds an executable fat JAR for the CLI npm package"
+
+    archiveBaseName.set("starter-cli")
+    archiveVersion.set(starterCliVersion)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    val jvmCompilation = kotlin.jvm().compilations.getByName("main")
+    dependsOn(jvmCompilation.compileTaskProvider)
+
+    from(jvmCompilation.output.allOutputs)
+    from({
+        jvmCompilation.runtimeDependencyFiles
+            .filter { it.exists() }
+            .map { file -> if (file.isDirectory) file else zipTree(file) }
+    })
+
+    manifest {
+        attributes["Main-Class"] = "com.kmpstarter.generator_cli.MainKt"
+    }
+}
+
+tasks.register("syncStarterCliNpmVersion") {
+    group = "distribution"
+    description = "Syncs npm package.json version with gradle/libs.versions.toml lib-version-*"
+
+    val version = starterCliVersion
+    inputs.property("starterCliVersion", version)
+    outputs.file(starterCliNpmDir.file("package.json"))
+
+    doLast {
+        val packageJson = starterCliNpmDir.file("package.json").asFile
+        val updated = packageJson.readText().replace(
+            Regex(""""version"\s*:\s*"[^"]*""""),
+            """"version": "$version"""",
+        )
+        packageJson.writeText(updated)
+    }
+}
+
+val assembleStarterCliNpm = tasks.register<Copy>("assembleStarterCliNpm") {
+    group = "distribution"
+    description = "Assembles the @devatrii/starter npm package with fat JAR"
+
+    dependsOn(starterCliFatJar, "syncStarterCliNpmVersion")
+
+    into(starterCliNpmPackageDir)
+
+    from(starterCliNpmDir) {
+        include("package.json", "bin/**")
+    }
+
+    from(starterCliFatJar) {
+        into("lib")
+        rename { "starter-cli.jar" }
+    }
+}
+
+tasks.register<Exec>("starterCliNpmPack") {
+    group = "distribution"
+    description = "Runs npm pack on the assembled CLI package (local tarball for testing)"
+    dependsOn(assembleStarterCliNpm)
+    workingDir = starterCliNpmPackageDir.asFile
+    commandLine(
+        "npm",
+        "pack",
+        "--ignore-scripts",
+    )
+}
+
+tasks.register<Exec>("starterCliNpmPublish") {
+    group = "distribution"
+    description = "Publishes the assembled CLI package to the npm registry (requires NODE_AUTH_TOKEN)"
+    dependsOn(assembleStarterCliNpm)
+    workingDir = starterCliNpmPackageDir.asFile
+    commandLine(
+        "npm",
+        "publish",
+        "--access",
+        "public",
+        "--ignore-scripts",
+    )
 }

@@ -1,2 +1,4 @@
 /build
 Archive.zip
+npm-package/
+*.tgz
