@@ -80,6 +80,7 @@ interface StarterProjectsRepository {
     suspend fun generate(project: StarterProject): Result<ProjectZip>
 
     suspend fun includeModule(
+        workingDir: String,
         module: StarterModules,
         mode: ProjectMode,
         packageName: String? = DEFAULT_PACKAGE_NAME,

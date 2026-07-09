@@ -42,6 +42,17 @@ suspend fun main() {
     }
     val repo: StarterProjectsRepository = KoinPlatform.getKoin().get()
     val fileManager: StarterProjectFileManager = KoinPlatform.getKoin().get()
+
+    repo.includeModule(
+        workingDir = "/Users/athargul/Coding_2025/App/KMP/KMP-Starter/Code/generator/data/.starter/code",
+        module = StarterModules.Features.RemoteConfig.Domain,
+        mode = ProjectMode.LIB,
+        packageName = null,
+        targetModule = "composeApp"
+    )
+
+    return
+
     fileManager.delete(path = "${fileManager.getCurrentDir()}/.starter/generate-code")
     val project = StarterProject(
         projectName = "Notes",

@@ -91,11 +91,14 @@ interface BaseModule {
     }
 
 
-    private fun String.toSnakeCase(): String =
-        replace(Regex("([a-z0-9])([A-Z])"), "$1_$2").lowercase()
-
     fun koinModules(): List<String> {
         throw NotImplementedError()
+    }
+
+    fun mavenArtifactId(): String {
+        val libDep = moduleGradleDep(ProjectMode.LIB).removePrefix("libs.starter.")
+        val artifact = libDep.replace('.', '-')
+        return if (libDep.startsWith("feature.")) artifact else "starter-$artifact"
     }
 }
 
@@ -200,7 +203,6 @@ sealed class StarterModules : BaseModule {
                 override fun koinModules(): List<String> = listOf()
             }
         }
-
 
 
         @Serializable
@@ -387,6 +389,10 @@ sealed class StarterModules : BaseModule {
                 override fun moduleGradlePath(): String {
                     return ":features:remote_config:data"
                 }
+
+                override fun mavenArtifactId(): String {
+                    return "feature-remote-config-data"
+                }
             }
 
             data object Domain : RemoteConfig() {
@@ -413,10 +419,15 @@ sealed class StarterModules : BaseModule {
                 override fun moduleGradlePath(): String {
                     return ":features:remote_config:domain"
                 }
+
+                override fun mavenArtifactId(): String {
+                    return "feature-remote-config-domain"
+                }
             }
 
             data object Presentation : RemoteConfig() {
-                override val packageName: String = "com.kmpstarter.feature_remote_config_presentation"
+                override val packageName: String =
+                    "com.kmpstarter.feature_remote_config_presentation"
 
                 override fun koinModules(): List<String> {
                     return super.koinModules()
@@ -438,6 +449,10 @@ sealed class StarterModules : BaseModule {
 
                 override fun moduleGradlePath(): String {
                     return ":features:remote_config:presentation"
+                }
+
+                override fun mavenArtifactId(): String {
+                    return "feature-remote-config-presentation"
                 }
             }
         }
