@@ -78,16 +78,44 @@ You can easily swap implementations (e.g., replace Mixpanel with PostHog) by cha
 
 ## Getting Started
 
+Start with the **CLI** — [`@devatrii/starter`](https://www.npmjs.com/package/@devatrii/starter). It scaffolds a full project under your app name and package, rewires modules and namespaces for you, and typically saves **2–3 hours** of manual rename and setup work.
+
+The CLI is in **alpha** — it generates projects successfully, but expect rough edges. If you hit an issue, please [report it on GitHub Issues](https://github.com/DevAtrii/Kmp-Starter-Template/issues).
+
+**Requirements:** Node.js 18+, Java 17
+
 ```bash
-git clone https://github.com/DevAtrii/Kmp-Starter-Template.git starter-app
+# Install globally
+npm install -g @devatrii/starter
+
+# Interactive create (prompts for name, package, modules, etc.)
+starter create
+
+# Or with flags
+starter create \
+  --name MyApp \
+  --package com.example.myapp \
+  --feature notes \
+  --modules all
+
+# Init starter.json in an existing project
+starter init
+
+# Add a starter module to an existing project
+starter include --module purchases
+
+# Print CLI version
+starter -v
 ```
 
-Open in Android Studio (KMP Plugin required).
+Commands: `create`, `init`, `include`, `version` (`-v` / `--version`).
+
+Open the generated project in Android Studio (KMP Plugin required).
 Open `iosApp/iosApp.xcodeproj` in Xcode to run on iOS.
 
 ---
 
-## Libraries (under construction)
+## Libraries
 
 We are working to ship **KMP Starter** as published Maven libraries so existing projects can adopt modules incrementally (starter utilities, UI, and feature layers) without cloning the full template.
 
@@ -98,7 +126,7 @@ Artifacts are published under **`io.github.devatrii`**. They are not fully stabl
 
 ```toml
 [versions]
-starter = "0.4.1"
+starter = "0.4.9"
 
 [libraries]
 # Starter

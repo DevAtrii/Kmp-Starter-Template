@@ -13,28 +13,65 @@ icon: lucide/rocket
 - [x] Android Studio Otter 2025.2.3 or later
 - [x] KMP Plugin for Android Studio
 - [x] Xcode 26 or later
+- [x] Node.js 18+ (for the CLI)
 
 !!! info "Android Studio Compatibility"
     Starter Template is compatible with Gradle 9.0, you can see list of android studio versions that supports gradle 9.0 <a href="https://developer.android.com/studio/releases#android_gradle_plugin_and_android_studio_compatibility" target="_blank" rel="noopener noreferrer">
     here
     </a>
 
-## Using Template
+## Using the CLI
 
-Let's see how you can use Starter Template
-### Step 0
-Clone the repository
+Start a project with the **KMP Starter CLI** ([`@devatrii/starter`](https://www.npmjs.com/package/@devatrii/starter)).
 
-``` bash
-git clone https://github.com/DevAtrii/Kmp-Starter-Template.git starter-app
+!!! warning "Alpha"
+    The CLI is in **alpha**. It generates projects, but you may hit rough edges. If something breaks, please [open a GitHub issue](https://github.com/DevAtrii/Kmp-Starter-Template/issues).
+
+### Install globally
+
+```bash
+npm install -g @devatrii/starter
 ```
 
-that's it now open the project in your IDE (android studio + xcode) and run the app.
+This installs the `starter` and `kmp-starter` commands.
 
-you can find the xcode project inside `iosApp` folder, open the `iosApp.xcodeproj` file in xcode and run the app.
+### Create a new project
 
-in the next page learn about all modules.
+Run interactively (prompts for app name, package, feature, modules, etc.):
 
+```bash
+starter create
+```
+
+Or pass options directly:
+
+```bash
+starter create \
+  --name MyApp \
+  --package com.example.myapp \
+  --feature notes \
+  --modules all
+```
+
+This generates a zip (and extracts it by default). Open the project in Android Studio, and open `iosApp/iosApp.xcodeproj` in Xcode to run on iOS.
+
+### Other commands
+
+```bash
+# Create starter.json in an existing project
+starter init
+
+# Include a starter module into an existing project
+starter include --module purchases
+
+# Print CLI version
+starter -v
+```
+
+On the next page, learn about all modules.
+
+!!! note "Web wizard"
+    A **web wizard** for generating projects in the browser is also planned. Until then, use the CLI.
 
 ## Support My Project ☕️
 
@@ -48,6 +85,3 @@ If you find this project useful, consider supporting it by buying me a coffee. Y
     <img src="https://img.shields.io/badge/YouTube-DevAtrii-red?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube Channel" />
   </a>
 </div>
-
-
- 
