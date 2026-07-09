@@ -25,6 +25,7 @@ enum class ProjectMode {
 
 @Serializable
 data class StarterProject(
+    /**only useful for include mode**/
     val workingDir: String = ".",
     val projectName: String,
     val packageName: String,

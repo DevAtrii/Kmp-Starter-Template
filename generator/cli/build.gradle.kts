@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.JavaExec
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 
@@ -37,7 +39,17 @@ kotlin {
             version = release(libs.versions.android.minSdk.get().toInt())
         }
     }
-    jvm()
+    jvm {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        mainRun {
+            mainClass.set("com.kmpstarter.generator_cli.MainKt")
+        }
+        binaries {
+            executable {
+                mainClass.set("com.kmpstarter.generator_cli.MainKt")
+            }
+        }
+    }
     js {
         browser()
     }
@@ -50,13 +62,25 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.kotlin.stdlib)
             api(projects.generator.domain)
-            // add more deps
         }
 
         jsMain.dependencies {
             implementation(libs.wrappers.browser)
         }
 
+        jvmMain.dependencies {
+            implementation(projects.generator.data)
+            implementation(libs.clikt)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.androidx.lifecycle.viewmodel)
+        }
+
     }
 
+}
+
+tasks.withType<JavaExec>().configureEach {
+    if (name == "jvmRun" || name == "runJvm") {
+        standardInput = System.`in`
+    }
 }
