@@ -1,6 +1,6 @@
 {
   "name": "@devatrii/starter",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "description": "KMP Starter CLI — create, init, and include starter modules in Kotlin Multiplatform projects",
   "license": "MIT",
   "repository": {

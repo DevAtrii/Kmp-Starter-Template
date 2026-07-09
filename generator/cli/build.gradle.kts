@@ -89,12 +89,48 @@ tasks.withType<JavaExec>().configureEach {
 }
 
 val starterCliVersion: String =
-    "${libs.versions.lib.version.major.get()}." +
-        "${libs.versions.lib.version.minor.get()}." +
-        libs.versions.lib.version.patch.get()
+    "${libs.versions.cli.version.major.get()}." +
+        "${libs.versions.cli.version.minor.get()}." +
+        libs.versions.cli.version.patch.get()
 
 val starterCliNpmDir = layout.projectDirectory.dir("npm")
 val starterCliNpmPackageDir = layout.projectDirectory.dir("npm-package")
+val cliVersionGeneratedDir = layout.buildDirectory.dir("generated/cliVersion")
+
+val generateCliVersion = tasks.register("generateCliVersion") {
+    group = "build"
+    description = "Generates CliVersion.kt from gradle/libs.versions.toml cli-version-*"
+
+    val version = starterCliVersion
+    val outputDir = cliVersionGeneratedDir
+    inputs.property("starterCliVersion", version)
+    outputs.dir(outputDir)
+
+    doLast {
+        val file = outputDir.get().file("com/kmpstarter/generator_cli/CliVersion.kt").asFile
+        file.parentFile.mkdirs()
+        file.writeText(
+            """
+            |package com.kmpstarter.generator_cli
+            |
+            |object CliVersion {
+            |    const val VALUE = "$version"
+            |}
+            |
+            """.trimMargin(),
+        )
+    }
+}
+
+kotlin {
+    sourceSets.named("jvmMain") {
+        kotlin.srcDir(cliVersionGeneratedDir)
+    }
+}
+
+tasks.named("compileKotlinJvm").configure {
+    dependsOn(generateCliVersion)
+}
 
 val starterCliFatJar = tasks.register<Jar>("starterCliFatJar") {
     group = "distribution"
@@ -121,7 +157,7 @@ val starterCliFatJar = tasks.register<Jar>("starterCliFatJar") {
 
 tasks.register("syncStarterCliNpmVersion") {
     group = "distribution"
-    description = "Syncs npm package.json version with gradle/libs.versions.toml lib-version-*"
+    description = "Syncs npm package.json version with gradle/libs.versions.toml cli-version-*"
 
     val version = starterCliVersion
     inputs.property("starterCliVersion", version)

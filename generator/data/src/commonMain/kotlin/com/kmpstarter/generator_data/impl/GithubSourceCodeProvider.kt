@@ -154,6 +154,7 @@ class GithubSourceCodeProvider(
             return fileManager.createZip(path = contentRoot).getOrThrow()
         } finally {
             fileManager.delete(workDir)
+            fileManager.delete("${fileManager.getCurrentDir()}/.starter")
         }
     }
 
