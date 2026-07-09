@@ -19,6 +19,8 @@ import com.kmpstarter.generator_data.interfaces.SourceCode
 import com.kmpstarter.generator_data.interfaces.StarterProjectFileManager
 import com.kmpstarter.generator_data.interfaces.StarterProjectFileManager.Companion.getFileAs
 import com.kmpstarter.generator_data.interfaces.StarterProjectSourceCodeProvider
+import com.kmpstarter.generator_domain.GenerateProgress
+import com.kmpstarter.generator_domain.GenerateStep
 import com.kmpstarter.generator_domain.ProjectMode
 import com.kmpstarter.generator_domain.ProjectZip
 import com.kmpstarter.generator_domain.StarterJson
@@ -44,16 +46,20 @@ class StarterProjectsRepositoryImpl(
      * this should be used inside `generate` function**/
     private val currentWorkingDir = fileManager.getCurrentDir() + "/.starter/generation"
 
-    override suspend fun generate(project: StarterProject): Result<ProjectZip> = runCatching {
+    override suspend fun generate(
+        project: StarterProject,
+        onProgress: GenerateProgress,
+    ): Result<ProjectZip> = runCatching {
         // PreGeneration delete workingDir
         fileManager.delete(path = currentWorkingDir).getOrThrow()
 
-
         // Step 0: Getting SourceCode
+        onProgress.onStep(GenerateStep.GETTING_SOURCE_CODE)
         val sourceCode = sourceCodeProvider.getSourceCode().getOrThrow()
         val sourceCodeZipBytes = sourceCode.content
 
         // Step 1: Extracting ZipFile
+        onProgress.onStep(GenerateStep.EXTRACTING_SOURCE_CODE)
         val zipPath =
             "${currentWorkingDir}/$STARTER_FOLDER/source_code/${sourceCode.version}/code.zip"
         fileManager.writeFile(
@@ -63,53 +69,41 @@ class StarterProjectsRepositoryImpl(
         fileManager.extractZip(path = zipPath, output = currentWorkingDir).getOrThrow()
 
         // Step 2
+        onProgress.onStep(GenerateStep.REMOVING_TOOLING)
         removeToolingSourceCode(project = project).getOrThrow()
 
         // Step 3:
+        onProgress.onStep(GenerateStep.CONFIGURING_WORKFLOWS)
         configureGitHubWorkflows(project = project).getOrThrow()
 
         // Step 4
+        onProgress.onStep(GenerateStep.CONFIGURING_MODULES)
         configureProjectModules(project = project, sourceCode = sourceCode).getOrThrow()
+        onProgress.onStep(GenerateStep.CONFIGURING_GRADLE_PLUGINS)
         configureGradlePlugins(project = project).getOrThrow()
 
         // Step 5
+        onProgress.onStep(GenerateStep.CONFIGURING_FEATURE)
         configureYourFeature(project = project).getOrThrow()
         // Step 6
+        onProgress.onStep(GenerateStep.CONFIGURING_PROJECT_NAME)
         configureProjectName(project = project).getOrThrow()
         // Step 7
+        onProgress.onStep(GenerateStep.CONFIGURING_PACKAGE_NAME)
         configurePackageName(project = project).getOrThrow()
         // Step 8
+        onProgress.onStep(GenerateStep.CREATING_STARTER_JSON)
         createStarterJson(project = project, sourceCode = sourceCode).getOrThrow()
 
+        // Step 9
+        onProgress.onStep(GenerateStep.PACKAGING_ZIP)
         val result = fileManager.createZip(
             path = currentWorkingDir
         ).getOrThrow()
 
+        onProgress.onStep(GenerateStep.CLEANING_UP)
         fileManager.delete(path = currentWorkingDir).getOrThrow()
         return@runCatching result
-
-
-        /**
-         * Step 0: Get SourceCodeZip
-         * Step 1: Extract ZipFile using FileManager inside workingDir
-         * Step 2: Remove modules related to tooling i.e. generator, docs, site,
-         *         zensical.toml, mkdocs.yml etc.
-         * Step 3: If project.includeWorkflows=false then delete .github folder else
-         *         .github/workflows/publish-maven* workflows etc.
-         * Step 4: If Library mode then add dependencies to composeApp/build.gradle.kts & delete modules
-         *         else keep selected modules @see com.kmpstarter.generator_domain.StarterModules
-         * Step 5: rename your-feature inside:
-         *         - settings-gradle.kts
-         *         - feature dir
-         *         - KOIN modules
-         *         - imports
-         * Step 6: Rename project name inside `settings.gradle.kts` (get file using fileManager and edit it)
-         * Step 7: Rename packageName allOver the project including:
-         *  - modules Gradle
-         *  - modules sourceCode
-         * Step 8: create starter.json to keep track of starter-template version, packageName etc.
-         * Step 9: zip everything inside `workingDir`, return as byteArr & delete everything inside `workingDir`
-         * */
     }.onFailure { _ ->
         //fileManager.delete(path = currentWorkingDir).getOrThrow()
     }
@@ -462,7 +456,10 @@ class StarterProjectsRepositoryImpl(
         sourceCode: SourceCode,
     ): Result<Unit> = runCatching {
         if (project.mode == ProjectMode.LIB) {
-            configureProjectModulesForLibMode(project = project, sourceCode = sourceCode).getOrThrow()
+            configureProjectModulesForLibMode(
+                project = project,
+                sourceCode = sourceCode
+            ).getOrThrow()
             return@runCatching
         }
 
@@ -473,138 +470,138 @@ class StarterProjectsRepositoryImpl(
         project: StarterProject,
         sourceCode: SourceCode,
     ): Result<Unit> = runCatching {
-            // delete extra modules dirs
-            val moduleDirs = LIB_MODE_DELETABLE_MODULES.map {
-                it.replaceFirst(":", "")
-                    .replace(":", "/")
+        // delete extra modules dirs
+        val moduleDirs = LIB_MODE_DELETABLE_MODULES.map {
+            it.replaceFirst(":", "")
+                .replace(":", "/")
+        }
+
+        moduleDirs.forEach { dir ->
+            val path = "$currentWorkingDir/$dir"
+            fileManager.delete(path = path).getOrThrow()
+        }
+
+        // removing modules from settings.gradle.kts
+        LIB_MODE_DELETABLE_MODULES.forEach { module ->
+            removeModuleFromSettingsGradleKts(module = module).getOrThrow()
+        }
+
+        // keep or remove non-lib modules i.e database
+        val selectedModules = project.modules
+            .map { it.moduleGradlePath() }
+            .toSet()
+
+        StarterModules.all().forEach { module ->
+            val gradlePath = module.moduleGradlePath()
+
+            // Keep every selected module.
+            if (gradlePath in selectedModules) {
+                return@forEach
             }
 
-            moduleDirs.forEach { dir ->
-                val path = "$currentWorkingDir/$dir"
-                fileManager.delete(path = path).getOrThrow()
+            // Only local modules need to be physically removed.
+            if (gradlePath !in LOCAL_MODULES) {
+                return@forEach
             }
 
-            // removing modules from settings.gradle.kts
-            LIB_MODE_DELETABLE_MODULES.forEach { module ->
-                removeModuleFromSettingsGradleKts(module = module).getOrThrow()
+
+            fileManager.delete("$currentWorkingDir/${module.moduleFilePath()}").getOrThrow()
+            removeModuleFromSettingsGradleKts(gradlePath).getOrThrow()
+        }
+        // add selected modules inside composeApp/build.gradle.kts as libs
+        val libsDeps = buildString {
+            appendLine("/** Added By KMP Starter Template **/")
+            project.modules.filter {
+                it.moduleGradlePath() !in LOCAL_MODULES
+            }.forEach { module ->
+                appendLine("implementation(${module.moduleGradleDep(mode = project.mode)})")
             }
-
-            // keep or remove non-lib modules i.e database
-            val selectedModules = project.modules
-                .map { it.moduleGradlePath() }
-                .toSet()
-
-            StarterModules.all().forEach { module ->
-                val gradlePath = module.moduleGradlePath()
-
-                // Keep every selected module.
-                if (gradlePath in selectedModules) {
-                    return@forEach
+        }
+        // local selected modules as module
+        val localDeps = buildString {
+            appendLine("// Local Modules")
+            project.modules.filter { it.moduleGradlePath() in LOCAL_MODULES }
+                .forEach { module ->
+                    appendLine("implementation(${module.moduleGradleDep(mode = ProjectMode.MODULE)})")
                 }
+        }
+        val deps = libsDeps + localDeps
+        val path = "$currentWorkingDir/composeApp/build.gradle.kts"
+        val buildGradleContent: String = fileManager.getFileAs(path = path).getOrThrow()
 
-                // Only local modules need to be physically removed.
-                if (gradlePath !in LOCAL_MODULES) {
-                    return@forEach
-                }
-
-
-                fileManager.delete("$currentWorkingDir/${module.moduleFilePath()}").getOrThrow()
-                removeModuleFromSettingsGradleKts(gradlePath).getOrThrow()
-            }
-            // add selected modules inside composeApp/build.gradle.kts as libs
-            val libsDeps = buildString {
-                appendLine("/** Added By KMP Starter Template **/")
-                project.modules.filter {
-                    it.moduleGradlePath() !in LOCAL_MODULES
-                }.forEach { module ->
-                    appendLine("implementation(${module.moduleGradleDep(mode = project.mode)})")
-                }
-            }
-            // local selected modules as module
-            val localDeps = buildString {
-                appendLine("// Local Modules")
-                project.modules.filter { it.moduleGradlePath() in LOCAL_MODULES }
-                    .forEach { module ->
-                        appendLine("implementation(${module.moduleGradleDep(mode = ProjectMode.MODULE)})")
-                    }
-            }
-            val deps = libsDeps + localDeps
-            val path = "$currentWorkingDir/composeApp/build.gradle.kts"
-            val buildGradleContent: String = fileManager.getFileAs(path = path).getOrThrow()
-
-            val updated = buildGradleContent.replace(
-                Regex(
-                    """(?s)(commonMain\.dependencies\s*\{\s*)(.*?)(\s*// External Libraries)"""
-                )
-            ) { match ->
-                buildString {
-                    append(match.groupValues[1])      // commonMain.dependencies {
-                    append(deps)
-                    append(match.groupValues[3])      // // External Libraries
-                }
-            }
-
-            // updating other modules build gradle to add modules as library
-            val ignoredBuildGradleFiles = setOf(
-                "composeApp/build.gradle.kts",
-                "build-logic/build.gradle.kts",
-                "build-logic/plugins/build.gradle.kts",
-                "build.gradle.kts",
+        val updated = buildGradleContent.replace(
+            Regex(
+                """(?s)(commonMain\.dependencies\s*\{\s*)(.*?)(\s*// External Libraries)"""
             )
+        ) { match ->
+            buildString {
+                append(match.groupValues[1])      // commonMain.dependencies {
+                append(deps)
+                append(match.groupValues[3])      // // External Libraries
+            }
+        }
 
-            val localModuleDeps = project.modules
-                .filter { it.moduleGradlePath() in LOCAL_MODULES }
-                .map { it.moduleGradleDep(ProjectMode.MODULE) }
-                .toSet()
+        // updating other modules build gradle to add modules as library
+        val ignoredBuildGradleFiles = setOf(
+            "composeApp/build.gradle.kts",
+            "build-logic/build.gradle.kts",
+            "build-logic/plugins/build.gradle.kts",
+            "build.gradle.kts",
+        )
 
-            fileManager.getFilesRecursively(currentWorkingDir)
-                .filter { path ->
-                    path.endsWith("build.gradle.kts") &&
-                            path.removePrefix("$currentWorkingDir/")
-                                .removePrefix(currentWorkingDir) !in ignoredBuildGradleFiles
-                }
-                .forEach { path ->
-                    val content = fileManager.getFileAs(path).getOrThrow()
+        val localModuleDeps = project.modules
+            .filter { it.moduleGradlePath() in LOCAL_MODULES }
+            .map { it.moduleGradleDep(ProjectMode.MODULE) }
+            .toSet()
 
-                    var updated = content
+        fileManager.getFilesRecursively(currentWorkingDir)
+            .filter { path ->
+                path.endsWith("build.gradle.kts") &&
+                        path.removePrefix("$currentWorkingDir/")
+                            .removePrefix(currentWorkingDir) !in ignoredBuildGradleFiles
+            }
+            .forEach { path ->
+                val content = fileManager.getFileAs(path).getOrThrow()
 
-                    StarterModules.all().forEach { module ->
-                        val projectDep = module.moduleGradleDep(ProjectMode.MODULE)
+                var updated = content
 
-                        // Keep local modules as project dependencies.
-                        if (projectDep in localModuleDeps) {
-                            return@forEach
-                        }
+                StarterModules.all().forEach { module ->
+                    val projectDep = module.moduleGradleDep(ProjectMode.MODULE)
 
-                        updated = updated.replace(
-                            projectDep,
-                            module.moduleGradleDep(ProjectMode.LIB)
-                        )
+                    // Keep local modules as project dependencies.
+                    if (projectDep in localModuleDeps) {
+                        return@forEach
                     }
 
-                    if (updated != content) {
-                        fileManager.writeFile(
-                            path = path,
-                            content = updated.encodeToByteArray()
-                        ).getOrThrow()
-                    }
+                    updated = updated.replace(
+                        projectDep,
+                        module.moduleGradleDep(ProjectMode.LIB)
+                    )
                 }
 
-            fileManager.writeFile(
-                path = path,
-                content = updated.encodeToByteArray()
-            ).getOrThrow()
+                if (updated != content) {
+                    fileManager.writeFile(
+                        path = path,
+                        content = updated.encodeToByteArray()
+                    ).getOrThrow()
+                }
+            }
 
-            // update library version inside libs.versions.toml
-            val libsFilePath = "$currentWorkingDir/gradle/libs.versions.toml"
-            val updatedLibs = fileManager.getFileAs(libsFilePath).getOrThrow().replace(
-                Regex("""(starter\s*=\s*")([^"]+)(")"""),
-                """$1${sourceCode.version}$3"""
-            )
-            fileManager.writeFile(
-                path = libsFilePath,
-                content = updatedLibs.encodeToByteArray()
-            )
+        fileManager.writeFile(
+            path = path,
+            content = updated.encodeToByteArray()
+        ).getOrThrow()
+
+        // update library version inside libs.versions.toml
+        val libsFilePath = "$currentWorkingDir/gradle/libs.versions.toml"
+        val updatedLibs = fileManager.getFileAs(libsFilePath).getOrThrow().replace(
+            Regex("""(starter\s*=\s*")([^"]+)(")"""),
+            """$1${sourceCode.version}$3"""
+        )
+        fileManager.writeFile(
+            path = libsFilePath,
+            content = updatedLibs.encodeToByteArray()
+        )
     }
 
     private suspend fun configureProjectModulesForModuleMode(
@@ -989,7 +986,8 @@ content\s*\{
     ): String {
         if (packageName != null) return packageName
         val starterJsonPath = "$workingDir/$STARTER_JSON_FILE"
-        val starterJsonBytes = fileManager.getFile(starterJsonPath).getOrNull() ?: return DEFAULT_PACKAGE_NAME
+        val starterJsonBytes =
+            fileManager.getFile(starterJsonPath).getOrNull() ?: return DEFAULT_PACKAGE_NAME
         return Json.decodeFromString<StarterJson>(starterJsonBytes.decodeToString()).packageName
     }
 
@@ -1063,7 +1061,12 @@ content\s*\{
     }
 
     private fun tomlHasEntry(toml: String, section: String, key: String): Boolean =
-        Regex("""(?m)^${Regex.escape(key)}\s*=""").containsMatchIn(extractTomlSectionBody(toml, section))
+        Regex("""(?m)^${Regex.escape(key)}\s*=""").containsMatchIn(
+            extractTomlSectionBody(
+                toml,
+                section
+            )
+        )
 
     private fun extractTomlSectionBody(toml: String, section: String): String {
         val sectionHeader = "[$section]"
@@ -1194,8 +1197,12 @@ content\s*\{
         if (mode == ProjectMode.LIB) {
             if (LOCAL_MODULES.find { it == module.moduleGradlePath() } != null)
                 throw IllegalStateException("Local modules can't be included in Library Mode")
-
-            val sourceCode = sourceCodeProvider.getSourceCode().getOrThrow()
+            val starterRawJson =
+                fileManager.getFileAs(path = "$workingDir/$STARTER_JSON_FILE").getOrElse {
+                    throw IllegalStateException("Please call init first & init starter.json")
+                }
+            val starterJson: StarterJson = Json.decodeFromString(starterRawJson)
+            val sourceCode = sourceCodeProvider.getSourceCode(version = starterJson.starterVersion).getOrThrow()
             val sourceCodePath = extractSourceCodeTo(
                 workingDir = workingDir,
                 version = sourceCode.version,

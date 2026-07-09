@@ -123,6 +123,10 @@ class CreateCommand : CliktCommand(name = "create") {
             modules = selectedModules,
         )
 
+        echo("")
+        echo("Creating project '$name'...")
+        echo("")
+
         val viewModel = KoinPlatform.getKoin().get<CreateViewModel>()
         viewModel.create(
             project = project,

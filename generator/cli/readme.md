@@ -18,3 +18,10 @@ starter init --dir . --package com.example.app --mode lib
 cd generator/cli/npm-package && npm link
 starter --help
 ```
+
+### Running
+```shell
+
+./gradlew :generator:cli:jvmRun --console=plain --args="create"
+
+```

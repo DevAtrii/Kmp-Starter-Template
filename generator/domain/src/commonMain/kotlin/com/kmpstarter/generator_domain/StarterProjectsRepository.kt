@@ -77,7 +77,10 @@ interface StarterProjectsRepository {
         )
     }
 
-    suspend fun generate(project: StarterProject): Result<ProjectZip>
+    suspend fun generate(
+        project: StarterProject,
+        onProgress: GenerateProgress = GenerateProgress { },
+    ): Result<ProjectZip>
 
     suspend fun includeModule(
         workingDir: String,

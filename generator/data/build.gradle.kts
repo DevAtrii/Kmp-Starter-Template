@@ -50,13 +50,31 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.kotlin.stdlib)
             api(projects.generator.domain)
-            // add more deps
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.coroutines.core)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+
+        jvmMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+            // OkHttp/Ktor pull in SLF4J API; provide a NOP binder so CLI runs without warnings.
+            implementation(libs.slf4j.nop)
         }
 
         jsMain.dependencies {
             implementation(libs.wrappers.browser)
+            implementation(libs.ktor.client.js)
         }
 
+        wasmJsMain.dependencies {
+            implementation(libs.ktor.client.js)
+        }
     }
 
 }

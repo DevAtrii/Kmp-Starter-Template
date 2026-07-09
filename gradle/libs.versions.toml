@@ -42,6 +42,7 @@ google-services = "4.4.4"
 
 # Networking
 ktor = "3.4.3"
+slf4j = "2.0.17"
 
 # Dependency Injection
 koin = "4.2.1"
@@ -143,6 +144,7 @@ kmpauth-google = { module = "io.github.mirzemehdi:kmpauth-google", version.ref =
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
@@ -196,6 +198,7 @@ androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "a
 
 # Utilities
 logging = { module = "org.lighthousegames:logging", version.ref = "logging" }
+slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4j" }
 atomic-fu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomic-fu" }
 stately-common = { module = "co.touchlab:stately-common", version.ref = "stately-common" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }

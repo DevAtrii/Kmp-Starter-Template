@@ -17,83 +17,30 @@ package com.kmpstarter.generator_data.di
 
 import com.kmpstarter.generator_data.StarterProjectsRepositoryImpl
 import com.kmpstarter.generator_data.impl.FileManagerImpl
-import com.kmpstarter.generator_data.impl.LocalSourceCodeProvider
+import com.kmpstarter.generator_data.impl.GithubSourceCodeProvider
 import com.kmpstarter.generator_data.interfaces.StarterProjectFileManager
 import com.kmpstarter.generator_data.interfaces.StarterProjectSourceCodeProvider
-import com.kmpstarter.generator_domain.ProjectMode
-import com.kmpstarter.generator_domain.StarterModules
-import com.kmpstarter.generator_domain.StarterProject
 import com.kmpstarter.generator_domain.StarterProjectsRepository
-import org.koin.core.context.startKoin
+import io.ktor.client.HttpClient
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatform
 
 val generatorDiModule = module {
+    single { GithubSourceCodeProvider.defaultHttpClient() }
     factoryOf(::FileManagerImpl) bind StarterProjectFileManager::class
     factoryOf(::StarterProjectsRepositoryImpl) bind StarterProjectsRepository::class
-    factoryOf(::LocalSourceCodeProvider) bind StarterProjectSourceCodeProvider::class
+    single {
+        GithubSourceCodeProvider(
+            fileManager = get(),
+            httpClient = get(),
+        )
+    } bind StarterProjectSourceCodeProvider::class
 }
 
-suspend fun main() {
-    startKoin {
-        modules(generatorDiModule)
+fun closeGeneratorResources() {
+    runCatching {
+        KoinPlatform.getKoin().get<HttpClient>().close()
     }
-    val repo: StarterProjectsRepository = KoinPlatform.getKoin().get()
-    val fileManager: StarterProjectFileManager = KoinPlatform.getKoin().get()
-
-//    repo.includeModule(
-//        workingDir = "/Users/athargul/Coding_2025/App/KMP/KMP-Starter/Code/generator/data/.starter/code",
-//        module = StarterModules.Features.RemoteConfig.Domain,
-//        mode = ProjectMode.LIB,
-//        packageName = null,
-//        targetModule = "composeApp"
-//    )
-//
-//    return
-
-    fileManager.delete(path = "${fileManager.getCurrentDir()}/.starter/generate-code")
-//    val project = StarterProject(
-//        projectName = "Notes",
-//        packageName = "com.atrii.notes",
-//        mode = ProjectMode.LIB,
-//        featureName = "notes",
-//        includeWorkflows = true,
-//        modules = StarterModules.all() - setOf(
-//            StarterModules.Features.Database,
-//            StarterModules.Features.RemoteConfig.Data,
-//            StarterModules.Features.RemoteConfig.Domain,
-//        )
-//    )
-    val project = StarterProject(
-        projectName = "MyApp",
-        packageName = "com.example.myapp",
-        mode = ProjectMode.MODULE,
-        featureName = "notes",
-        modules = StarterModules.all() - setOf(
-            StarterModules.Features.Database,
-            // ... deselected modules
-        )
-    )
-
-    println("filePaths ${StarterModules.Features.RemoteConfig.Data.moduleFilePath()}, ${StarterModules.Features.Core.Data.moduleFilePath()}")
-
-    repo.generate(
-        project = project
-    ).onSuccess { zipBytes ->
-        println("Got Source Code: ${zipBytes.size}")
-        val path = "${fileManager.getCurrentDir()}/.starter/generate-code.zip"
-        fileManager.writeFile(
-            path = path,
-            content = zipBytes
-        )
-        fileManager.extractZip(
-            path = path,
-            output = "${fileManager.getCurrentDir()}/.starter/code"
-        )
-    }.onFailure { err ->
-        err.printStackTrace()
-    }
-
 }

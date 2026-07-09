@@ -22,13 +22,13 @@ import com.kmpstarter.generator_data.interfaces.StarterProjectSourceCodeProvider
 class LocalSourceCodeProvider(
     private val fileManager: StarterProjectFileManager,
 ) : StarterProjectSourceCodeProvider {
-    override suspend fun getSourceCode(): Result<SourceCode> = runCatching {
+    override suspend fun getSourceCode(version: String?): Result<SourceCode> = runCatching {
         val arr = fileManager.getFile(
             fileManager.getCurrentDir() + "/Archive.zip"
         ).getOrThrow()
 
         SourceCode(
-            version = "0.4.7",
+            version = version ?: "0.4.7",
             content = arr
         )
     }
