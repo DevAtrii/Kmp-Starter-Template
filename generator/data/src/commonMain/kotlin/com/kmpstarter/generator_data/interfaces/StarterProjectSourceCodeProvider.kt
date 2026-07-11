@@ -26,8 +26,8 @@ class SourceCode(
 
 interface StarterProjectSourceCodeProvider {
     companion object {
-        const val MIN_VERSION = "0.4.7"
-        const val MAX_VERSION = "0.4.9"
+        const val MIN_VERSION = "0.4.9"
+        const val MAX_VERSION = "0.5.0"
     }
 
     suspend fun getSourceCode(version: String? = null): Result<SourceCode>

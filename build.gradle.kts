@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+
 /*
  *
  *  *
@@ -55,6 +57,11 @@ subprojects {
     plugins.withId("org.jetbrains.kotlin.multiplatform") {
         if (project.path in publishableKmpModules) {
             pluginManager.apply("com.kmpstarter.plugins.kmplibrarypublish")
+        }
+        extensions.configure<KotlinMultiplatformExtension>{
+            compilerOptions {
+                freeCompilerArgs.add("-Xexpect-actual-classes")
+            }
         }
     }
 }

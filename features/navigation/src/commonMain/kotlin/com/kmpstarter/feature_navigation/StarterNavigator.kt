@@ -23,6 +23,7 @@ import org.koin.compose.koinInject
 @DslMarker
 annotation class StarterNavigatorDsl // just to highlight code in IDE
 
+@Suppress("DSL_MARKER_APPLIED_TO_WRONG_TARGET")
 @StarterNavigatorDsl
 class StarterNavigator {
 
