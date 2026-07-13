@@ -9,10 +9,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Kotlin-2.3.10-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" />
+  <img src="https://img.shields.io/badge/Kotlin-2.4.0-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" />
   <img src="https://img.shields.io/badge/Java-17-007396?style=for-the-badge&logo=openjdk&logoColor=white" />
   <img src="https://img.shields.io/badge/iOS-12+-000000?style=for-the-badge&logo=apple&logoColor=white" />
   <img src="https://img.shields.io/badge/Android-7+-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
+  <img src="https://img.shields.io/badge/Node.js-18%2B-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white" />
   <img src="https://img.shields.io/maven-central/v/io.github.devatrii/starter-core?style=for-the-badge&label=Version&color=6C63FF" />
 </p>
 
@@ -78,7 +79,7 @@ You can easily swap implementations (e.g., replace Mixpanel with PostHog) by cha
 
 ## Getting Started
 
-Start with the **CLI** — [`@devatrii/starter`](https://www.npmjs.com/package/@devatrii/starter). It scaffolds a full project under your app name and package, rewires modules and namespaces for you, and typically saves **2–3 hours** of manual rename and setup work.
+Start with the **CLI** — [`@devatrii/starter`](https://www.npmjs.com/package/@devatrii/starter) <img src="https://img.shields.io/npm/v/%40devatrii%2Fstarter?style=for-the-badge&label=Version&color=CB3837" />. It scaffolds a full project under your app name and package, rewires modules and namespaces for you, and typically saves **2–3 hours** of manual rename and setup work.
 
 The CLI is in **alpha** — it generates projects successfully, but expect rough edges. If you hit an issue, please [report it on GitHub Issues](https://github.com/DevAtrii/Kmp-Starter-Template/issues).
 
@@ -127,7 +128,7 @@ Artifacts are published under **`io.github.devatrii`**. They are not fully stabl
 
 ```toml
 [versions]
-starter = "0.4.9"
+starter = "x.x.x"
 
 [libraries]
 # Starter
