@@ -23,7 +23,7 @@ class StarterNavigator : BaseNavigator() {
     companion object {
         @Composable
         fun getCurrent(): StarterNavigator {
-            return koinInject<StarterNavigator>()
+            return koinInject()
         }
     }
 }

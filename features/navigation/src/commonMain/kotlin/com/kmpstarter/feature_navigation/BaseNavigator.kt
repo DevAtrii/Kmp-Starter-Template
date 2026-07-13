@@ -34,6 +34,33 @@ class BackstackAlreadyProvided : IllegalStateException("Backstack must be provid
  *
  * Before any navigation method can be used, a back stack must be provided
  * via [provideBackStack].
+ *
+ * ## Creating a navigator
+ *
+ * Extend this class to expose navigation APIs specific to your application.
+ *
+ * ```kotlin
+ * class AppNavigator : BaseNavigator() {
+ *
+ *    companion object {
+ *         @Composable
+ *         fun getCurrent(): AppNavigator {
+ *             return koinInject()
+ *         }
+ *     }
+ *
+ *     fun openHome() {
+ *         navigateTo(HomeScreen)
+ *     }
+ *
+ *     fun openSettings() {
+ *         navigateTo(SettingsScreen)
+ *     }
+ * }
+ * ```
+ *
+ * The navigator can then be provided through your preferred dependency
+ * injection solution (such as Koin) or any other state holder.
  */
 abstract class BaseNavigator {
 
