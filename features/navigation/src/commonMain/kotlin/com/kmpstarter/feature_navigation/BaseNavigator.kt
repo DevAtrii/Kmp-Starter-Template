@@ -22,7 +22,8 @@ import androidx.navigation3.runtime.NavKey
 annotation class StarterNavigatorDsl // just to highlight code in IDE
 
 
-class BackstackAlreadyProvided : IllegalStateException("Backstack must be provided once. make sure you aren't calling navigator.provideBackStack function more than once")
+class BackstackAlreadyProvided :
+    IllegalStateException("Backstack must be provided once. make sure you aren't calling navigator.provideBackStack function more than once")
 
 @Suppress("DSL_MARKER_APPLIED_TO_WRONG_TARGET")
 @StarterNavigatorDsl
@@ -80,7 +81,6 @@ abstract class BaseNavigator {
      *
      * Child implementations may override this method
      *
-     * Default implementation throw error if backstack is already provided
      *
      * @param backStack Navigation back stack to operate on.
      */
@@ -88,14 +88,14 @@ abstract class BaseNavigator {
     open fun provideBackStack(
         backStack: NavBackStack<NavKey>,
     ) {
-        if (isInitialized) throw BackstackAlreadyProvided()
+        if (isInitialized) return
         this.backStack = backStack
     }
 
     /**
      * Returns `true` if a back stack has been provided.
      */
-    protected val isInitialized: Boolean
+    val isInitialized: Boolean
         get() = ::backStack.isInitialized
 
     /**
