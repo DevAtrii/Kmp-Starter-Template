@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Java-17-007396?style=for-the-badge&logo=openjdk&logoColor=white" />
   <img src="https://img.shields.io/badge/iOS-12+-000000?style=for-the-badge&logo=apple&logoColor=white" />
   <img src="https://img.shields.io/badge/Android-7+-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
-  <img src="https://img.shields.io/badge/Version-0.4.0-6C63FF?style=for-the-badge" />
+  <img src="https://img.shields.io/maven-central/v/io.github.devatrii/starter-core?style=for-the-badge&label=Version&color=6C63FF" />
 </p>
 
 <p align="center">
@@ -122,7 +122,8 @@ We are working to ship **KMP Starter** as published Maven libraries so existing 
 Artifacts are published under **`io.github.devatrii`**. They are not fully stable yet—APIs and module boundaries may change between releases.
 
 
-**Example `libs.versions.toml` for consumers:**
+**Example `libs.versions.toml` for consumers:**   <img src="https://img.shields.io/maven-central/v/io.github.devatrii/starter-core?style=for-the-badge&label=Version&color=6C63FF" />
+
 
 ```toml
 [versions]
