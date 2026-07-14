@@ -1,0 +1,74 @@
+# Creates a GitHub Release of the repository source after Maven libraries publish successfully.
+# The CLI downloads starter source from these releases (zipball via tag).
+#
+# Version is read from gradle/libs.versions.toml (lib-version-major/minor/patch).
+# Tag format: vMAJOR.MINOR.PATCH (e.g. v0.5.2)
+#
+# Triggers when "Publish KMP libraries to Maven Central" completes successfully.
+# Also supports manual workflow_dispatch.
+
+name: Release starter source
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Publish KMP libraries to Maven Central"]
+    types:
+      - completed
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.ref }}
+          fetch-depth: 0
+
+      - name: Extract lib version from libs.versions.toml
+        id: get_version
+        run: |
+          MAJOR=$(sed -n 's/lib-version-major *= *"\([^"]*\)".*/\1/p' gradle/libs.versions.toml)
+          MINOR=$(sed -n 's/lib-version-minor *= *"\([^"]*\)".*/\1/p' gradle/libs.versions.toml)
+          PATCH=$(sed -n 's/lib-version-patch *= *"\([^"]*\)".*/\1/p' gradle/libs.versions.toml)
+
+          if [ -z "$MAJOR" ] || [ -z "$MINOR" ] || [ -z "$PATCH" ]; then
+            echo "::error::Could not parse lib-version-major/minor/patch from gradle/libs.versions.toml"
+            exit 1
+          fi
+
+          VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Detected lib version: $VERSION"
+
+      - name: Check if release already exists
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="v${{ steps.get_version.outputs.VERSION }}"
+          if gh release view "$TAG_NAME" > /dev/null 2>&1; then
+            echo "::error::Release $TAG_NAME already exists. Bump lib-version-* in gradle/libs.versions.toml."
+            exit 1
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          name: Starter v${{ steps.get_version.outputs.VERSION }}
+          body: |
+            Source release for KMP Starter Template **v${{ steps.get_version.outputs.VERSION }}**.
+
+            Published after Maven libraries (`io.github.devatrii`) were published to Maven Central.
+
+            The CLI (`@devatrii/starter`) uses this release's source zipball to generate projects.
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
