@@ -26,7 +26,7 @@ plugins {
 
 kotlin {
 
-    androidLibrary {
+    android {
         namespace = "com.kmpstarter.feature_remote_config_presentation"
         compileSdk {
             version = release(version = libs.versions.android.compileSdk.get().toInt())

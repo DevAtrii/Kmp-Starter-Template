@@ -32,10 +32,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation3.runtime.NavKey
-import com.kmpstarterapp.core.KmpAppInitializer
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
-import com.kmpstarterapp.core.navigation.AppScreens
 import com.kmpstarter.feature_locale.LocaleProvider
 import com.kmpstarter.feature_locale.StarterLocale
 import com.kmpstarter.feature_locale.StarterLocales
@@ -44,12 +42,14 @@ import com.kmpstarter.feature_resources.Res
 import com.kmpstarter.feature_resources.lang_es
 import com.kmpstarter.feature_resources.lang_hi
 import com.kmpstarter.feature_resources.lang_ur
-import com.kmpstarterapp.theme.ApplicationTheme
 import com.kmpstarter.ui_utils.composition_locals.LocalThemeMode
 import com.kmpstarter.ui_utils.side_effects.LaunchOnce
 import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
 import com.kmpstarter.ui_utils.store.AppUpdateProvider
 import com.kmpstarter.utils.starter.ExperimentalStarterApi
+import com.kmpstarterapp.core.KmpAppInitializer
+import com.kmpstarterapp.core.navigation.AppScreens
+import com.kmpstarterapp.theme.ApplicationTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

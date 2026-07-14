@@ -36,6 +36,7 @@ object StarterLocales {
 
 }
 
+
 data class StarterLocale(
     val emoji: String,
     val langCode: String,

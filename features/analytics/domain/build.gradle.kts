@@ -25,7 +25,7 @@ plugins {
 
 kotlin {
 
-    androidLibrary {
+    android {
         namespace = "com.kmpstarter.feature_analytics_domain"
         compileSdk {
             version = release(version = libs.versions.android.compileSdk.get().toInt())

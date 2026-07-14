@@ -24,7 +24,33 @@ import okio.Path.Companion.toPath
 
 internal const val dataStoreFileName = "settings.preferences_pb"
 
-@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+/**
+ * Application DataStore wrapper.
+ *
+ * Example:
+ * ```
+ * // Primitive values
+ * val username = appDataStore.stringDataStore("username")
+ * val age = appDataStore.intDataStore("age")
+ * val isLoggedIn = appDataStore.booleanDataStore("logged_in")
+ *
+ * // Serializable objects
+ * @Serializable
+ * data class UserSettings(
+ *     val notifications: Boolean = true,
+ *     val theme: String = "System",
+ * )
+ *
+ * val settings = appDataStore.serializableDataStore(
+ *     name = "settings",
+ *     default = UserSettings()
+ * )
+ *
+ * settings.set(
+ *     UserSettings(theme = "Dark")
+ * )
+ * ```
+ */
 expect class AppDataStore {
     val dataStore: DataStore<Preferences>
 }

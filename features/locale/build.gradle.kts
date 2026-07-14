@@ -34,7 +34,7 @@ compose.resources {
 
 kotlin {
 
-    androidLibrary {
+    android {
         androidResources.enable = true
         namespace = "com.kmpstarter.feature_locale"
         compileSdk {

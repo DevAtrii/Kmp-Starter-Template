@@ -31,7 +31,7 @@ plugins {
 kotlin {
 
 
-    androidLibrary {
+    android {
         namespace = "com.kmpstarter.native_bindings"
         compileSdk = 36
         minSdk = 24

@@ -61,6 +61,7 @@ subprojects {
         extensions.configure<KotlinMultiplatformExtension>{
             compilerOptions {
                 freeCompilerArgs.add("-Xexpect-actual-classes")
+                freeCompilerArgs.add("-Xcontext-parameters")
             }
         }
     }

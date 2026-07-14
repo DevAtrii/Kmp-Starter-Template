@@ -26,7 +26,7 @@ plugins {
 
 kotlin {
 
-    androidLibrary {
+    android {
         namespace = "com.kmpstarter.feature_your_feature_data"
         compileSdk {
             version = release(version = libs.versions.android.compileSdk.get().toInt())

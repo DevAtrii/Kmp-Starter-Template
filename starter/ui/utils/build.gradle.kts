@@ -24,10 +24,7 @@ plugins {
 }
 
 kotlin {
-    compilerOptions {
-        freeCompilerArgs.add("-Xcontext-parameters")
-    }
-    androidLibrary {
+    android {
         namespace = "com.kmpstarter.ui_utils"
         compileSdk = 36
         minSdk = 24

@@ -25,7 +25,7 @@ plugins {
 
 kotlin {
 
-    androidLibrary {
+    android {
         namespace = "com.kmpstarter.core"
         compileSdk = 36
         minSdk = 24

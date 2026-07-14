@@ -25,7 +25,7 @@ plugins {
 kotlin {
 
 
-    androidLibrary {
+    android {
         namespace = "com.kmpstarter.feature_notifications_push"
         compileSdk {
             version = release(version = libs.versions.android.compileSdk.get().toInt())

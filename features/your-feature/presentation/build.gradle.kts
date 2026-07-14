@@ -30,7 +30,7 @@ compose.resources {
 
 kotlin {
 
-    androidLibrary {
+    android {
         namespace = "com.kmpstarter.feature_your_feature_presentation"
         compileSdk {
             version = release(version = libs.versions.android.compileSdk.get().toInt())

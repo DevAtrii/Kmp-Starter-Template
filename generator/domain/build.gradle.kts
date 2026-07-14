@@ -28,7 +28,7 @@ plugins {
 
 kotlin {
     // adding this so that we don't get error because of build-logic plugins are applied
-    androidLibrary {
+    android {
         namespace = "com.kmpstarter.generator_domain"
         compileSdk {
             version = release(version = libs.versions.android.compileSdk.get().toInt())

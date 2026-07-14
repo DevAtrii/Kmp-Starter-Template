@@ -33,10 +33,7 @@ compose.resources {
 }
 
 kotlin {
-    compilerOptions {
-        freeCompilerArgs.add("-Xcontext-parameters")
-    }
-    androidLibrary {
+    android {
         namespace = "com.kmpstarterapp"
         compileSdk {
             version = release(version = libs.versions.android.compileSdk.get().toInt())
