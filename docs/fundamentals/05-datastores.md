@@ -61,8 +61,87 @@ var lastSync by rememberMutableLongDataStore("lastSync", 0L)
 
 ## Non-Compose Usage
 
-```kotlin title="Non-Compose Example" 
-class UserDataStore(appDataStore: AppDataStore) {
+**Recommended:** use **DataStore delegates** from `AppDataStore` inside a ViewModel (or any class). Skip raw `Preferences.Key` + `edit`/`map` boilerplate.
+
+### DataStore Delegates
+
+```kotlin title="ViewModel — DataStore Delegates"
+class AuthViewModel(
+    appDataStore: AppDataStore,
+) : ViewModel() {
+    private val accessToken = appDataStore.stringDataStore("access_token")
+    private val loginCount = appDataStore.intDataStore("login_count", default = 0)
+    private val isLoggedIn = appDataStore.booleanDataStore("is_logged_in", default = false)
+
+    fun login(token: String) {
+        viewModelScope.launch {
+            accessToken.set(token)
+            isLoggedIn.set(true)
+            loginCount.set((loginCount.get() ?: 0) + 1)
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            accessToken.clear()
+            isLoggedIn.set(false)
+        }
+    }
+
+    // Observe
+    val tokenFlow = accessToken.flow
+}
+```
+
+Primitive factories on `AppDataStore`:
+
+| Factory | Type |
+| :--- | :--- |
+| `stringDataStore` | `String` |
+| `intDataStore` | `Int` |
+| `longDataStore` | `Long` |
+| `booleanDataStore` | `Boolean` |
+| `floatDataStore` | `Float` |
+| `doubleDataStore` | `Double` |
+| `stringSetDataStore` | `Set<String>` |
+| `byteArrayDataStore` | `ByteArray` |
+
+API on each delegate: `flow`, `get()`, `set(value)`, `clear()`. Pass `null` to `set` → key removed.
+
+### Serializable objects
+
+Store any `@Serializable` type as JSON:
+
+```kotlin title="ViewModel — Serializable DataStore Delegate"
+@Serializable
+data class Settings(val darkMode: Boolean = false)
+
+class SettingsViewModel(
+    appDataStore: AppDataStore,
+) : ViewModel() {
+    private val settings = appDataStore.serializableDataStore(
+        name = "settings",
+        default = Settings(),
+    )
+
+    val settingsFlow = settings.flow
+
+    fun setDarkMode(enabled: Boolean) {
+        viewModelScope.launch {
+            settings.set(Settings(darkMode = enabled))
+        }
+    }
+}
+```
+
+### Raw DataStore (not recommended)
+
+Only if you need custom key logic beyond delegates:
+
+```kotlin title="Raw DataStore (legacy style)"
+class AuthViewModel(
+    appDataStore: AppDataStore,
+) : ViewModel() {
     companion object {
         private val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")
     }
@@ -73,17 +152,22 @@ class UserDataStore(appDataStore: AppDataStore) {
         prefs[ACCESS_TOKEN_KEY]
     }
 
-    suspend fun setAccessToken(token: String?) {
-        dataStore.edit { prefs ->
-            if (token == null) prefs.remove(ACCESS_TOKEN_KEY)
-            else prefs[ACCESS_TOKEN_KEY] = token
+    fun setAccessToken(token: String?) {
+        viewModelScope.launch {
+            dataStore.edit { prefs ->
+                if (token == null) prefs.remove(ACCESS_TOKEN_KEY)
+                else prefs[ACCESS_TOKEN_KEY] = token
+            }
         }
     }
 }
 ```
 
+!!! tip "Prefer delegates"
+    Non-Compose code → `stringDataStore` / `intDataStore` / `serializableDataStore` etc. Less boilerplate, same behavior.
+
 !!! note "Note"
-    `AppDataStore` is a singleton class that is injected into the `UserDataStore` class automatically.
+    Inject `AppDataStore` into your ViewModel via Koin (it is a singleton).
 
 
 

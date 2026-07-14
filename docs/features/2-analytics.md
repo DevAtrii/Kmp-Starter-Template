@@ -5,7 +5,7 @@ icon: lucide/chart-area
 
 # Analytics
 
-The Starter Template provides a **modular, provider-agnostic analytics system** built with Clean Architecture. You can track events, purchases, user behavior, and more while keeping your implementation flexible.
+The Starter Template provides a **modular, provider-agnostic analytics system** built with Clean Architecture. You track events through type-safe `AppEvent` models while keeping the provider (Mixpanel today) swappable in the data layer.
 
 ---
 
@@ -26,148 +26,125 @@ object AppConstants {
 
 ---
 
-## 1. Define Event Keys
+## Architecture
 
-1: Inside the `companion object`, define your event key:
+| Piece | Role |
+| :--- | :--- |
+| `AppEvent` | Base analytics event (`event` name + optional `properties`) in **analytics domain** |
+| `AppEvents` | Your sealed hierarchy of all app events (starter ships one in **core domain**) |
+| `EventsTracker` | Interface that sends events to the provider |
 
-```kotlin linenums="1" title="features/analytics/domain/.../AppEventsTracker.kt"
-companion object {
-    const val KEY_SIGN_IN_SUCCESS = "sign_in_success"
-}
-```
-
-2: Add a corresponding `track` function in the interface:
-
-```kotlin linenums="1" title="features/analytics/domain/.../AppEventsTracker.kt"
-suspend fun trackSignInSuccess(userId: String)
-```
-
-!!! note
-    - Use descriptive function names starting with `track`.
-    - Keep keys consistent and unique across the app.
-
-??? abstract "Full Example"
-    ```kotlin title="features/analytics/domain/.../AppEventsTracker.kt"
-    interface AppEventsTracker {
-
-    // events names
-    companion object {
-        const val KEY_ONBOARDING_TRAFFIC_SOURCE = "traffic_source"
-
-        const val KEY_PURCHASE_SUCCESS = "purchase_success"
-        const val KEY_PURCHASE_FAILURE = "purchase_failure"
-        const val KEY_PURCHASE_RESTORE_FAILURE = "purchase_restore_failure"
-        const val KEY_PURCHASE_PRODUCTS_FAILURE = "purchase_products_failure"
-
-    }
-
-    // onboarding
-    suspend fun trackTrafficSource(source: String)
-
-    // purchases
-    suspend fun trackPurchaseSuccess(productId: String)
-    suspend fun trackPurchaseFailure(productId: String, error: String)
-    suspend fun trackPurchaseProductsFailure(error: String)
-    suspend fun trackPurchaseRestoreFailure(error: String)
-
-    }
-    ```
-    
+Recommended approach: keep **one sealed `AppEvents` hierarchy** (core/shared module) so every screen tracks through the same typed models.
 
 ---
 
-## 2. Implement the Event
+## 1. Define Events
 
-Implement the new function using the existing `EventsTracker`:
+Extend `AppEvent` with a sealed hierarchy. Starter already provides `AppEvents` in core domain:
 
-```kotlin linenums="1" title="features/analytics/data/.../AppEventsTrackerImpl.kt"
-override suspend fun trackSignInSuccess(userId: String) {
-    eventsTracker.track(
-        event = AppEventsTracker.KEY_SIGN_IN_SUCCESS,
-        pair = "userId" to userId
+```kotlin title="features/core/domain/.../AppEvents.kt"
+sealed class AppEvents(
+    event: String,
+    properties: Map<String, Any>? = null,
+) : AppEvent(event, properties) {
+
+    constructor(event: String) : this(event = event, properties = null)
+
+    constructor(
+        event: String,
+        pair: Pair<String, Any>? = null,
+    ) : this(
+        event = event,
+        properties = if (pair != null) mapOf(pair) else mapOf(),
+    )
+
+    data object DummyEvent : AppEvents(
+        event = "dummy_event",
+    )
+
+    data class TrackTrafficSource(
+        val source: String,
+    ) : AppEvents(
+        event = "onboarding_traffic_source",
+        pair = "traffic_source" to source,
+    )
+
+    data class OnPurchaseSuccess(
+        val productId: String,
+    ) : AppEvents(
+        event = "purchase_success",
+        pair = "product_id" to productId,
     )
 }
 ```
-??? abstract "Full Example"
-    ```kotlin linenums="1" title="features/analytics/data/.../AppEventsTrackerImpl.kt"
-    class AppEventsTrackerImpl(
-        private val eventsTracker: EventsTracker,
-    ) : AppEventsTracker {
-        override suspend fun trackTrafficSource(source: String) {
-            eventsTracker.track(
-                event = AppEventsTracker.KEY_ONBOARDING_TRAFFIC_SOURCE,
-                pair = "source" to source
-            )
-        }
 
-        override suspend fun trackPurchaseSuccess(productId: String) {
-            eventsTracker.track(
-                event = AppEventsTracker.KEY_PURCHASE_SUCCESS,
-                pair = "productId" to productId
-            )
-        }
+Add a new event as another nested type:
 
-        override suspend fun trackPurchaseFailure(productId: String, error: String) {
-            eventsTracker.track(
-                event = AppEventsTracker.KEY_PURCHASE_FAILURE,
-                properties = mapOf(
-                    "productId" to productId,
-                    "error" to error
-                )
-            )
-        }
+```kotlin
+data class SignInSuccess(
+    val userId: String,
+) : AppEvents(
+    event = "sign_in_success",
+    pair = "user_id" to userId,
+)
+```
 
-        override suspend fun trackPurchaseProductsFailure(error: String) {
-            eventsTracker.track(
-                event = AppEventsTracker.KEY_PURCHASE_PRODUCTS_FAILURE,
-                pair = "error" to error
-            )
-        }
+For multiple properties, pass `properties = mapOf(...)` instead of `pair`.
 
-        override suspend fun trackPurchaseRestoreFailure(error: String) {
-            eventsTracker.track(
-                event = AppEventsTracker.KEY_PURCHASE_RESTORE_FAILURE,
-                pair = "error" to error
-            )
-        }
-    }
-    
-    ```
+!!! note
+    - Prefer `snake_case` event names.
+    - Keep all events in one sealed class for autocomplete and consistency.
+    - No need to add methods on `EventsTracker` per event — the type **is** the event.
 
 ---
 
-## 3. Use in ViewModel
+## 2. Track in ViewModel
 
-```kotlin linenums="1" title="SignInViewModel.kt"
+Inject `EventsTracker` and call `track` with an `AppEvents` instance:
+
+```kotlin title="SignInViewModel.kt" linenums="1"
 class SignInViewModel(
-    private val appEventsTracker: AppEventsTracker
+    private val eventsTracker: EventsTracker,
 ) : ViewModel() {
 
     fun onSignIn(userId: String) {
         viewModelScope.launch {
-            appEventsTracker.trackSignInSuccess(userId)
+            eventsTracker.track(
+                event = AppEvents.SignInSuccess(userId = userId),
+            )
         }
     }
 }
 ```
 
+Another example from onboarding:
+
+```kotlin
+eventsTracker.track(
+    event = AppEvents.TrackTrafficSource(
+        source = selectedTrafficSource ?: "--",
+    ),
+)
+```
+
 !!! note
-    - Keep the analytics calling inside presentation layer
-    - Best place is viewModel
+    - Keep analytics calls in the presentation layer.
+    - ViewModel is the best place.
+
+You can still call the string overloads (`track(event)`, `track(event, pair)`, `track(event, properties)`) when needed, but **typed `AppEvent` is preferred**.
 
 ---
 
 ## Replacing Analytics Provider
 
-* To swap Mixpanel with another provider:
+To swap Mixpanel with another provider:
 
-  1. Implement the `EventsTracker` interface in the **data layer**.
-  2. Update your Koin module to provide your implementation.
+1. Implement the `EventsTracker` interface in the **data layer**.
+2. Update your Koin module to provide your implementation.
 
 !!! note
     - Domain layer, ViewModels, and Compose code remain unchanged.
-    - This allows switching providers without rewriting app logic.
-
+    - Switching providers does not require rewriting event definitions.
 
 ### Dummy Local Implementation Example
 
@@ -176,6 +153,10 @@ class DummyEventsTracker : EventsTracker {
 
     override val isEnabled: Boolean
         get() = true
+
+    override suspend fun track(event: AppEvent) {
+        println("Tracked event: ${event.event} with properties ${event.properties}")
+    }
 
     override suspend fun track(event: String) {
         println("Tracked event: $event")
@@ -210,4 +191,3 @@ class DummyEventsTracker : EventsTracker {
     override suspend fun reset() {}
 }
 ```
-

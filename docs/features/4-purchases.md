@@ -199,7 +199,7 @@ You can directly use this ViewModel in your Purchases screen.
     Use this only when you are implementing your own purchases screen, otherwise navigate to `Starter.Purchases` screen
 
 !!! note
-    viewModel also handles the analytics events using `AppEventsTracker`
+    viewModel also handles analytics via `EventsTracker` + typed `AppEvents`
 
 ---
 

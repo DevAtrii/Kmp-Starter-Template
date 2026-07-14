@@ -5,11 +5,11 @@ icon: lucide/bolt
 
 # Remote Config
 
-The Starter Template includes a **type-safe Remote Config system** built using Clean Architecture.
+The Starter Template includes a **type-safe Remote Config system** built with Clean Architecture.
 
 It allows you to:
 
-* Define strongly typed keys
+* Define strongly typed keys via `RemoteConfigKey`
 * Provide safe defaults
 * Deserialize custom JSON objects
 * Use values in ViewModels or Compose
@@ -17,51 +17,77 @@ It allows you to:
 
 ---
 
-## Keys
-You can define all your keys inside:
+## Architecture
 
-```kotlin title="features/remote_config/domain/.../RemoteConfigKeys.kt" linenums="1"
+| Piece | Role |
+| :--- | :--- |
+| `RemoteConfigKey<T>` | Base contract for a single remote config entry (key + default + optional serializer) |
+| Your sealed keys | App-owned hierarchy of all config keys (e.g. `ConfigKeys`) |
+| `GetConfigLogic` | Reads a typed value for a `RemoteConfigKey` |
+| `rememberRemoteConfig` | Compose helper that observes a key |
+
+Recommended approach: keep **one sealed key hierarchy** in your app/core module so every screen reads config through the same typed models.
+
+---
+
+## 1. Define Keys
+
+Extend `RemoteConfigKey`. Example:
+
+```kotlin title="Your app / core module"
 @Serializable
 data class PromoConfig(
     val isEnabled: Boolean = false,
     val discountPercentage: Int = 0,
 )
 
-sealed class RemoteConfigKeys<T>(
-    val key: String,
-    open val defaultValue: T,
-    val serializer: KSerializer<T>? = null,
+sealed class ConfigKeys<T>(
+    key: String,
+    defaultValue: T,
+    serializer: KSerializer<T>? = null,
+) : RemoteConfigKey<T>(
+    key = key,
+    defaultValue = defaultValue,
+    serializer = serializer,
 ) {
 
     data class ShowAds(
         override val defaultValue: Boolean = false,
-    ) : RemoteConfigKeys<Boolean>(
+    ) : RemoteConfigKey<Boolean>(
         key = "show_ads",
-        defaultValue = defaultValue
+        defaultValue = defaultValue,
     )
 
     data class WelcomeText(
         override val defaultValue: String = "Welcome to KMP Starter",
-    ) : RemoteConfigKeys<String>(
+    ) : RemoteConfigKey<String>(
         key = "welcome_text",
-        defaultValue = defaultValue
+        defaultValue = defaultValue,
     )
 
     data class Promo(
         override val defaultValue: PromoConfig = PromoConfig(),
-    ) : RemoteConfigKeys<PromoConfig>(
+    ) : RemoteConfigKey<PromoConfig>(
         key = "promo_config",
         defaultValue = defaultValue,
-        serializer = PromoConfig.serializer()
+        serializer = PromoConfig.serializer(),
+    )
+
+    data class MinimumVersion(
+        override val defaultValue: Int = 36,
+    ) : RemoteConfigKey<Int>(
+        key = "minimum_version",
+        defaultValue = defaultValue,
     )
 }
 ```
 
 !!! note
-    - It's recommended to set default value by `override`
+    - Override `defaultValue` so defaults stay at the call site.
     - Keys must exactly match Firebase console keys.
-    - Always provide safe default values.
-    - Use a serializer for custom objects.
+    - Always provide safe defaults.
+    - Pass `serializer` for `@Serializable` custom objects.
+
 ??? abstract "Initialization"
     Remote Config must be initialized at app startup:
 
@@ -79,15 +105,15 @@ sealed class RemoteConfigKeys<T>(
 
 ---
 
+## 2. Use in ViewModel
 
-### Example – Enable/Disable Ads
-Let’s say you want to remotely enable/disable ads.
+Inject `GetConfigLogic` and pass a key instance:
 
-#### ViewModel
+### Enable/Disable Ads
 
 ```kotlin linenums="1"
 class HomeViewModel(
-    private val getConfig: GetConfigLogic
+    private val getConfig: GetConfigLogic,
 ) : ViewModel() {
 
     private val _showAds = MutableStateFlow(false)
@@ -95,21 +121,18 @@ class HomeViewModel(
 
     init {
         viewModelScope.launch {
-            _showAds.value =
-                getConfig(RemoteConfigKeys.ShowAds())
+            _showAds.value = getConfig(ConfigKeys.ShowAds())
         }
     }
 }
 ```
 
 !!! success ""
-    Now your UI can decide whether to show ads dynamically without releasing a new version.
+    UI can show/hide ads remotely without a new release.
 
----
+### Running a Promotion
 
-### Example – Running a Promotion
-
-Suppose you want to run a limited-time discount campaign.
+Firebase JSON for `promo_config`:
 
 ```json title="Firebase Remote Config" linenums="1"
 {
@@ -118,20 +141,17 @@ Suppose you want to run a limited-time discount campaign.
 }
 ```
 
-#### ViewModel
-
 ```kotlin
 class PromoViewModel(
-    private val getConfig: GetConfigLogic
+    private val getConfig: GetConfigLogic,
 ) : ViewModel() {
 
-    private val _promo = MutableStateFlow(RemoteConfigKeys.Promo())
-    val promo: StateFlow<RemoteConfigKeys.Promo> = _promo
+    private val _promo = MutableStateFlow(PromoConfig())
+    val promo: StateFlow<PromoConfig> = _promo
 
     init {
         viewModelScope.launch {
-            _promo.value =
-                getConfig(RemoteConfigKeys.Promo())
+            _promo.value = getConfig(ConfigKeys.Promo())
         }
     }
 }
@@ -148,17 +168,15 @@ class PromoViewModel(
 
 ## Compose Usage
 
-You can directly use Remote Config inside Compose:
-
 ```kotlin linenums="1"
 @Composable
 fun HomeScreen() {
     val showAds by rememberRemoteConfig(
-        key = RemoteConfigKeys.ShowAds()
+        key = ConfigKeys.ShowAds(),
     )
 
     val promo by rememberRemoteConfig(
-        key = RemoteConfigKeys.Promo()
+        key = ConfigKeys.Promo(),
     )
 
     Column {
@@ -175,7 +193,7 @@ fun HomeScreen() {
 
 !!! success ""
     * Starts with default value
-    * Updates automatically after fetch
+    * Updates after fetch
     * Supports primitives & custom types
 
 ---
@@ -196,13 +214,7 @@ interface RemoteConfigRepository {
 }
 ```
 
-Here, `RemoteConfigValue` is a typealias:
-
-```kotlin
-typealias RemoteConfigValue = String
-```
-
----
+`RemoteConfigValue` is a typealias for `String`.
 
 ### Local Implementation Example
 
@@ -214,7 +226,7 @@ class LocalRemoteConfigRepository : RemoteConfigRepository {
         "welcome_text" to "Welcome from Local Config",
         "promo_config" to """
             {"isEnabled":true,"discountPercentage":30}
-        """.trimIndent()
+        """.trimIndent(),
     )
 
     override fun get(key: String): RemoteConfigValue {
@@ -225,14 +237,14 @@ class LocalRemoteConfigRepository : RemoteConfigRepository {
 
 Bind it in Koin:
 
-```kotlin linenums="1" title="features/remote_config/data/commonMain/.../di/Module.kt"
+```kotlin linenums="1" title="features/remote_config/data/.../di/Module.kt"
 single<RemoteConfigRepository> {
     LocalRemoteConfigRepository()
 }
 ```
 
 !!! note ""
-    This is useful for:
+    Useful for:
 
     - Unit testing
     - Desktop builds
@@ -243,8 +255,8 @@ single<RemoteConfigRepository> {
 
 !!! abstract "Summary"
 
-    * Define keys in `RemoteConfigKeys.kt`
+    * Define keys as `RemoteConfigKey` subclasses (e.g. sealed `ConfigKeys`)
     * Always provide default values
     * Use `GetConfigLogic` in ViewModels
     * Use `rememberRemoteConfig` in Compose
-    * Replace repository if needed
+    * Replace `RemoteConfigRepository` if needed

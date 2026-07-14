@@ -14,6 +14,7 @@
   <img src="https://img.shields.io/badge/iOS-12+-000000?style=for-the-badge&logo=apple&logoColor=white" />
   <img src="https://img.shields.io/badge/Android-7+-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
   <img src="https://img.shields.io/badge/Node.js-18%2B-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white" />
+    <img src="https://img.shields.io/npm/v/%40devatrii%2Fstarter?style=for-the-badge&label=CLI&color=CB3837" />
   <img src="https://img.shields.io/maven-central/v/io.github.devatrii/starter-core?style=for-the-badge&label=Version&color=6C63FF" />
 </p>
 
