@@ -46,8 +46,8 @@ expect class StarterFileManager {
      *
      * Implementations may display a system file picker or save dialog.
      *
-     * On Android, requires a host [androidx.activity.ComponentActivity]. Use
-     * [com.kmpstarter.ui_utils.files.rememberStarterFileManager] in Compose instead of
+     * On Android, requires a host `[androidx.activity.ComponentActivity]`. Use
+     * `[com.kmpstarter.ui_utils.files.rememberStarterFileManager]` in Compose instead of
      * the Koin singleton when calling this method.
      *
      * @param suggestedName Default file name without extension.
@@ -63,16 +63,28 @@ expect class StarterFileManager {
     ): Result<Unit>
 
     /**
-     * Saves file into Downloads directory.
+     * Saves a file into the platform Downloads directory when supported.
      *
-     * If [folderPath] is provided, file is created inside that subdirectory.
+     * If [folderPath] is provided, the file is created inside that subdirectory.
      * Missing directories may be created automatically depending on platform.
      *
+     * ### Platform behavior
+     * - **Android:** Saves the file into the user's public **Downloads** directory.
+     * - **iOS:** iOS does not allow apps to write directly to the user's public
+     *   Downloads folder. Files are instead saved to the app's Documents directory:
+     *   `Documents/{AppName}/...`.
+     *
+     * For files that should be accessible outside your app, prefer [saveFileIn],
+     * which lets the user choose the destination using the system file picker.
+     *
+     * For temporary or app-private files, prefer [saveInCache],
+     * [getFilesFromCache], and [readFromCache].
+     *
      * @param file File name without extension.
-     * @param folderPath Optional relative folder inside Downloads.
+     * @param folderPath Optional relative folder path.
      * @param extension File extension without leading dot.
      * @param content File contents.
-     * @param mimeType MIME type associated with file.
+     * @param mimeType MIME type associated with the file.
      */
     suspend fun saveFileIntoDownloads(
         file: FileName,

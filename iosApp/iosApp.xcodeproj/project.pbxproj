@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3E38ACDA2E252CF1004805A2 /* PurchasesHybridCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 3E38ACD92E252CF1004805A2 /* PurchasesHybridCommon */; };
-		3E38ACDC2E252CF1004805A2 /* PurchasesHybridCommonUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3E38ACDB2E252CF1004805A2 /* PurchasesHybridCommonUI */; };
 		3E38ACDF2E252D36004805A2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 3E38ACDE2E252D36004805A2 /* FirebaseAnalytics */; };
 		3E38ACE12E252D36004805A2 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3E38ACE02E252D36004805A2 /* FirebaseAuth */; };
 		3E38ACE32E252D36004805A2 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3E38ACE22E252D36004805A2 /* FirebaseCore */; };
@@ -100,10 +98,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				3EB403C12F46CCF500216986 /* FirebaseRemoteConfig in Frameworks */,
-				3E38ACDC2E252CF1004805A2 /* PurchasesHybridCommonUI in Frameworks */,
 				3EC0F5242F48D03A00E7D328 /* FirebaseMessaging in Frameworks */,
 				3E38ACE32E252D36004805A2 /* FirebaseCore in Frameworks */,
-				3E38ACDA2E252CF1004805A2 /* PurchasesHybridCommon in Frameworks */,
 				3E38ACEA2E252D73004805A2 /* GoogleSignInSwift in Frameworks */,
 				3E38ACDF2E252D36004805A2 /* FirebaseAnalytics in Frameworks */,
 				3E38ACE12E252D36004805A2 /* FirebaseAuth in Frameworks */,
@@ -190,8 +186,6 @@
 			);
 			name = KmpIosApp;
 			packageProductDependencies = (
-				3E38ACD92E252CF1004805A2 /* PurchasesHybridCommon */,
-				3E38ACDB2E252CF1004805A2 /* PurchasesHybridCommonUI */,
 				3E38ACDE2E252D36004805A2 /* FirebaseAnalytics */,
 				3E38ACE02E252D36004805A2 /* FirebaseAuth */,
 				3E38ACE22E252D36004805A2 /* FirebaseCore */,
@@ -674,16 +668,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3E38ACD92E252CF1004805A2 /* PurchasesHybridCommon */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3E38ACD82E252CF1004805A2 /* XCRemoteSwiftPackageReference "purchases-hybrid-common" */;
-			productName = PurchasesHybridCommon;
-		};
-		3E38ACDB2E252CF1004805A2 /* PurchasesHybridCommonUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3E38ACD82E252CF1004805A2 /* XCRemoteSwiftPackageReference "purchases-hybrid-common" */;
-			productName = PurchasesHybridCommonUI;
-		};
 		3E38ACDE2E252D36004805A2 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3E38ACDD2E252D36004805A2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
