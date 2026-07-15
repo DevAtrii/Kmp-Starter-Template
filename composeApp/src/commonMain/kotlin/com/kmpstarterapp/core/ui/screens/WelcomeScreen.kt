@@ -112,6 +112,7 @@ fun WelcomeScreen(
 ) {
     var showContent by remember { mutableStateOf(false) }
     var showBlur by remember { mutableStateOf(false) }
+    var showFileManagerDialog by remember { mutableStateOf(false) }
     var clickCount by remember { mutableIntStateOf(0) }
     var buttonText by remember { mutableStateOf("Toggle") }
 
@@ -139,6 +140,12 @@ fun WelcomeScreen(
             SnackbarController.sendMessage("Great! You're all set!")
         }
     }*/
+
+    if (showFileManagerDialog) {
+        StarterFileManagerDialog(
+            onDismiss = { showFileManagerDialog = false },
+        )
+    }
 
     Scaffold {
         Box(
@@ -246,6 +253,7 @@ fun WelcomeScreen(
                                 themeDataStore = themeDataStore,
                                 intentUtils = intentUtils,
                                 buttonText = buttonText,
+                                onFileManagerClick = { showFileManagerDialog = true },
                                 onThemeClick = {
                                     val themeMode = when (clickCount) {
                                         0 -> {
@@ -356,6 +364,7 @@ fun WelcomeScreen(
                             intentUtils = intentUtils,
                             onGetStartedClick = onGetStartedClick,
                             buttonText = buttonText,
+                            onFileManagerClick = { showFileManagerDialog = true },
                             onThemeClick = {
                                 val themeMode = when (clickCount) {
                                     0 -> {
@@ -621,6 +630,7 @@ private fun ActionButtonsSection(
     buttonText: String,
     onThemeClick: () -> Unit,
     onGetStartedClick: () -> Unit,
+    onFileManagerClick: () -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -699,6 +709,29 @@ private fun ActionButtonsSection(
                     fontWeight = FontWeight.Medium
                 )
             }
+        }
+
+        Spacer(modifier = Modifier.height(Dimens.paddingMedium))
+
+        OutlinedButton(
+            onClick = onFileManagerClick,
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.outlinedButtonColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.5f),
+            ),
+        ) {
+            Icon(
+                imageVector = Icons.Default.Storage,
+                contentDescription = "File Manager",
+                modifier = Modifier.size(20.dp),
+            )
+            Spacer(modifier = Modifier.width(Dimens.paddingSmall))
+            Text(
+                text = "File Manager",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Medium,
+            )
         }
 
         Spacer(modifier = Modifier.height(Dimens.paddingMedium))

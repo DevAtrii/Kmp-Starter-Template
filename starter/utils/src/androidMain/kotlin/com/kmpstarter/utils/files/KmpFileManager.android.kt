@@ -20,15 +20,15 @@ import android.content.Context
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import androidx.annotation.RequiresApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
-import java.io.OutputStream
 
 
-@Suppress(names = ["EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING"])
+
 actual class KmpFileManager(
     private val context: Context,
 ) {
@@ -36,36 +36,13 @@ actual class KmpFileManager(
         fileName: String, folderName: String, fileContent: ByteArray, mimeType: String,
     ): Result<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val resolver = context.contentResolver
-            val outputStream: OutputStream?
-
             val result = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                // Android 10+ → Scoped Storage using MediaStore
-                val contentValues = ContentValues().apply {
-                    put(MediaStore.Downloads.DISPLAY_NAME, fileName)
-                    put(MediaStore.Downloads.MIME_TYPE, mimeType)
-                    put(
-                        MediaStore.Downloads.RELATIVE_PATH,
-                        Environment.DIRECTORY_DOWNLOADS + File.separator + folderName
-                    )
-                    put(MediaStore.Downloads.IS_PENDING, 1)
-                }
-
-                val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
-                if (uri != null) {
-                    outputStream = resolver.openOutputStream(uri)
-
-                    outputStream?.use {
-                        it.write(fileContent)
-                    }
-
-                    // Mark file as finished
-                    contentValues.clear()
-                    contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
-                    resolver.update(uri, contentValues, null, null)
-                    true
-                } else false
-
+                saveToDownloadsMediaStoreQ(
+                    fileName = fileName,
+                    folderName = folderName,
+                    fileContent = fileContent,
+                    mimeType = mimeType,
+                )
             } else {
                 // Android 9 and below → Write directly to Downloads folder
                 val downloadsDir =
@@ -74,9 +51,8 @@ actual class KmpFileManager(
                 if (!targetDir.exists()) targetDir.mkdirs()
 
                 val file = File(targetDir, fileName + "." + mimeType.substringAfterLast("/"))
-                outputStream = FileOutputStream(file)
-                outputStream.use {
-                    it.write(fileContent)
+                FileOutputStream(file).use { output ->
+                    output.write(fileContent)
                 }
                 true
             }
@@ -131,9 +107,38 @@ actual class KmpFileManager(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun saveToDownloadsMediaStoreQ(
+        fileName: String,
+        folderName: String,
+        fileContent: ByteArray,
+        mimeType: String,
+    ): Boolean {
+        val resolver = context.contentResolver
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+            put(MediaStore.Downloads.MIME_TYPE, mimeType)
+            put(
+                MediaStore.Downloads.RELATIVE_PATH,
+                Environment.DIRECTORY_DOWNLOADS + File.separator + folderName,
+            )
+            put(MediaStore.Downloads.IS_PENDING, 1)
+        }
+
+        val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
+            ?: return false
+
+        resolver.openOutputStream(uri)?.use { output ->
+            output.write(fileContent)
+        } ?: return false
+
+        contentValues.clear()
+        contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
+        resolver.update(uri, contentValues, null, null)
+        return true
+    }
 
     actual companion object
-
 }
 
 

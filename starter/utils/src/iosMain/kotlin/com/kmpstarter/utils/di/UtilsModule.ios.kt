@@ -17,6 +17,7 @@ package com.kmpstarter.utils.di
 
 import com.kmpstarter.utils.datastore.AppDataStore
 import com.kmpstarter.utils.files.KmpFileManager
+import com.kmpstarter.utils.files.StarterFileManager
 import com.kmpstarter.utils.intents.IntentUtils
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -24,5 +25,6 @@ import org.koin.dsl.module
 actual val platformUtilsModule = module {
     singleOf(::AppDataStore)
     singleOf(::IntentUtils)
+    singleOf(::StarterFileManager)
     singleOf(::KmpFileManager)
 }
