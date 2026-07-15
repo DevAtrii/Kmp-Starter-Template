@@ -15,7 +15,8 @@
 
 package com.kmpstarter.utils.logging
 
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
+
 
 object Logger {
     const val APP_TAG = "[KMP_STARTER]"
@@ -66,6 +67,7 @@ object Log {
             message
         }
     }
+
     fun w(tag: String?, message: Any?) {
         log.w(
             tag = tag ?: Logger.APP_TAG
