@@ -236,6 +236,19 @@ fun StarterFileManagerDialog(
 
                 OutlinedButton(
                     onClick = {
+                        runOperation("getFileFromDownloads") {
+                            starterFileManager.getFileFromDownloads(
+                                file = SAMPLE_FILE_NAME,
+                                path = SAMPLE_FOLDER,
+                            )
+                        }
+                    },
+                ) {
+                    Text("Get DL File")
+                }
+
+                OutlinedButton(
+                    onClick = {
                         runOperation("readFromDownloads") {
                             starterFileManager.getFilesFromDownloads(path = SAMPLE_FOLDER).fold(
                                 onSuccess = { files ->
@@ -335,6 +348,37 @@ fun StarterFileManagerDialog(
                     Text("Share")
                 }
 
+                OutlinedButton(
+                    onClick = {
+                        runOperation("openFile") {
+                            starterFileManager.getFilesFromDownloads(path = SAMPLE_FOLDER).fold(
+                                onSuccess = { files ->
+                                    val target = files.firstOrNull {
+                                        (it.name == SAMPLE_FILE_NAME || it.name == SAMPLE_RENAMED_FILE_NAME) &&
+                                            it.extension == SAMPLE_EXTENSION
+                                    }
+                                    if (target != null) {
+                                        return@fold starterFileManager.openFile(path = target.path)
+                                    }
+
+                                    starterFileManager.openFile(path = SAMPLE_CACHE_RELATIVE_PATH).recoverCatching {
+                                        starterFileManager.openFile(path = SAMPLE_CACHE_RENAMED_RELATIVE_PATH)
+                                            .getOrThrow()
+                                    }
+                                },
+                                onFailure = {
+                                    starterFileManager.openFile(path = SAMPLE_CACHE_RELATIVE_PATH).recoverCatching {
+                                        starterFileManager.openFile(path = SAMPLE_CACHE_RENAMED_RELATIVE_PATH)
+                                            .getOrThrow()
+                                    }
+                                },
+                            )
+                        }
+                    },
+                ) {
+                    Text("Open")
+                }
+
                 FilledTonalButton(
                     onClick = {
                         runOperation("saveInCache") {
@@ -361,6 +405,24 @@ fun StarterFileManagerDialog(
                 ) {
                     Icon(Icons.Default.FolderOpen, contentDescription = null, modifier = Modifier.padding(end = 4.dp))
                     Text("List Cache")
+                }
+
+                OutlinedButton(
+                    onClick = {
+                        runOperation("getFileFromCache") {
+                            starterFileManager.getFileFromCache(
+                                file = SAMPLE_FILE_NAME,
+                                path = SAMPLE_FOLDER,
+                            ).recoverCatching {
+                                starterFileManager.getFileFromCache(
+                                    file = SAMPLE_RENAMED_FILE_NAME,
+                                    path = SAMPLE_FOLDER,
+                                ).getOrThrow()
+                            }
+                        }
+                    },
+                ) {
+                    Text("Get Cache File")
                 }
 
                 OutlinedButton(

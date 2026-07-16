@@ -23,8 +23,9 @@ import com.kmpstarter.utils.starter.ExperimentalStarterApi
  * Returns a [StarterFileManager] bound to the current Compose host.
  *
  * On Android, this supplies the current [androidx.activity.ComponentActivity], which is
- * required for [StarterFileManager.saveFileIn]. Do not use the Koin singleton for
- * `saveFileIn`; inject or call other methods from Koin when activity is not needed.
+ * required for [StarterFileManager.saveFileIn], [StarterFileManager.shareFile], and
+ * [StarterFileManager.openFile]. Do not use the Koin singleton for those methods;
+ * inject or call other methods from Koin when activity is not needed.
  */
 @OptIn(ExperimentalStarterApi::class)
 @Composable

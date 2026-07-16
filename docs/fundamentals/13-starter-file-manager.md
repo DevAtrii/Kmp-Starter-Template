@@ -5,7 +5,7 @@ icon: lucide/folder-open
 
 # Starter File Manager
 
-`StarterFileManager` is the starter's cross-platform file API for common save / list / read / rename / delete / share flows.
+`StarterFileManager` is the starter's cross-platform file API for common save / list / read / rename / delete / share / open flows.
 
 It lives in `starter:utils` and returns `Result` for every operation so you can handle success and failure without platform-specific try/catch soup.
 
@@ -43,9 +43,10 @@ On Android this binds the current `ComponentActivity`. That is required for:
 
 - `saveFileIn` (system Save As picker)
 - `shareFile` (share sheet)
+- `openFile` (open with another app)
 
 !!! tip "Pass it into a ViewModel"
-    You can hand this Activity-bound instance to a ViewModel with **Koin parameters** so UI actions like Save As / Share still work:
+    You can hand this Activity-bound instance to a ViewModel with **Koin parameters** so UI actions like Save As / Share / Open still work:
 
     ```kotlin title="FeatureModule.kt" linenums="1"
     val featurePresentationModule = module {
@@ -88,7 +89,7 @@ Use Koin for Downloads / cache ops that do **not** need an Activity — typicall
 class ReportRepository(
     private val fileManager: StarterFileManager,
 ) {
-    suspend fun cacheReport(bytes: ByteArray): Result<Unit> {
+    suspend fun cacheReport(bytes: ByteArray): Result<StarterFile> {
         return fileManager.saveInCache(
             file = "report",
             folderPath = "exports",
@@ -110,7 +111,7 @@ val featureDataModule = module {
 }
 ```
 
-!!! danger "Do not use Koin for saveFileIn / shareFile on Android"
+!!! danger "Do not use Koin for saveFileIn / shareFile / openFile on Android"
     Those methods fail if no Activity is available. Message points you to `rememberStarterFileManager()` (then pass it into the ViewModel with `parametersOf` if needed).
 
 ---
@@ -149,13 +150,13 @@ fileManager.saveFileIntoDownloads(
     - **Android:** public Downloads (MediaStore on API 29+, legacy file path below).
     - **iOS:** app Documents directory (`Documents/...`). iOS does not allow writing the user's public Downloads folder.
 
-### List / read / rename / delete
+### List / get / read / rename / delete
 
 ```kotlin title="Downloads workflow" linenums="1"
 val files = fileManager.getFilesFromDownloads(path = "MyApp").getOrElse { emptyList() }
 
-val target = files.firstOrNull { it.name == "invoice" && it.extension == "pdf" }
-    ?: return
+val target = fileManager.getFileFromDownloads(file = "invoice", path = "MyApp").getOrThrow()
+// or: files.firstOrNull { it.name == "invoice" && it.extension == "pdf" }
 
 fileManager.readFromDownloads(path = target.path)
 fileManager.renameFromDownloads(path = target.path, to = "invoice_final")
@@ -163,6 +164,7 @@ fileManager.deleteFromDownloads(path = target.path)
 ```
 
 `renameFrom*` keeps the existing extension — `to` is the new **name only**.
+`saveFileIntoDownloads` / `renameFromDownloads` return the resulting `StarterFile`.
 
 ---
 
@@ -171,15 +173,16 @@ fileManager.deleteFromDownloads(path = target.path)
 Cache paths are **relative** to the app cache directory.
 
 ```kotlin title="Cache workflow" linenums="1"
-fileManager.saveInCache(
+val saved = fileManager.saveInCache(
     file = "draft",
     folderPath = "temp",
     extension = "txt",
     content = text.encodeToByteArray(),
     mimeType = "text/plain",
-)
+).getOrThrow()
 
 fileManager.getFilesFromCache(path = "temp")
+fileManager.getFileFromCache(file = "draft", path = "temp")
 fileManager.readFromCache(path = "temp/draft.txt")
 fileManager.renameFromCache(path = "temp/draft.txt", to = "draft_v2")
 fileManager.deleteFromCache(path = "temp/draft_v2.txt")
@@ -225,9 +228,20 @@ fileManager.shareFile(path = target.path)          // Downloads StarterFile.path
 fileManager.shareFile(path = "temp/draft.txt")     // cache-relative
 ```
 
+## Open With System App
+
+`openFile` asks the system which app should open the file (Android `ACTION_VIEW` chooser / iOS Open In menu):
+
+```kotlin title="Open a file" linenums="1"
+fileManager.openFile(path = target.path)           // Downloads StarterFile.path
+fileManager.openFile(path = "temp/draft.txt")      // cache-relative
+```
+
+Use `rememberStarterFileManager()` on Android (same Activity requirement as Share).
+
 ### Android FileProvider (host app)
 
-Sharing **local / cache file paths** needs a `FileProvider` in the **host app** (`androidApp`). The utils module does **not** merge one — you decide whether to include it.
+Sharing or opening **local / cache file paths** needs a `FileProvider` in the **host app** (`androidApp`). The utils module does **not** merge one — you decide whether to include it.
 
 `androidApp` already ships a working setup:
 
@@ -255,7 +269,7 @@ Sharing **local / cache file paths** needs a `FileProvider` in the **host app** 
 ```
 
 !!! tip "content:// URIs"
-    MediaStore Downloads URIs (`content://…`) do **not** need FileProvider. FileProvider is for filesystem / cache paths.
+    MediaStore Downloads URIs (`content://…`) do **not** need FileProvider. FileProvider is for filesystem / cache paths used by `shareFile` and `openFile`.
 
 ---
 
@@ -301,9 +315,9 @@ starterFileManager.saveFileIntoDownloads(
 
 ### Summary
 
-* Prefer `rememberStarterFileManager()` in Compose; pass it into a ViewModel with `parametersOf` when Save As / Share need Activity.
+* Prefer `rememberStarterFileManager()` in Compose; pass it into a ViewModel with `parametersOf` when Save As / Share / Open need Activity.
 * Use the Koin singleton from repositories for Downloads / cache ops that do not need an Activity.
 * Downloads on Android → public Downloads; on iOS → Documents.
 * Cache paths are relative; Downloads paths come from `StarterFile.path`.
-* Host app owns FileProvider for `shareFile` with local paths.
+* Host app owns FileProvider for `shareFile` / `openFile` with local paths.
 * Reach for FileKit when you need advanced file IO beyond this API.

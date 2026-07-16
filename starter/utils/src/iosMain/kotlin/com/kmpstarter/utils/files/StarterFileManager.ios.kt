@@ -35,8 +35,10 @@ import platform.Foundation.dataWithBytes
 import platform.Foundation.dataWithContentsOfFile
 import platform.Foundation.writeToFile
 import platform.Foundation.writeToURL
+import platform.CoreGraphics.CGRectMake
 import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
+import platform.UIKit.UIDocumentInteractionController
 import platform.UIKit.UIDocumentPickerViewController
 import platform.UIKit.UIModalPresentationFullScreen
 
@@ -84,7 +86,7 @@ actual class StarterFileManager {
         extension: FileExtension,
         content: ByteArray,
         mimeType: FileMimeType,
-    ): Result<Unit> = withContext(Dispatchers.IO) {
+    ): Result<StarterFile> = withContext(Dispatchers.IO) {
         try {
             val directoryPath = resolveDocumentsDirectoryPath(folderPath)
                 ?: return@withContext Result.failure(IllegalStateException("Unable to find Documents directory"))
@@ -93,11 +95,14 @@ actual class StarterFileManager {
             val fileUrl = NSURL.fileURLWithPath(filePath)
             val success = content.toNSData().writeToURL(fileUrl, atomically = true)
 
-            if (success) {
-                Result.success(Unit)
-            } else {
-                Result.failure(IllegalStateException("Failed to write file to Documents"))
+            if (!success) {
+                return@withContext Result.failure(IllegalStateException("Failed to write file to Documents"))
             }
+
+            val starterFile = buildStarterFileAtPath(filePath)
+                ?: return@withContext Result.failure(IllegalStateException("Failed to write file to Documents"))
+
+            Result.success(starterFile)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -111,6 +116,25 @@ actual class StarterFileManager {
                 ?: return@withContext Result.failure(IllegalStateException("Unable to find Documents directory"))
 
             Result.success(listFilesInDirectory(directoryPath))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    actual suspend fun getFileFromDownloads(
+        file: FileName,
+        path: FolderPath?,
+    ): Result<StarterFile> = withContext(Dispatchers.IO) {
+        try {
+            if (file.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("File name is required"))
+            }
+
+            val match = getFilesFromDownloads(path).getOrThrow()
+                .firstOrNull { it.name == file }
+                ?: throw IllegalStateException("Downloads file not found: $file")
+
+            Result.success(match)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -154,7 +178,7 @@ actual class StarterFileManager {
     actual suspend fun renameFromDownloads(
         path: FilePath,
         to: FileName,
-    ): Result<Unit> = withContext(Dispatchers.IO) {
+    ): Result<StarterFile> = withContext(Dispatchers.IO) {
         try {
             if (path.isBlank()) {
                 return@withContext Result.failure(IllegalArgumentException("Downloads file path is required"))
@@ -163,8 +187,11 @@ actual class StarterFileManager {
                 return@withContext Result.failure(IllegalArgumentException("New file name is required"))
             }
 
-            renameFileAtPath(path, to)
-            Result.success(Unit)
+            val renamedPath = renameFileAtPath(path, to)
+            val starterFile = buildStarterFileAtPath(renamedPath)
+                ?: return@withContext Result.failure(IllegalStateException("Failed to rename Downloads file: $path"))
+
+            Result.success(starterFile)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -178,6 +205,25 @@ actual class StarterFileManager {
                 ?: return@withContext Result.failure(IllegalStateException("Unable to find cache directory"))
 
             Result.success(listFilesInDirectory(directoryPath))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    actual suspend fun getFileFromCache(
+        file: FileName,
+        path: FolderPath?,
+    ): Result<StarterFile> = withContext(Dispatchers.IO) {
+        try {
+            if (file.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("File name is required"))
+            }
+
+            val match = getFilesFromCache(path.orEmpty()).getOrThrow()
+                .firstOrNull { it.name == file }
+                ?: throw IllegalStateException("Cache file not found: $file")
+
+            Result.success(match)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -209,7 +255,7 @@ actual class StarterFileManager {
         extension: FileExtension,
         content: ByteArray,
         mimeType: FileMimeType,
-    ): Result<Unit> = withContext(Dispatchers.IO) {
+    ): Result<StarterFile> = withContext(Dispatchers.IO) {
         try {
             val directoryPath = resolveCacheDirectoryPath(folderPath.orEmpty())
                 ?: return@withContext Result.failure(IllegalStateException("Unable to find cache directory"))
@@ -217,11 +263,14 @@ actual class StarterFileManager {
             val filePath = "$directoryPath/${buildFileName(file, extension)}"
             val success = content.toNSData().writeToFile(filePath, atomically = true)
 
-            if (success) {
-                Result.success(Unit)
-            } else {
-                Result.failure(IllegalStateException("Failed to save cache file"))
+            if (!success) {
+                return@withContext Result.failure(IllegalStateException("Failed to save cache file"))
             }
+
+            val starterFile = buildStarterFileAtPath(filePath)
+                ?: return@withContext Result.failure(IllegalStateException("Failed to save cache file"))
+
+            Result.success(starterFile)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -248,7 +297,7 @@ actual class StarterFileManager {
     actual suspend fun renameFromCache(
         path: FilePath,
         to: FileName,
-    ): Result<Unit> = withContext(Dispatchers.IO) {
+    ): Result<StarterFile> = withContext(Dispatchers.IO) {
         try {
             if (path.isBlank()) {
                 return@withContext Result.failure(IllegalArgumentException("Cache file path is required"))
@@ -260,8 +309,11 @@ actual class StarterFileManager {
             val cacheRoot = resolveCacheDirectoryPath("")
                 ?: return@withContext Result.failure(IllegalStateException("Unable to find cache directory"))
 
-            renameFileAtPath("$cacheRoot/$path", to)
-            Result.success(Unit)
+            val renamedPath = renameFileAtPath("$cacheRoot/$path", to)
+            val starterFile = buildStarterFileAtPath(renamedPath)
+                ?: return@withContext Result.failure(IllegalStateException("Failed to rename cache file: $path"))
+
+            Result.success(starterFile)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -293,6 +345,55 @@ actual class StarterFileManager {
                 animated = true,
                 completion = null,
             )
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    actual suspend fun openFile(
+        path: Path,
+    ): Result<Unit> = withContext(Dispatchers.Main) {
+        try {
+            if (path.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("File path is required"))
+            }
+
+            val fileUrl = withContext(Dispatchers.IO) {
+                resolveShareFileUrl(path)
+            } ?: return@withContext Result.failure(IllegalStateException("File not found: $path"))
+
+            val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
+                ?: return@withContext Result.failure(
+                    IllegalStateException("No root view controller available for open file"),
+                )
+
+            val view = rootViewController.view
+                ?: return@withContext Result.failure(
+                    IllegalStateException("No view available for open file menu"),
+                )
+
+            val interactionController = UIDocumentInteractionController.interactionControllerWithURL(fileUrl)
+            val presented = interactionController.presentOpenInMenuFromRect(
+                rect = CGRectMake(0.0, 0.0, 0.0, 0.0),
+                inView = view,
+                animated = true,
+            )
+
+            if (!presented) {
+                // Fallback: options menu (preview / open in / share actions)
+                val optionsPresented = interactionController.presentOptionsMenuFromRect(
+                    rect = CGRectMake(0.0, 0.0, 0.0, 0.0),
+                    inView = view,
+                    animated = true,
+                )
+                if (!optionsPresented) {
+                    return@withContext Result.failure(
+                        IllegalStateException("No apps available to open this file"),
+                    )
+                }
+            }
 
             Result.success(Unit)
         } catch (e: Exception) {
@@ -385,7 +486,7 @@ actual class StarterFileManager {
         }
     }
 
-    private fun renameFileAtPath(filePath: String, to: FileName) {
+    private fun renameFileAtPath(filePath: String, to: FileName): String {
         val fileManager = NSFileManager.defaultManager
         if (!fileManager.fileExistsAtPath(filePath)) {
             throw IllegalStateException("File not found: $filePath")
@@ -412,6 +513,8 @@ actual class StarterFileManager {
         if (!moved) {
             throw IllegalStateException("Failed to rename file: $filePath")
         }
+
+        return targetPath
     }
 
     private fun listFilesInDirectory(directoryPath: String): List<StarterFile> {

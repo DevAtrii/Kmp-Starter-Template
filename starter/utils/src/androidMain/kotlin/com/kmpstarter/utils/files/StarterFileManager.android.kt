@@ -99,10 +99,10 @@ actual class StarterFileManager(
         extension: FileExtension,
         content: ByteArray,
         mimeType: FileMimeType,
-    ): Result<Unit> = withContext(Dispatchers.IO) {
+    ): Result<StarterFile> = withContext(Dispatchers.IO) {
         try {
             val fileName = buildFileName(file, extension)
-            val saved = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val starterFile = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 saveToDownloadsMediaStore(
                     fileName = fileName,
                     folderPath = folderPath,
@@ -115,13 +115,9 @@ actual class StarterFileManager(
                     folderPath = folderPath,
                     content = content,
                 )
-            }
+            } ?: return@withContext Result.failure(IllegalStateException("Failed to save file to Downloads"))
 
-            if (!saved) {
-                return@withContext Result.failure(IllegalStateException("Failed to save file to Downloads"))
-            }
-
-            Result.success(Unit)
+            Result.success(starterFile)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -137,6 +133,25 @@ actual class StarterFileManager(
                 listDownloadsLegacy(path)
             }
             Result.success(files)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    actual suspend fun getFileFromDownloads(
+        file: FileName,
+        path: FolderPath?,
+    ): Result<StarterFile> = withContext(Dispatchers.IO) {
+        try {
+            if (file.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("File name is required"))
+            }
+
+            val match = getFilesFromDownloads(path).getOrThrow()
+                .firstOrNull { it.name == file }
+                ?: throw FileNotFoundException("Downloads file not found: $file")
+
+            Result.success(match)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -208,7 +223,7 @@ actual class StarterFileManager(
     actual suspend fun renameFromDownloads(
         path: FilePath,
         to: FileName,
-    ): Result<Unit> = withContext(Dispatchers.IO) {
+    ): Result<StarterFile> = withContext(Dispatchers.IO) {
         try {
             if (path.isBlank()) {
                 return@withContext Result.failure(IllegalArgumentException("Downloads file path is required"))
@@ -221,13 +236,9 @@ actual class StarterFileManager(
                 renameDownloadsContentUri(Uri.parse(path), to)
             } else {
                 renameLocalFile(File(path), to)
-            }
+            } ?: return@withContext Result.failure(IllegalStateException("Failed to rename Downloads file: $path"))
 
-            if (!renamed) {
-                return@withContext Result.failure(IllegalStateException("Failed to rename Downloads file: $path"))
-            }
-
-            Result.success(Unit)
+            Result.success(renamed)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -243,6 +254,25 @@ actual class StarterFileManager(
             }
 
             Result.success(directory.listFiles()?.mapNotNull { it.toStarterFile() }.orEmpty())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    actual suspend fun getFileFromCache(
+        file: FileName,
+        path: FolderPath?,
+    ): Result<StarterFile> = withContext(Dispatchers.IO) {
+        try {
+            if (file.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("File name is required"))
+            }
+
+            val match = getFilesFromCache(path.orEmpty()).getOrThrow()
+                .firstOrNull { it.name == file }
+                ?: throw FileNotFoundException("Cache file not found: $file")
+
+            Result.success(match)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -270,7 +300,7 @@ actual class StarterFileManager(
         extension: FileExtension,
         content: ByteArray,
         mimeType: FileMimeType,
-    ): Result<Unit> = withContext(Dispatchers.IO) {
+    ): Result<StarterFile> = withContext(Dispatchers.IO) {
         try {
             val directory = folderPath?.let { File(context.cacheDir, it) } ?: context.cacheDir
             if (!directory.exists()) {
@@ -283,7 +313,10 @@ actual class StarterFileManager(
                 output.flush()
             }
 
-            Result.success(Unit)
+            val starterFile = targetFile.toStarterFile()
+                ?: return@withContext Result.failure(IllegalStateException("Failed to save cache file"))
+
+            Result.success(starterFile)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -314,7 +347,7 @@ actual class StarterFileManager(
     actual suspend fun renameFromCache(
         path: FilePath,
         to: FileName,
-    ): Result<Unit> = withContext(Dispatchers.IO) {
+    ): Result<StarterFile> = withContext(Dispatchers.IO) {
         try {
             if (path.isBlank()) {
                 return@withContext Result.failure(IllegalArgumentException("Cache file path is required"))
@@ -323,12 +356,10 @@ actual class StarterFileManager(
                 return@withContext Result.failure(IllegalArgumentException("New file name is required"))
             }
 
-            val file = File(context.cacheDir, path)
-            if (!renameLocalFile(file, to)) {
-                return@withContext Result.failure(IllegalStateException("Failed to rename cache file: $path"))
-            }
+            val renamed = renameLocalFile(File(context.cacheDir, path), to)
+                ?: return@withContext Result.failure(IllegalStateException("Failed to rename cache file: $path"))
 
-            Result.success(Unit)
+            Result.success(renamed)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -358,6 +389,40 @@ actual class StarterFileManager(
             val chooser = Intent.createChooser(sendIntent, null).apply {
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 if (hostActivity !is Activity || hostActivity.isFinishing) {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+            }
+
+            hostActivity.startActivity(chooser)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    actual suspend fun openFile(
+        path: Path,
+    ): Result<Unit> = withContext(Dispatchers.Main) {
+        try {
+            val hostActivity = activity
+                ?: return@withContext Result.failure(IllegalStateException(ACTIVITY_REQUIRED))
+
+            if (path.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("File path is required"))
+            }
+
+            val fileUri = resolveShareUri(path)
+            val mimeType = resolveMimeType(fileUri, path)
+
+            val viewIntent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(fileUri, mimeType)
+                clipData = ClipData.newUri(context.contentResolver, "opened_file", fileUri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+
+            val chooser = Intent.createChooser(viewIntent, null).apply {
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                if (hostActivity.isFinishing) {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
             }
@@ -410,7 +475,7 @@ actual class StarterFileManager(
         folderPath: FolderPath?,
         content: ByteArray,
         mimeType: FileMimeType,
-    ): Boolean {
+    ): StarterFile? {
         val resolver = context.contentResolver
         val relativePath = buildDownloadsRelativePath(folderPath)
 
@@ -422,23 +487,25 @@ actual class StarterFileManager(
         }
 
         val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
-            ?: return false
+            ?: return null
 
         resolver.openOutputStream(uri)?.use { output ->
             output.write(content)
-        } ?: return false
+        } ?: return null
 
         contentValues.clear()
         contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
         resolver.update(uri, contentValues, null, null)
-        return true
+
+        return queryStarterFileByUri(uri)
+            ?: buildStarterFileFromPath(uri.toString(), content.size.toLong())
     }
 
     private fun saveToDownloadsLegacy(
         fileName: String,
         folderPath: FolderPath?,
         content: ByteArray,
-    ): Boolean {
+    ): StarterFile? {
         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         val targetDir = folderPath?.let { File(downloadsDir, it) } ?: downloadsDir
         if (!targetDir.exists()) {
@@ -449,7 +516,7 @@ actual class StarterFileManager(
         FileOutputStream(file).use { output ->
             output.write(content)
         }
-        return true
+        return file.toStarterFile()
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -579,7 +646,7 @@ actual class StarterFileManager(
         )
     }
 
-    private fun renameLocalFile(file: File, to: FileName): Boolean {
+    private fun renameLocalFile(file: File, to: FileName): StarterFile? {
         if (!file.exists()) {
             throw FileNotFoundException("File not found: ${file.absolutePath}")
         }
@@ -590,10 +657,11 @@ actual class StarterFileManager(
             throw IllegalStateException("Target file already exists: ${target.absolutePath}")
         }
 
-        return file.renameTo(target)
+        if (!file.renameTo(target)) return null
+        return target.toStarterFile()
     }
 
-    private fun renameDownloadsContentUri(uri: Uri, to: FileName): Boolean {
+    private fun renameDownloadsContentUri(uri: Uri, to: FileName): StarterFile? {
         val currentName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             queryStarterFileByUri(uri)?.let { buildFileName(it.name, it.extension) }
         } else {
@@ -605,7 +673,21 @@ actual class StarterFileManager(
         val values = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
         }
-        return context.contentResolver.update(uri, values, null, null) > 0
+        if (context.contentResolver.update(uri, values, null, null) <= 0) return null
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            queryStarterFileByUri(uri)
+        } else {
+            null
+        } ?: StarterFile(
+            path = uri.toString(),
+            name = to,
+            extension = extension,
+            mimeType = null,
+            sizeBytes = null,
+            createdAtMillis = null,
+            modifiedAtMillis = null,
+        )
     }
 
     private fun buildFileName(file: FileName, extension: FileExtension): String {

@@ -94,7 +94,7 @@ expect class StarterFileManager {
         extension: FileExtension,
         content: ByteArray,
         mimeType: FileMimeType,
-    ): Result<Unit>
+    ): Result<StarterFile>
 
     /**
      * Lists files from Downloads directory.
@@ -105,6 +105,21 @@ expect class StarterFileManager {
     suspend fun getFilesFromDownloads(
         path: FolderPath?,
     ): Result<List<StarterFile>>
+
+
+    /**
+     * Gets a single file from Downloads by [file] name (without extension).
+     *
+     * If [path] is `null`, the Downloads root is searched.
+     * Otherwise, the given relative subdirectory is searched.
+     *
+     * @param file File name without extension.
+     * @param path Optional relative folder inside Downloads.
+     */
+    suspend fun getFileFromDownloads(
+        file: FileName,
+        path: FolderPath?,
+    ): Result<StarterFile>
 
     /**
      * Reads a file from Downloads using its platform [FilePath].
@@ -141,7 +156,7 @@ expect class StarterFileManager {
     suspend fun renameFromDownloads(
         path: FilePath,
         to: FileName,
-    ): Result<Unit>
+    ): Result<StarterFile>
 
     /**
      * Lists files from cache directory.
@@ -151,6 +166,20 @@ expect class StarterFileManager {
     suspend fun getFilesFromCache(
         path: FolderPath,
     ): Result<List<StarterFile>>
+
+    /**
+     * Gets a single file from cache by [file] name (without extension).
+     *
+     * If [path] is `null`, the cache root is searched.
+     * Otherwise, the given relative subdirectory is searched.
+     *
+     * @param file File name without extension.
+     * @param path Optional relative folder inside cache directory.
+     */
+    suspend fun getFileFromCache(
+        file: FileName,
+        path: FolderPath?,
+    ): Result<StarterFile>
 
     /**
      * Reads file contents from cache directory.
@@ -180,7 +209,7 @@ expect class StarterFileManager {
         extension: FileExtension,
         content: ByteArray,
         mimeType: FileMimeType,
-    ): Result<Unit>
+    ): Result<StarterFile>
 
     /**
      * Deletes a file from cache using its relative [FilePath].
@@ -206,7 +235,7 @@ expect class StarterFileManager {
     suspend fun renameFromCache(
         path: FilePath,
         to: FileName,
-    ): Result<Unit>
+    ): Result<StarterFile>
 
 
     /**
@@ -230,6 +259,31 @@ expect class StarterFileManager {
      * @param path Platform-specific file path or content URI.
      */
     suspend fun shareFile(
+        path: Path,
+    ): Result<Unit>
+
+    /**
+     * Opens a file with the system app picker / default handler.
+     *
+     * Pass a platform [Path]:
+     * - Downloads: [StarterFile.path] from [getFilesFromDownloads] (absolute path or content URI)
+     * - Cache: relative path under cache, matching [readFromCache]
+     *
+     * The system decides which apps can open the file (Android `ACTION_VIEW` chooser /
+     * iOS Open In menu).
+     *
+     * ### Android requirements
+     * - Requires a host [androidx.activity.ComponentActivity]. Use
+     *   [com.kmpstarter.ui_utils.files.rememberStarterFileManager] in Compose instead of
+     *   the Koin singleton when calling this method.
+     * - Opening local/cache file paths requires the **host app** to declare a
+     *   [androidx.core.content.FileProvider] with authority
+     *   `${applicationId}.starter.fileprovider` (same setup as [shareFile]).
+     * - `content://` URIs (for example MediaStore Downloads) do not need FileProvider.
+     *
+     * @param path Platform-specific file path or content URI.
+     */
+    suspend fun openFile(
         path: Path,
     ): Result<Unit>
 }
