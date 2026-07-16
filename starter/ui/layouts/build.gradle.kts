@@ -30,10 +30,12 @@ kotlin {
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     android {
         namespace = "com.kmpstarter.ui_layouts"
-        compileSdk = 36
-        minSdk = 24
-
-
+        compileSdk {
+            version = release(libs.versions.android.compileSdk.get().toInt())
+        }
+        minSdk {
+            version = release(libs.versions.android.minSdk.get().toInt())
+        }
     }
 
     // For iOS targets, this is also where you should

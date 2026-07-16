@@ -27,8 +27,12 @@ kotlin {
 
     android {
         namespace = "com.kmpstarter.core"
-        compileSdk = 36
-        minSdk = 24
+        compileSdk {
+            version = release(libs.versions.android.compileSdk.get().toInt())
+        }
+        minSdk {
+            version = release(libs.versions.android.minSdk.get().toInt())
+        }
     }
 
 
@@ -62,7 +66,7 @@ kotlin {
 
         androidMain {
             dependencies {
-             }
+            }
         }
 
 

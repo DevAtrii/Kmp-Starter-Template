@@ -29,8 +29,12 @@ val xcfName = "FeaturePurchasesDomainKit"
 kotlin {
     android {
         namespace = packageName
-        compileSdk = libs.versions.android.compileSdk.get().toInt()
-        minSdk = libs.versions.android.minSdk.get().toInt()
+        compileSdk {
+            version = release(libs.versions.android.compileSdk.get().toInt())
+        }
+        minSdk {
+            version = release(libs.versions.android.minSdk.get().toInt())
+        }
     }
 
     iosArm64()

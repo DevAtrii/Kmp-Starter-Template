@@ -33,8 +33,12 @@ kotlin {
 
     android {
         namespace = "com.kmpstarter.native_bindings"
-        compileSdk = 36
-        minSdk = 24
+        compileSdk {
+            version = release(libs.versions.android.compileSdk.get().toInt())
+        }
+        minSdk {
+            version = release(libs.versions.android.minSdk.get().toInt())
+        }
     }
 
     val xcfName = "starter:native:bindingsKit"
