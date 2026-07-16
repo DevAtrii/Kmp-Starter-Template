@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~
+  ~  *
+  ~  *  * Copyright (c) 2026
+  ~  *  *
+  ~  *  * Author: Athar Gul
+  ~  *  * GitHub: https://github.com/DevAtrii/Kmp-Starter-Template
+  ~  *  * YouTube: https://www.youtube.com/@devatrii/videos
+  ~  *  *
+  ~  *  * All rights reserved.
+  ~  *
+  ~
+  -->
+
+<paths>
+    <cache-path
+        name="cache"
+        path="." />
+    <files-path
+        name="files"
+        path="." />
+    <external-path
+        name="external"
+        path="." />
+</paths>

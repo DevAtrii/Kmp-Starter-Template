@@ -27,6 +27,7 @@ nav = [
     "fundamentals/10-logging.md",
     "fundamentals/11-swift-package-manager.md",
     "fundamentals/12-writing-your-code.md",
+    "fundamentals/13-starter-file-manager.md",
   ]},
   {"Features" = [
      "features/0-core.md",

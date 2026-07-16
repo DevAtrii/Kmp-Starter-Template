@@ -39,6 +39,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Required for StarterFileManager.shareFile() with local/cache file paths.
+             Authority must be "${applicationId}.starter.fileprovider". -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.starter.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/starter_file_paths" />
+        </provider>
     </application>
 
 </manifest>

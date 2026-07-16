@@ -74,7 +74,7 @@ expect class StarterFileManager {
      * - **Android:** Saves the file into the user's public **Downloads** directory.
      * - **iOS:** iOS does not allow apps to write directly to the user's public
      *   Downloads folder. Files are instead saved to the app's Documents directory:
-     *   `Documents/{AppName}/...`.
+     *   `Documents/...`.
      *
      * For files that should be accessible outside your app, prefer [saveFileIn],
      * which lets the user choose the destination using the system file picker.
@@ -120,6 +120,30 @@ expect class StarterFileManager {
     ): Result<Pair<StarterFile, FileContent>>
 
     /**
+     * Deletes a file from Downloads using its platform [FilePath].
+     *
+     * Pass the [StarterFile.path] value returned by [getFilesFromDownloads].
+     *
+     * @param path Platform-specific Downloads file path or content URI.
+     */
+    suspend fun deleteFromDownloads(
+        path: FilePath,
+    ): Result<Unit>
+
+    /**
+     * Renames a file in Downloads, keeping its existing extension.
+     *
+     * Pass the [StarterFile.path] value returned by [getFilesFromDownloads].
+     *
+     * @param path Platform-specific Downloads file path or content URI.
+     * @param to New file name without extension.
+     */
+    suspend fun renameFromDownloads(
+        path: FilePath,
+        to: FileName,
+    ): Result<Unit>
+
+    /**
      * Lists files from cache directory.
      *
      * @param path Relative folder inside cache directory.
@@ -156,5 +180,56 @@ expect class StarterFileManager {
         extension: FileExtension,
         content: ByteArray,
         mimeType: FileMimeType,
+    ): Result<Unit>
+
+    /**
+     * Deletes a file from cache using its relative [FilePath].
+     *
+     * Pass a relative path under the cache directory, for example
+     * `folder/file.txt`, matching [readFromCache].
+     *
+     * @param path Relative path to cached file.
+     */
+    suspend fun deleteFromCache(
+        path: FilePath,
+    ): Result<Unit>
+
+    /**
+     * Renames a file in cache, keeping its existing extension.
+     *
+     * Pass a relative path under the cache directory, for example
+     * `folder/file.txt`, matching [readFromCache].
+     *
+     * @param path Relative path to cached file.
+     * @param to New file name without extension.
+     */
+    suspend fun renameFromCache(
+        path: FilePath,
+        to: FileName,
+    ): Result<Unit>
+
+
+    /**
+     * Opens the platform share sheet for a file.
+     *
+     * Pass a platform [Path]:
+     * - Downloads: [StarterFile.path] from [getFilesFromDownloads] (absolute path or content URI)
+     * - Cache: relative path under cache, matching [readFromCache]
+     *
+     * ### Android requirements
+     * - Requires a host [androidx.activity.ComponentActivity]. Use
+     *   [com.kmpstarter.ui_utils.files.rememberStarterFileManager] in Compose instead of
+     *   the Koin singleton when calling this method.
+     * - Sharing local/cache file paths requires the **host app** to declare a
+     *   [androidx.core.content.FileProvider] with authority
+     *   `${applicationId}.starter.fileprovider` and a paths XML (for example
+     *   `res/xml/starter_file_paths.xml`). This library does **not** merge that
+     *   provider; the host decides whether to include it.
+     * - `content://` URIs (for example MediaStore Downloads) do not need FileProvider.
+     *
+     * @param path Platform-specific file path or content URI.
+     */
+    suspend fun shareFile(
+        path: Path,
     ): Result<Unit>
 }

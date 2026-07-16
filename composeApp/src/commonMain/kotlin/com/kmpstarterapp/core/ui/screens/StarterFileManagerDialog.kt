@@ -63,11 +63,15 @@ import com.kmpstarter.utils.starter.ExperimentalStarterApi
 import kotlinx.coroutines.launch
 
 private const val SAMPLE_FILE_NAME = "starter_sample"
+private const val SAMPLE_RENAMED_FILE_NAME = "starter_sample_renamed"
 private const val SAMPLE_EXTENSION = "txt"
 private const val SAMPLE_MIME_TYPE = "text/plain"
 private const val SAMPLE_FOLDER = "KmpStarter"
 private const val SAMPLE_REPEAT_COUNT = 1000
 private const val SAMPLE_TEXT = "Starter Template"
+private const val SAMPLE_CACHE_RELATIVE_PATH = "$SAMPLE_FOLDER/$SAMPLE_FILE_NAME.$SAMPLE_EXTENSION"
+private const val SAMPLE_CACHE_RENAMED_RELATIVE_PATH =
+    "$SAMPLE_FOLDER/$SAMPLE_RENAMED_FILE_NAME.$SAMPLE_EXTENSION"
 
 @OptIn(ExperimentalStarterApi::class, ExperimentalLayoutApi::class)
 @Composable
@@ -250,6 +254,87 @@ fun StarterFileManagerDialog(
                     Text("Read DL")
                 }
 
+                OutlinedButton(
+                    onClick = {
+                        runOperation("renameFromDownloads") {
+                            starterFileManager.getFilesFromDownloads(path = SAMPLE_FOLDER).fold(
+                                onSuccess = { files ->
+                                    val target = files.firstOrNull {
+                                        (it.name == SAMPLE_FILE_NAME || it.name == SAMPLE_RENAMED_FILE_NAME) &&
+                                            it.extension == SAMPLE_EXTENSION
+                                    } ?: return@fold Result.failure(
+                                        IllegalStateException("Sample file not found in Downloads/$SAMPLE_FOLDER"),
+                                    )
+                                    val newName = if (target.name == SAMPLE_FILE_NAME) {
+                                        SAMPLE_RENAMED_FILE_NAME
+                                    } else {
+                                        SAMPLE_FILE_NAME
+                                    }
+                                    starterFileManager.renameFromDownloads(
+                                        path = target.path,
+                                        to = newName,
+                                    )
+                                },
+                                onFailure = { Result.failure(it) },
+                            )
+                        }
+                    },
+                ) {
+                    Text("Rename DL")
+                }
+
+                OutlinedButton(
+                    onClick = {
+                        runOperation("deleteFromDownloads") {
+                            starterFileManager.getFilesFromDownloads(path = SAMPLE_FOLDER).fold(
+                                onSuccess = { files ->
+                                    val target = files.firstOrNull {
+                                        (it.name == SAMPLE_FILE_NAME || it.name == SAMPLE_RENAMED_FILE_NAME) &&
+                                            it.extension == SAMPLE_EXTENSION
+                                    } ?: return@fold Result.failure(
+                                        IllegalStateException("Sample file not found in Downloads/$SAMPLE_FOLDER"),
+                                    )
+                                    starterFileManager.deleteFromDownloads(path = target.path)
+                                },
+                                onFailure = { Result.failure(it) },
+                            )
+                        }
+                    },
+                ) {
+                    Text("Delete DL")
+                }
+
+                OutlinedButton(
+                    onClick = {
+                        runOperation("shareFile") {
+                            starterFileManager.getFilesFromDownloads(path = SAMPLE_FOLDER).fold(
+                                onSuccess = { files ->
+                                    val target = files.firstOrNull {
+                                        (it.name == SAMPLE_FILE_NAME || it.name == SAMPLE_RENAMED_FILE_NAME) &&
+                                            it.extension == SAMPLE_EXTENSION
+                                    }
+                                    if (target != null) {
+                                        return@fold starterFileManager.shareFile(path = target.path)
+                                    }
+
+                                    starterFileManager.shareFile(path = SAMPLE_CACHE_RELATIVE_PATH).recoverCatching {
+                                        starterFileManager.shareFile(path = SAMPLE_CACHE_RENAMED_RELATIVE_PATH)
+                                            .getOrThrow()
+                                    }
+                                },
+                                onFailure = {
+                                    starterFileManager.shareFile(path = SAMPLE_CACHE_RELATIVE_PATH).recoverCatching {
+                                        starterFileManager.shareFile(path = SAMPLE_CACHE_RENAMED_RELATIVE_PATH)
+                                            .getOrThrow()
+                                    }
+                                },
+                            )
+                        }
+                    },
+                ) {
+                    Text("Share")
+                }
+
                 FilledTonalButton(
                     onClick = {
                         runOperation("saveInCache") {
@@ -281,13 +366,63 @@ fun StarterFileManagerDialog(
                 OutlinedButton(
                     onClick = {
                         runOperation("readFromCache") {
-                            starterFileManager.readFromCache(
-                                path = "$SAMPLE_FOLDER/$SAMPLE_FILE_NAME.$SAMPLE_EXTENSION",
-                            )
+                            starterFileManager.readFromCache(path = SAMPLE_CACHE_RELATIVE_PATH).recoverCatching {
+                                starterFileManager.readFromCache(path = SAMPLE_CACHE_RENAMED_RELATIVE_PATH).getOrThrow()
+                            }
                         }
                     },
                 ) {
                     Text("Read Cache")
+                }
+
+                OutlinedButton(
+                    onClick = {
+                        runOperation("renameFromCache") {
+                            val currentPath = when {
+                                starterFileManager.readFromCache(path = SAMPLE_CACHE_RELATIVE_PATH).isSuccess ->
+                                    SAMPLE_CACHE_RELATIVE_PATH
+
+                                starterFileManager.readFromCache(path = SAMPLE_CACHE_RENAMED_RELATIVE_PATH).isSuccess ->
+                                    SAMPLE_CACHE_RENAMED_RELATIVE_PATH
+
+                                else -> null
+                            } ?: return@runOperation Result.failure<Unit>(
+                                IllegalStateException("Sample cache file not found"),
+                            )
+                            val newName = if (currentPath == SAMPLE_CACHE_RELATIVE_PATH) {
+                                SAMPLE_RENAMED_FILE_NAME
+                            } else {
+                                SAMPLE_FILE_NAME
+                            }
+                            starterFileManager.renameFromCache(
+                                path = currentPath,
+                                to = newName,
+                            )
+                        }
+                    },
+                ) {
+                    Text("Rename Cache")
+                }
+
+                OutlinedButton(
+                    onClick = {
+                        runOperation("deleteFromCache") {
+                            val currentPath = when {
+                                starterFileManager.readFromCache(path = SAMPLE_CACHE_RELATIVE_PATH).isSuccess ->
+                                    SAMPLE_CACHE_RELATIVE_PATH
+
+                                starterFileManager.readFromCache(path = SAMPLE_CACHE_RENAMED_RELATIVE_PATH).isSuccess ->
+                                    SAMPLE_CACHE_RENAMED_RELATIVE_PATH
+
+                                else -> null
+                            } ?: return@runOperation Result.failure<Unit>(
+                                IllegalStateException("Sample cache file not found"),
+                            )
+                            starterFileManager.deleteFromCache(path = currentPath)
+                        }
+                    },
+                ) {
+                    Text("Delete Cache")
                 }
             }
 

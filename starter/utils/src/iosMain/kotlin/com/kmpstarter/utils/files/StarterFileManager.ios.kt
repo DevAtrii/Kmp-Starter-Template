@@ -35,6 +35,7 @@ import platform.Foundation.dataWithBytes
 import platform.Foundation.dataWithContentsOfFile
 import platform.Foundation.writeToFile
 import platform.Foundation.writeToURL
+import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
 import platform.UIKit.UIDocumentPickerViewController
 import platform.UIKit.UIModalPresentationFullScreen
@@ -135,6 +136,40 @@ actual class StarterFileManager {
         }
     }
 
+    actual suspend fun deleteFromDownloads(
+        path: FilePath,
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            if (path.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("Downloads file path is required"))
+            }
+
+            deleteFileAtPath(path)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    actual suspend fun renameFromDownloads(
+        path: FilePath,
+        to: FileName,
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            if (path.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("Downloads file path is required"))
+            }
+            if (to.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("New file name is required"))
+            }
+
+            renameFileAtPath(path, to)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     actual suspend fun getFilesFromCache(
         path: FolderPath,
     ): Result<List<StarterFile>> = withContext(Dispatchers.IO) {
@@ -190,6 +225,94 @@ actual class StarterFileManager {
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    actual suspend fun deleteFromCache(
+        path: FilePath,
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            if (path.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("Cache file path is required"))
+            }
+
+            val cacheRoot = resolveCacheDirectoryPath("")
+                ?: return@withContext Result.failure(IllegalStateException("Unable to find cache directory"))
+
+            deleteFileAtPath("$cacheRoot/$path")
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    actual suspend fun renameFromCache(
+        path: FilePath,
+        to: FileName,
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            if (path.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("Cache file path is required"))
+            }
+            if (to.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("New file name is required"))
+            }
+
+            val cacheRoot = resolveCacheDirectoryPath("")
+                ?: return@withContext Result.failure(IllegalStateException("Unable to find cache directory"))
+
+            renameFileAtPath("$cacheRoot/$path", to)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    actual suspend fun shareFile(
+        path: Path,
+    ): Result<Unit> = withContext(Dispatchers.Main) {
+        try {
+            if (path.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("File path is required"))
+            }
+
+            val fileUrl = withContext(Dispatchers.IO){
+                resolveShareFileUrl(path)
+            }
+                ?: return@withContext Result.failure(IllegalStateException("File not found: $path"))
+
+            val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
+                ?: return@withContext Result.failure(IllegalStateException("No root view controller available for share sheet"))
+
+            val activityViewController = UIActivityViewController(
+                activityItems = listOf(fileUrl),
+                applicationActivities = null,
+            )
+
+            rootViewController.presentViewController(
+                activityViewController,
+                animated = true,
+                completion = null,
+            )
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    private fun resolveShareFileUrl(path: Path): NSURL? {
+        val absoluteCandidate = NSURL.fileURLWithPath(path)
+        if (NSFileManager.defaultManager.fileExistsAtPath(path)) {
+            return absoluteCandidate
+        }
+
+        val cacheRoot = resolveCacheDirectoryPath("") ?: return null
+        val cachePath = "$cacheRoot/$path"
+        if (NSFileManager.defaultManager.fileExistsAtPath(cachePath)) {
+            return NSURL.fileURLWithPath(cachePath)
+        }
+
+        return null
     }
 
     private fun resolveDocumentsDirectoryPath(folderPath: FolderPath?): String? {
@@ -248,6 +371,47 @@ actual class StarterFileManager {
             createdAtMillis = null,
             modifiedAtMillis = null,
         )
+    }
+
+    private fun deleteFileAtPath(filePath: String) {
+        val fileManager = NSFileManager.defaultManager
+        if (!fileManager.fileExistsAtPath(filePath)) {
+            throw IllegalStateException("File not found: $filePath")
+        }
+
+        val removed = fileManager.removeItemAtPath(filePath, error = null)
+        if (!removed) {
+            throw IllegalStateException("Failed to delete file: $filePath")
+        }
+    }
+
+    private fun renameFileAtPath(filePath: String, to: FileName) {
+        val fileManager = NSFileManager.defaultManager
+        if (!fileManager.fileExistsAtPath(filePath)) {
+            throw IllegalStateException("File not found: $filePath")
+        }
+
+        val currentName = filePath.substringAfterLast('/')
+        val (_, extension) = splitFileName(currentName)
+        val parentPath = filePath.substringBeforeLast('/', missingDelimiterValue = "")
+        val targetPath = if (parentPath.isBlank()) {
+            buildFileName(to, extension)
+        } else {
+            "$parentPath/${buildFileName(to, extension)}"
+        }
+
+        if (fileManager.fileExistsAtPath(targetPath)) {
+            throw IllegalStateException("Target file already exists: $targetPath")
+        }
+
+        val moved = fileManager.moveItemAtPath(
+            srcPath = filePath,
+            toPath = targetPath,
+            error = null,
+        )
+        if (!moved) {
+            throw IllegalStateException("Failed to rename file: $filePath")
+        }
     }
 
     private fun listFilesInDirectory(directoryPath: String): List<StarterFile> {

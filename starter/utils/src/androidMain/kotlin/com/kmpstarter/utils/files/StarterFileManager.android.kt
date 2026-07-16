@@ -16,15 +16,19 @@
 package com.kmpstarter.utils.files
 
 import android.app.Activity
+import android.content.ClipData
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.webkit.MimeTypeMap
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.content.FileProvider
 import com.kmpstarter.utils.starter.ExperimentalStarterApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -34,8 +38,8 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import kotlin.coroutines.resume
 
-private const val SAVE_FILE_IN_ACTIVITY_REQUIRED =
-    "saveFileIn requires a ComponentActivity. Use rememberStarterFileManager() from " +
+private const val ACTIVITY_REQUIRED =
+    "This operation requires a ComponentActivity. Use rememberStarterFileManager() from " +
         "com.kmpstarter.ui_utils.files in Compose instead of Koin-injected StarterFileManager."
 
 @OptIn(ExperimentalStarterApi::class)
@@ -52,7 +56,7 @@ actual class StarterFileManager(
         try {
             val componentActivity = activity as? ComponentActivity
                 ?: return@withContext Result.failure(
-                    IllegalStateException(SAVE_FILE_IN_ACTIVITY_REQUIRED),
+                    IllegalStateException(ACTIVITY_REQUIRED),
                 )
 
             val fileName = buildFileName(suggestedName, extension)
@@ -173,6 +177,62 @@ actual class StarterFileManager(
         }
     }
 
+    actual suspend fun deleteFromDownloads(
+        path: FilePath,
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            if (path.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("Downloads file path is required"))
+            }
+
+            val deleted = if (path.startsWith("content://")) {
+                context.contentResolver.delete(Uri.parse(path), null, null) > 0
+            } else {
+                val file = File(path)
+                if (!file.exists()) {
+                    throw FileNotFoundException("Downloads file not found: $path")
+                }
+                file.delete()
+            }
+
+            if (!deleted) {
+                return@withContext Result.failure(IllegalStateException("Failed to delete Downloads file: $path"))
+            }
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    actual suspend fun renameFromDownloads(
+        path: FilePath,
+        to: FileName,
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            if (path.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("Downloads file path is required"))
+            }
+            if (to.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("New file name is required"))
+            }
+
+            val renamed = if (path.startsWith("content://")) {
+                renameDownloadsContentUri(Uri.parse(path), to)
+            } else {
+                renameLocalFile(File(path), to)
+            }
+
+            if (!renamed) {
+                return@withContext Result.failure(IllegalStateException("Failed to rename Downloads file: $path"))
+            }
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     actual suspend fun getFilesFromCache(
         path: FolderPath,
     ): Result<List<StarterFile>> = withContext(Dispatchers.IO) {
@@ -227,6 +287,121 @@ actual class StarterFileManager(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    actual suspend fun deleteFromCache(
+        path: FilePath,
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            if (path.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("Cache file path is required"))
+            }
+
+            val file = File(context.cacheDir, path)
+            if (!file.exists()) {
+                throw FileNotFoundException("Cache file not found: $path")
+            }
+            if (!file.delete()) {
+                return@withContext Result.failure(IllegalStateException("Failed to delete cache file: $path"))
+            }
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    actual suspend fun renameFromCache(
+        path: FilePath,
+        to: FileName,
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            if (path.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("Cache file path is required"))
+            }
+            if (to.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("New file name is required"))
+            }
+
+            val file = File(context.cacheDir, path)
+            if (!renameLocalFile(file, to)) {
+                return@withContext Result.failure(IllegalStateException("Failed to rename cache file: $path"))
+            }
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    actual suspend fun shareFile(
+        path: Path,
+    ): Result<Unit> = withContext(Dispatchers.Main) {
+        try {
+            val hostActivity = activity
+                ?: return@withContext Result.failure(IllegalStateException(ACTIVITY_REQUIRED))
+
+            if (path.isBlank()) {
+                return@withContext Result.failure(IllegalArgumentException("File path is required"))
+            }
+
+            val shareUri = resolveShareUri(path)
+            val mimeType = resolveMimeType(shareUri, path)
+
+            val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                type = mimeType
+                putExtra(Intent.EXTRA_STREAM, shareUri)
+                clipData = ClipData.newUri(context.contentResolver, "shared_file", shareUri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+
+            val chooser = Intent.createChooser(sendIntent, null).apply {
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                if (hostActivity !is Activity || hostActivity.isFinishing) {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+            }
+
+            hostActivity.startActivity(chooser)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    private fun resolveShareUri(path: Path): Uri {
+        if (path.startsWith("content://")) {
+            return Uri.parse(path)
+        }
+
+        val absoluteFile = File(path)
+        val file = when {
+            absoluteFile.isAbsolute && absoluteFile.exists() -> absoluteFile
+            else -> {
+                val cacheFile = File(context.cacheDir, path)
+                if (cacheFile.exists()) {
+                    cacheFile
+                } else {
+                    throw FileNotFoundException("File not found: $path")
+                }
+            }
+        }
+
+        val authority = "${context.packageName}.starter.fileprovider"
+        return FileProvider.getUriForFile(context, authority, file)
+    }
+
+    private fun resolveMimeType(uri: Uri, path: Path): String {
+        context.contentResolver.getType(uri)?.let { return it }
+
+        val extension = path.substringAfterLast('.', missingDelimiterValue = "")
+            .substringBefore('?')
+            .lowercase()
+        if (extension.isNotBlank()) {
+            MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)?.let { return it }
+        }
+
+        return "application/octet-stream"
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -402,6 +577,35 @@ actual class StarterFileManager(
             createdAtMillis = null,
             modifiedAtMillis = lastModified(),
         )
+    }
+
+    private fun renameLocalFile(file: File, to: FileName): Boolean {
+        if (!file.exists()) {
+            throw FileNotFoundException("File not found: ${file.absolutePath}")
+        }
+
+        val (_, extension) = splitFileName(file.name)
+        val target = File(file.parentFile, buildFileName(to, extension))
+        if (target.exists()) {
+            throw IllegalStateException("Target file already exists: ${target.absolutePath}")
+        }
+
+        return file.renameTo(target)
+    }
+
+    private fun renameDownloadsContentUri(uri: Uri, to: FileName): Boolean {
+        val currentName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            queryStarterFileByUri(uri)?.let { buildFileName(it.name, it.extension) }
+        } else {
+            null
+        } ?: uri.lastPathSegment.orEmpty()
+
+        val (_, extension) = splitFileName(currentName)
+        val displayName = buildFileName(to, extension)
+        val values = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+        }
+        return context.contentResolver.update(uri, values, null, null) > 0
     }
 
     private fun buildFileName(file: FileName, extension: FileExtension): String {

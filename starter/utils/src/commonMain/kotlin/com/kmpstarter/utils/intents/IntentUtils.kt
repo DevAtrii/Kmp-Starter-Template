@@ -36,10 +36,9 @@ expect class IntentUtils {
      * @return true if the store page was successfully opened, false otherwise
      */
     fun openAccessibility(): Boolean
-
-    fun writeToClipboard(text: String)
     fun shareText(text: String)
 
+    fun writeToClipboard(text: String)
     fun readFromClipboard(): String?
 
     fun sendEmail(email: String, subject: String, body: String)
