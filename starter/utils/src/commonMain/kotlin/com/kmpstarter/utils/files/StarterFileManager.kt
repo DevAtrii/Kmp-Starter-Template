@@ -35,6 +35,8 @@ typealias FileContent = ByteArray
  *
  * All operations return [Result] to represent either a successful outcome
  * or a platform-specific failure.
+ *
+ * for more advance file io please use [FileKit](https://filekit.mintlify.app/introduction) library
  */
 @ExperimentalStarterApi
 expect class StarterFileManager {
