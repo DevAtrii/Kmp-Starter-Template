@@ -160,13 +160,29 @@ abstract class MviViewModel<STATE, ACTIONS, EVENTS>(
     }
 
     /**
-     * Triggers a one-time UI event inside viewModelScope.
-     * @param event The event to be dispatched to the UI.
+     * Triggers a one-time UI event inside [viewModelScope].
+     *
+     * @param event The event to dispatch to the UI.
      */
-    protected fun emitEventInViewModel(event: EVENTS) {
+    protected fun emitEventAsync(event: EVENTS) {
         viewModelScope.launch {
-            emitEvent(event = event)
+            emitEvent(event)
         }
+    }
+
+    /**
+     * Triggers a one-time UI event inside [viewModelScope].
+     *
+     * @param event The event to dispatch to the UI.
+     *
+     * @deprecated Renamed to [emitEventAsync] for consistency.
+     */
+    @Deprecated(
+        message = "Renamed to emitEventAsync().",
+        replaceWith = ReplaceWith("emitEventAsync(event)")
+    )
+    protected fun emitEventInViewModel(event: EVENTS) {
+        emitEventAsync(event)
     }
 }
 

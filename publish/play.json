@@ -1,7 +1,7 @@
 {
   "ci_cd": {
     "lookInLocalRelease": true,
-    "localAABPath" : "composeApp/release/composeApp-release.aab"
+    "localAABPath" : "androidApp/release/androidApp-release.aab"
   },
   "track": "production",
   "packageName": "com.kmpstarter.app",

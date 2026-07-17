@@ -52,7 +52,7 @@ jobs:
 
       - name: Build APK & AAB
         run: |
-          ./gradlew :composeApp:assembleRelease :composeApp:bundleRelease \
+          ./gradlew :androidApp:assembleRelease :androidApp:bundleRelease \
             --no-configuration-cache \
             -Pandroid.injected.signing.store.file=$KEYSTORE_PATH \
             -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
@@ -64,9 +64,8 @@ jobs:
           VERSION=${{ steps.get_version.outputs.VERSION }}
           mkdir -p release-artifacts
           
-          # Standard output paths for single-module apps
-          find composeApp/build/outputs/apk/release/ -name "*.apk" -exec cp {} release-artifacts/app-release-${VERSION}.apk \;
-          find composeApp/build/outputs/bundle/release/ -name "*.aab" -exec cp {} release-artifacts/app-release-${VERSION}.aab \;
+          find androidApp/build/outputs/apk/release/ -name "*.apk" -exec cp {} release-artifacts/app-release-${VERSION}.apk \;
+          find androidApp/build/outputs/bundle/release/ -name "*.aab" -exec cp {} release-artifacts/app-release-${VERSION}.aab \;
 
       - name: Generate Checksum Report
         run: |
