@@ -9,13 +9,14 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Kotlin-2.4.0-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" />
-  <img src="https://img.shields.io/badge/Java-17-007396?style=for-the-badge&logo=openjdk&logoColor=white" />
-  <img src="https://img.shields.io/badge/iOS-12+-000000?style=for-the-badge&logo=apple&logoColor=white" />
-  <img src="https://img.shields.io/badge/Android-7+-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
-  <img src="https://img.shields.io/badge/Node.js-18%2B-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white" />
-    <img src="https://img.shields.io/npm/v/%40devatrii%2Fstarter?style=for-the-badge&label=CLI&color=CB3837" />
-  <img src="https://img.shields.io/maven-central/v/io.github.devatrii/starter-core?style=for-the-badge&label=Version&color=6C63FF" />
+  <img src="https://img.shields.io/badge/Kotlin-2.4.0-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" alt="Kotlin 2.4.0" />
+  <img src="https://img.shields.io/badge/Java-17-007396?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 17" />
+  <img src="https://img.shields.io/badge/iOS-12+-000000?style=for-the-badge&logo=apple&logoColor=white" alt="iOS 12+" />
+  <img src="https://img.shields.io/badge/Android-7+-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android 7+" />
+  <img src="https://img.shields.io/badge/Node.js-18%2B-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js 18+" />
+  <img src="https://img.shields.io/npm/v/%40devatrii%2Fstarter?style=for-the-badge&label=CLI&color=CB3837" alt="CLI Version" />
+  <img src="https://img.shields.io/maven-central/v/io.github.devatrii/starter-core?style=for-the-badge&label=Version&color=6C63FF" alt="Maven Central Version" />
+  <img src="https://hits.sh/github.com/DevAtrii/Kmp-Starter-Template.svg?style=for-the-badge&label=Views&logo=github" alt="Repository Views" />
 </p>
 
 <p align="center">
@@ -47,7 +48,8 @@ KMP Starter Template is a multi-module boilerplate built with:
 * Logging
 * Platform utilities
 
-It removes the repetitive setup work (analytics, purchases, remote config, etc.) so you can focus on building your app.
+It removes the repetitive setup work (analytics, purchases, remote config, etc.) so you can focus on
+building your app.
 
 ---
 
@@ -74,15 +76,20 @@ domain/
 presentation/
 ```
 
-You can easily swap implementations (e.g., replace Mixpanel with PostHog) by changing the data layer.
+You can easily swap implementations (e.g., replace Mixpanel with PostHog) by changing the data
+layer.
 
 ---
 
 ## Getting Started
 
-Start with the **CLI** — [`@devatrii/starter`](https://www.npmjs.com/package/@devatrii/starter) <img src="https://img.shields.io/npm/v/%40devatrii%2Fstarter?style=for-the-badge&label=Version&color=CB3837" />. It scaffolds a full project under your app name and package, rewires modules and namespaces for you, and typically saves **2–3 hours** of manual rename and setup work.
+Start with the **CLI** — [
+`@devatrii/starter`](https://www.npmjs.com/package/@devatrii/starter) <img src="https://img.shields.io/npm/v/%40devatrii%2Fstarter?style=for-the-badge&label=Version&color=CB3837" />.
+It scaffolds a full project under your app name and package, rewires modules and namespaces for you,
+and typically saves **2–3 hours** of manual rename and setup work.
 
-The CLI is in **alpha** — it generates projects successfully, but expect rough edges. If you hit an issue, please [report it on GitHub Issues](https://github.com/DevAtrii/Kmp-Starter-Template/issues).
+The CLI is in **alpha** — it generates projects successfully, but expect rough edges. If you hit an
+issue, please [report it on GitHub Issues](https://github.com/DevAtrii/Kmp-Starter-Template/issues).
 
 **Requirements:** Node.js 18+, Java 17
 
@@ -119,13 +126,14 @@ Open `iosApp/iosApp.xcodeproj` in Xcode to run on iOS.
 
 ## Libraries
 
-We are working to ship **KMP Starter** as published Maven libraries so existing projects can adopt modules incrementally (starter utilities, UI, and feature layers) without cloning the full template.
+We are working to ship **KMP Starter** as published Maven libraries so existing projects can adopt
+modules incrementally (starter utilities, UI, and feature layers) without cloning the full template.
 
-Artifacts are published under **`io.github.devatrii`**. They are not fully stable yet—APIs and module boundaries may change between releases.
+Artifacts are published under **`io.github.devatrii`**. They are not fully stable yet—APIs and
+module boundaries may change between releases.
 
-
-**Example `libs.versions.toml` for consumers:**   <img src="https://img.shields.io/maven-central/v/io.github.devatrii/starter-core?style=for-the-badge&label=Version&color=6C63FF" />
-
+**Example `libs.versions.toml` for consumers:
+**   <img src="https://img.shields.io/maven-central/v/io.github.devatrii/starter-core?style=for-the-badge&label=Version&color=6C63FF" />
 
 ```toml
 [versions]
@@ -166,7 +174,8 @@ implementation(libs.starter.core)
 implementation(libs.starter.feature.purchases.presentation)
 ```
 
-Catalog aliases use dots in Kotlin (`starter-core` → `libs.starter.core`). Adjust names to match your catalog if you prefer different aliases.
+Catalog aliases use dots in Kotlin (`starter-core` → `libs.starter.core`). Adjust names to match
+your catalog if you prefer different aliases.
 
 ---
 
