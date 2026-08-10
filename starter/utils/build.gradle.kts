@@ -34,9 +34,6 @@ kotlin {
         minSdk {
             version = release(libs.versions.android.minSdk.get().toInt())
         }
-        compilerOptions {
-            this.jvmTarget
-        }
     }
 
 

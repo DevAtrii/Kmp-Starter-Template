@@ -88,7 +88,24 @@ abstract class BaseNavigator {
     open fun provideBackStack(
         backStack: NavBackStack<NavKey>,
     ) {
-        if (isInitialized) return
+        _setBackStack(backStack = backStack)
+    }
+
+    /**
+     * Sets navigator back stack.
+     *
+     * Intended only for subclasses of [BaseNavigator]. Call this during navigator
+     * initialization so navigation operations can access correct [NavBackStack].
+     *
+     * This is part of navigator's internal setup and should not be exposed or
+     * called from outside inheritors.
+     *
+     * @param backStack Back stack instance used by this navigator.
+     */
+    @StarterNavigatorDsl
+    protected fun _setBackStack(
+        backStack: NavBackStack<NavKey>,
+    ) {
         this.backStack = backStack
     }
 
