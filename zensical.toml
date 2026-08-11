@@ -1,7 +1,7 @@
 [project]
 site_name = "KMP Starter Docs"
 site_description = "Documentation for KMP Starter Template"
-site_url="https://devatrii.github.io/Kmp-Starter-Template"
+site_url="https://starter.atherio.dev"
 repo_name = "devatrii/kmp-starter-template"
 repo_url="https://github.com/DevAtrii/Kmp-Starter-Template"
 nav = [
