@@ -71,8 +71,9 @@ abstract class BaseNavigator {
      * Accessible to subclasses after initialization through
      * [provideBackStack].
      */
-    protected lateinit var backStack: NavBackStack<NavKey>
+    protected lateinit var _backStack: NavBackStack<NavKey>
         private set
+    val backStack: NavBackStack<NavKey> get() = _backStack
 
     /**
      * Provides navigation back stack used by this navigator.
@@ -106,14 +107,15 @@ abstract class BaseNavigator {
     protected fun _setBackStack(
         backStack: NavBackStack<NavKey>,
     ) {
-        this.backStack = backStack
+        this._backStack = backStack
     }
+
 
     /**
      * Returns `true` if a back stack has been provided.
      */
     val isInitialized: Boolean
-        get() = ::backStack.isInitialized
+        get() = ::_backStack.isInitialized
 
     /**
      * Pushes [route] onto top of back stack.
@@ -125,7 +127,7 @@ abstract class BaseNavigator {
     @StarterNavigatorDsl
     fun navigateTo(route: NavKey) {
         if (!isInitialized) return
-        backStack.add(route)
+        _backStack.add(route)
     }
 
     /**
@@ -151,7 +153,7 @@ abstract class BaseNavigator {
     @StarterNavigatorDsl
     fun popAllAndNavigate(route: NavKey) {
         if (!isInitialized) return
-        backStack.clear()
+        _backStack.clear()
         navigateTo(route)
     }
 
@@ -169,9 +171,9 @@ abstract class BaseNavigator {
     fun navigateOrBringToTop(route: NavKey) {
         if (!isInitialized) return
 
-        val index = backStack.indexOf(route)
+        val index = _backStack.indexOf(route)
         if (index != -1) {
-            backStack.removeAt(index)
+            _backStack.removeAt(index)
         }
 
         navigateTo(route)
@@ -187,7 +189,7 @@ abstract class BaseNavigator {
     @StarterNavigatorDsl
     fun remove(route: NavKey) {
         if (!isInitialized) return
-        backStack.remove(route)
+        _backStack.remove(route)
     }
 
     /**
@@ -198,6 +200,6 @@ abstract class BaseNavigator {
     @StarterNavigatorDsl
     fun navigateUp() {
         if (!isInitialized) return
-        backStack.removeLastOrNull()
+        _backStack.removeLastOrNull()
     }
 }
