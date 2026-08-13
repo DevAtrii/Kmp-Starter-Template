@@ -11,6 +11,14 @@ Resources live in `features/resources/src/commonMain/composeResources/` (`values
 
 Always use resource files. Never hardcode UI strings or colors.
 
+After adding/removing a resource, regenerate the typed accessors with the Gradle task:
+
+```
+./gradlew :features:resources:generateAccessors
+```
+
+This produces `Res.string.*`, `Res.drawable.*`, etc. If `Res.*` doesn't resolve after adding a resource, run this task first.
+
 ## String conversion
 
 - In Composables: `Res.string.foo.toActualString()` (or `toActualString(args)`).

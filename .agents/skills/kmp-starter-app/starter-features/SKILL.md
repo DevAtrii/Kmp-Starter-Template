@@ -26,8 +26,29 @@ Reuse Starter implementations. Do not replace them unless explicitly requested.
 - Set keys in `AppConstants.kt` (`REVENUE_CAT_API_KEY`, debug/prod split).
 - Use `PurchasesViewModel` (or `PurchasesLogics` for custom VMs).
 - Check entitlement: `rememberIsProUser()`, `rememberActiveProducts()`.
-- Navigate to `StarterScreens.Purchases` (in the template's own screens) or build your own paywall via `starterDefaultPaywallV1()`.
-- Paywall metadata (FAQs, reviews, version) comes from RevenueCat; products format `%price%` via `Product.formatValues()`.
+
+### Navigate to the paywall
+
+Navigate to `AppScreens.Purchases` — the screen is registered in `composeApp/src/commonMain/kotlin/<your-package>/core/navigation/AppScreens.kt` (e.g. `data object Purchases : AppScreens()`). Do **not** invent a `StarterScreens.Purchases`.
+
+### Customize the paywall
+
+`composeApp/src/commonMain/kotlin/<your-package>/core/navigation/StarterPaywallDefaults.kt` is the single place to edit paywall strings, hero image, and feature list:
+
+- `starterDefaultPaywallV1()` — builds `Paywalls.V1` from `Res.string.paywall_v1_*` + `Res.drawable.*`.
+- `starterDefaultPaywallV1Features()` — the `List<PurchaseFeature>` (icon + string) shown on the paywall.
+- Change the referenced `Res.string.paywall_v1_*` / drawable to your app's own resources (see resources-theme skill; regenerate accessors with `:features:resources:generateAccessors`).
+
+### Paywall metadata — `publish/purchases.json`
+
+`publish/purchases.json` is the source you update for your project's RevenueCat **offering metadata**. `RevenueCatPurchasesRepository` reads these keys from the current offering (`features/purchases/data/.../RevenueCatPurchasesRepository.kt`), decoded against the domain models in `features/purchases/domain/.../models/`:
+
+- `paywall_meta_data` → `PaywallMetadata` (`faqs`, `reviews`, `version`). `GetPaywallMetadataLogic` feeds `PurchasesViewModel`.
+- `products_meta_data` → per-product metadata keyed by store product id (`title`, `description`, `badge`, `badgeBg`, `discountPercentage`, `isTrial`), decoded into `Product`/`ProductBadge`.
+- `discount_offer` → identifier of the discount offering (maps to `DISCOUNT_OFFER_IDENTIFIER_KEY`).
+- Product ids in `products_meta_data` **must** match your Google Play / App Store SKUs (e.g. `kmp_pro.weekly`, `kmp_pro.yearly`).
+
+So: edit `publish/purchases.json` to reflect your products/FAQs/reviews, then mirror that JSON into the RevenueCat offering's metadata so the app reads it at runtime. Products format `%price%` via `Product.formatValues()`.
 
 ## Store Reviews & Updates
 
