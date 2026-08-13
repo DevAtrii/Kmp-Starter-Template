@@ -16,7 +16,7 @@ lib-version-patch = "7"
 # cli versions
 cli-version-major = "0"
 cli-version-minor = "5"
-cli-version-patch = "4"
+cli-version-patch = "5"
 # Maven publish (starter libraries → Central / .starter-libs)
 vanniktech-maven-publish = "0.36.0"
 
