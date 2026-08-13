@@ -37,6 +37,8 @@ Options:
     --list-versions    list available repo tags
     --clear-codes [V..]  delete cached source (optional version list; none = all)
     --source PATH      search a local source tree instead of downloading
+    --dir PATH         search a local project dir (default '.') instead of the
+                       downloaded template; ignores .agents/skills/kmp-starter/*
     --max N            max results (default 25)
     --regex            treat query as a regex
     --in-body          also match kdoc/signature text (not just the name)
@@ -62,6 +64,9 @@ STORAGE_DIR = SKILL_DIR / ".skill-storage"
 CODE_DIR = STORAGE_DIR / "codes"
 
 IGNORE_DIRS = {"build", ".gradle", ".idea", ".git", "node_modules", ".kotlin", "generated", ".skill-storage", ".agents"}
+
+# When --dir is used, skip this skill's own source files.
+SKILL_IGNORE_PARTS = (".agents", "skills", "kmp-starter")
 
 # Declaration keywords and qualifiers.
 KIND_KEYWORDS = {"class", "interface", "object", "fun", "val", "var", "typealias"}
@@ -152,7 +157,15 @@ def ensure_source(version: str) -> Path:
 def source_root(args) -> Path:
     if args.source:
         return Path(args.source).resolve()
+    if getattr(args, "dir", None) is not None:
+        return Path(args.dir).expanduser().resolve()
     return ensure_source(args.version or "main")
+
+
+def should_skip_dir(parts) -> bool:
+    """Return True if a relative path lives under this skill's own directory."""
+    n = len(SKILL_IGNORE_PARTS)
+    return len(parts) >= n and tuple(parts[:n]) == SKILL_IGNORE_PARTS
 
 
 # ---------------------------------------------------------------------------
@@ -580,13 +593,15 @@ def should_include(rel: Path, exts):
     return rel.suffix.lstrip(".") in exts
 
 
-def iter_code_files(root: Path, exts):
+def iter_code_files(root: Path, exts, skip_dirs=False):
     for p in root.rglob("*"):
         if not p.is_file():
             continue
         if any(ig in p.parts for ig in IGNORE_DIRS):
             continue
         rel = p.relative_to(root)
+        if skip_dirs and should_skip_dir(rel.parts):
+            continue
         if should_include(rel, exts):
             yield p, str(rel)
 
@@ -652,10 +667,10 @@ def matches_query(decl, terms, regex, in_body):
     return True
 
 
-def find_references(root, name, exts):
+def find_references(root, name, exts, skip_dirs=False):
     refs = []
     pat = re.compile(r"\b" + re.escape(name) + r"\b")
-    for p, rel in iter_code_files(root, exts):
+    for p, rel in iter_code_files(root, exts, skip_dirs):
         text = p.read_text(encoding="utf-8", errors="replace")
         c = len(pat.findall(text))
         if c:
@@ -708,7 +723,7 @@ def render_decl(d, opts, decl_map):
             lines.append(f"  parent: {d['parent']}")
         refs = opts.ref_cache.get(d["name"])
         if refs is None:
-            refs = find_references(opts.root, d["name"], opts.exts)
+            refs = find_references(opts.root, d["name"], opts.exts, opts.skip_dirs)
             opts.ref_cache[d["name"]] = refs
         # exclude the declaration's own file (it always contains the name)
         refs = [r for r in refs if r[0] != d["file"]]
@@ -834,6 +849,7 @@ def main():
     ap.add_argument("--list-versions", action="store_true", help="list remote tags")
     ap.add_argument("--clear-codes", nargs="*", metavar="VERSION", help="delete cached source; optional version list (none = all)")
     ap.add_argument("--source", help="search a local source tree instead of downloading")
+    ap.add_argument("--dir", help="search a local project dir (default '.') instead of downloaded template")
     ap.add_argument("--list-modules", action="store_true", help="list modules from settings.gradle.kts")
     ap.add_argument("--get-version", metavar="KEY", help="version from libs.versions.toml")
     ap.add_argument("--get-library", metavar="KEY", help="library from libs.versions.toml")
@@ -901,9 +917,10 @@ def main():
 
     module_keep = build_module_filter(args.modules.split(",") if args.modules else [])
 
+    skip_dirs = args.dir is not None
     decls = []
     decl_map = {}
-    for p, rel in iter_code_files(root, exts):
+    for p, rel in iter_code_files(root, exts, skip_dirs):
         if not module_keep(Path(rel)):
             continue
         if p.name == "libs.versions.toml" or p.suffix not in (".kt", ".kts"):
@@ -917,6 +934,7 @@ def main():
     opts.types = [t.strip() for t in re.split(r"[,\s]+", (args.types or "").strip()) if t.strip()]
     opts.root = root
     opts.exts = exts
+    opts.skip_dirs = skip_dirs
 
     return cmd_search(root, opts, decls, decl_map)
 

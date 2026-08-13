@@ -251,5 +251,63 @@ class TestClearCodes(unittest.TestCase):
                 sc.CODE_DIR = old
 
 
+class TestShouldSkipDir(unittest.TestCase):
+    def test_skill_dir_skipped(self):
+        self.assertTrue(sc.should_skip_dir((".agents", "skills", "kmp-starter", "x.kt")))
+
+    def test_other_dir_not_skipped(self):
+        self.assertFalse(sc.should_skip_dir(("features", "x.kt")))
+
+    def test_partial_not_skipped(self):
+        self.assertFalse(sc.should_skip_dir((".agents", "x.kt")))
+
+
+class TestDirSearch(unittest.TestCase):
+    def test_dir_searches_local(self):
+        # --dir scans a local tree; ensure skill dir is ignored but app code found
+        with tempfile.TemporaryDirectory() as td:
+            root = make_fixture(Path(td))
+            # simulate a skill dir that should be skipped
+            skill = root / ".agents" / "skills" / "kmp-starter"
+            skill.mkdir(parents=True)
+            (skill / "Noise.kt").write_text(
+                "class ShouldBeSkipped\n", encoding="utf-8",
+            )
+
+            # run search via cmd on --dir=root
+            class O:
+                pass
+            opts = Args(query="ShouldBeSkipped", types=["all"], kdocs=False,
+                        relations=False, root=root, exts={"kt"}, skip_dirs=True)
+
+            decls, decl_map = [], {}
+            for p, rel in sc.iter_code_files(root, {"kt"}, skip_dirs=True):
+                for d in sc.parse_file(p, rel):
+                    decls.append(d)
+                    decl_map.setdefault(d["name"], d)
+
+            names = {d["name"] for d in decls}
+            self.assertNotIn("ShouldBeSkipped", names)
+            self.assertIn("MviViewModel", names)
+
+
+class TestSourceRootDir(unittest.TestCase):
+    def test_dir_resolves(self):
+        class A:
+            source = None
+            dir = "/tmp/x"
+            version = "main"
+        r = sc.source_root(A())
+        self.assertEqual(str(r), str(Path("/tmp/x").resolve()))
+
+    def test_source_prefers_source(self):
+        class A:
+            source = "/tmp/src"
+            dir = "/tmp/x"
+            version = "main"
+        r = sc.source_root(A())
+        self.assertEqual(str(r), str(Path("/tmp/src").resolve()))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -82,9 +82,13 @@ python3 search-code.py --get-library starter-core           # library coordinate
 python3 search-code.py --get-plugin kotlin-multiplatform    # plugin coordinate
 python3 search-code.py --list-versions                      # remote repo tags
 python3 search-code.py --version 0.5.7 ...                  # pin a version (else latest)
+python3 search-code.py MviViewModel --dir .                 # search the CURRENT project instead
+python3 search-code.py onAction --dir /path/to/app          # search any local project dir
 ```
 
 Key flags: `--types` (class/interface/object/function/property/typealias/enum/annotation/sealed/data/`all`), `--kdocs`, `--kdocs-depth 1..5|-1`, `--relations`, `--include-inheritor`, `--only-inheritor`, `--modules`, `--extensions` (default `kt,kts,toml`), `--in-body`, `--json`, `--clear-codes [V...]`. First run downloads the source (cached under `.skill-storage/codes/{version}/`); later runs are instant.
+
+Use `--dir` (default `.`) to search the **current working project** source instead of the downloaded template — it ignores this skill's own files (`.agents/skills/kmp-starter/*`) so you only see project code.
 
 ## Determine the project's Starter version
 
