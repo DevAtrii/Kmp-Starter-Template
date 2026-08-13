@@ -597,7 +597,7 @@ def build_module_filter(modules):
         return lambda rel: True
 
     def keep(rel):
-        parts = rel.parts
+        parts = list(rel.parts)
         for m in norm:
             mparts = m.split("/")
             if mparts == parts[:len(mparts)]:

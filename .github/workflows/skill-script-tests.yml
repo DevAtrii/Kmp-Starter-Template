@@ -1,0 +1,33 @@
+name: Skill Script Tests
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .agents/skills/kmp-starter/search-docs.py
+      - .agents/skills/kmp-starter/search-code.py
+      - .agents/skills/kmp-starter/scan-project.py
+      - .agents/skills/kmp-starter/tests/**
+  pull_request:
+    paths:
+      - .agents/skills/kmp-starter/search-docs.py
+      - .agents/skills/kmp-starter/search-code.py
+      - .agents/skills/kmp-starter/scan-project.py
+      - .agents/skills/kmp-starter/tests/**
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+
+      - name: Run skill script tests
+        run: |
+          python3 -m unittest discover -s .agents/skills/kmp-starter/tests -p 'test_*.py' -v
