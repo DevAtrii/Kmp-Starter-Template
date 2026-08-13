@@ -64,6 +64,35 @@ python3 scan-project.py --json                   # machine-readable JSON
 
 What it captures: module tree (`:starter/*`, `:features/*`, other), feature slices (data/domain/presentation), Navigation3 `NavKey` routes, wired Koin modules, and key versions from `libs.versions.toml`. Output goes to `{skill}/.skill-storage/{project}/structure.md`.
 
+## Search the source code (search-code)
+
+When you need to see how the Starter Template itself implements something (a class, function, `libs.versions.toml` entry), use `search-code.py` — it downloads the public repo (default: latest `main`) and searches its source. Do **not** rely on a local `starter/` folder in the generated project; it may not exist or be stale.
+
+```bash
+python3 search-code.py MviViewModel --types class           # find a class
+python3 search-code.py onAction --types function --kdocs    # function + its KDoc
+python3 search-code.py --types class --kdocs-depth 3        # class + members to depth 3
+python3 search-code.py Foo --types all --relations          # parent/super/usage refs
+python3 search-code.py --list-modules                       # modules from settings.gradle.kts
+python3 search-code.py --get-version koin                   # version from libs.versions.toml
+python3 search-code.py --get-library starter-core           # library coordinate
+python3 search-code.py --get-plugin kotlin-multiplatform    # plugin coordinate
+python3 search-code.py --list-versions                      # remote repo tags
+python3 search-code.py --version 0.5.7 ...                  # pin a version (else latest)
+```
+
+Key flags: `--types` (class/interface/object/function/property/typealias/enum/annotation/sealed/data/`all`), `--kdocs`, `--kdocs-depth 1..5|-1`, `--relations`, `--include-inheritor`, `--only-inheritor`, `--modules`, `--extensions` (default `kt,kts,toml`), `--in-body`, `--json`, `--clear-codes [V...]`. First run downloads the source (cached under `.skill-storage/codes/{version}/`); later runs are instant.
+
+## Determine the project's Starter version
+
+To pin `search-code.py --version <v>` to the version a project was built with, resolve it from `starter.json` (project root, fields `packageName`, `starterVersion`, `mode`):
+
+1. Read the project's `starter.json`.
+2. If `mode` is `"LIB"` (lib mode) — read `gradle/libs.versions.toml` → `[versions]` → `starter = "x.x.x"`; that's the version.
+3. Otherwise (module mode) — read `starterVersion` directly from `starter.json`.
+
+Use that value as `search-code.py --version <v>`. Without `--version`, the script defaults to latest `main`.
+
 ## Load order
 
 Read this file first, then read child skills as each concern arises:
