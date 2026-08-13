@@ -16,20 +16,39 @@ This skill applies in two situations:
 - **New project** — scaffold with the CLI (`starter create`, see docs below), then build features on the generated structure.
 - **Existing project** — you are already inside a Kmp-Starter-Template project and need to add a feature, screen, module, or change existing code. Skip scaffolding; go straight to "Phase 1 — Understand the project", then implement.
 
-## Documentation (browse the live site)
+## Documentation (search + read via script)
 
-Docs are **not** guaranteed to be available locally. When implementation details are unclear, browse the live documentation site — do not assume a local `docs/` folder exists.
+Docs are **not** guaranteed to be available locally. Use the bundled `search-docs.py` script to search, browse, and read the live docs — it caches `https://starter.atherio.dev/search.json` for 5 minutes under `.skill-storage/docs.json`, so you query offline after the first fetch. Run it from the skill directory:
 
-- Base URL: `https://starter.atherio.dev`
-- Key pages:
-  - `https://starter.atherio.dev/getting-started/` — CLI, requirements, adding modules
-  - `https://starter.atherio.dev/modules/` — module map
-  - `https://starter.atherio.dev/fundamentals/...` — architecture, DI, MVI, Platform, DataStores, Resources, Languages, Navigation, Reviews/Updates, Logging, SPM, Writing Code, File Manager
-  - `https://starter.atherio.dev/features/...` — Core, Remote Config, Analytics, Database, Purchases
-  - `https://starter.atherio.dev/customization/...` — Metadata, Theming
-  - `https://starter.atherio.dev/ui/...` — Components, Utils, Layouts (and `/utils/` for non-UI utils)
+```bash
+python3 search-docs.py "koin module"                 # search docs by keywords
+python3 search-docs.py "koin" --max 5                # limit result count
+python3 search-docs.py "koin" --refresh              # force refetch, then search
+python3 search-docs.py --get "koin/"                 # read a full page (all sections)
+python3 search-docs.py --get "koin/#scopes"          # read a single section
+python3 search-docs.py --sitemap                     # print full page -> section map
+python3 search-docs.py --sitemap resource            # filter sitemap to paths matching "resource"
+python3 search-docs.py --json "koin"                 # machine-readable JSON results
+```
 
-Fetch a page with WebFetch (e.g. `https://starter.atherio.dev/getting-started/`) when you need the authoritative details for a concern.
+### How to use it
+
+1. **Don't know where something lives?** Search keywords: `search-docs.py "resource accessor"`. It ranks by title → path → section → body text and prints readable snippets + URLs.
+2. **Know the page but need details?** Read it whole: `search-docs.py --get "fundamentals/06-resources/"`.
+3. **Exploring what's available?** Print the map: `search-docs.py --sitemap`, or narrow it: `search-docs.py --sitemap purchase`.
+4. **Stale results?** The cache lasts 5 minutes; force a refresh with `--refresh` if you suspect the docs changed.
+5. **Need raw data to script against?** Use `--json`.
+
+Key page locations (use with `--get`):
+
+- `getting-started/` — CLI, requirements, adding modules
+- `modules/` — module map
+- `fundamentals/...` — architecture, DI, MVI, Platform, DataStores, Resources, Languages, Navigation, Reviews/Updates, Logging, SPM, Writing Code, File Manager
+- `features/...` — Core, Remote Config, Analytics, Database, Purchases
+- `customization/...` — Metadata, Theming
+- `ui/...` — Components, Utils, Layouts (and `utils/` for non-UI utils)
+
+**Do not use WebFetch to browse the docs.** Always search/read through `search-docs.py`.
 
 ## Load order
 
@@ -124,7 +143,7 @@ For every feature:
 
 ## Source of truth
 
-- Docs (live site, browse when needed): `https://starter.atherio.dev` — `getting-started/`, `modules/`, `fundamentals/*`, `features/*`, `customization/*`.
+- Docs (live site, query via `search-docs.py`): `https://starter.atherio.dev` — `getting-started/`, `modules/`, `fundamentals/*`, `features/*`, `customization/*`.
 - Local docs (if present): `docs/fundamentals/*.md`, `docs/features/*.md`, `docs/customization/*.md`, `docs/getting-started.md`, `docs/modules.md`.
 - Code (in the generated project): `composeApp/`, `features/core/*`, `features/navigation/`, `features/your-feature/*`, `starter/*`.
 - Canonical feature slice to mirror: `features/core/` onboarding (repository → Logics → ViewModel → screen).
