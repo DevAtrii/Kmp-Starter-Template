@@ -1,6 +1,10 @@
 ---
 name: kmp-starter-features
 description: How to reuse the KMP Starter Template's built-in feature modules — Analytics, Remote Config, Purchases, Store Reviews & Updates, Splash/Onboarding, and Notifications.
+version: 1
+author: DevAtrii
+license: MIT
+
 ---
 
 # Starter Features

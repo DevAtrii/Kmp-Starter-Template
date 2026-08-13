@@ -1,6 +1,10 @@
 ---
 name: kmp-starter-ui
 description: Reusable Compose UI kit on the KMP Starter Template — starter/ui/components, starter/ui/utils, and starter/ui/layouts. Know what's already built before writing new UI.
+version: 1
+author: DevAtrii
+license: MIT
+
 ---
 
 # UI

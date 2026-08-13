@@ -1,6 +1,9 @@
 ---
 name: kmp-starter-app
 description: Build production Android & iOS apps on the KMP Starter Template (Clean Architecture, MVI, Koin, Compose Multiplatform). Use when scaffolding a NEW project via the CLI, or when creating/editing features, screens, modules, or any code inside an EXISTING Kmp-Starter-Template project, or when the user references KMP Starter or the Starter Template.
+version: 1
+author: DevAtrii
+license: MIT
 ---
 
 # KMP Starter App
@@ -92,6 +95,19 @@ To pin `search-code.py --version <v>` to the version a project was built with, r
 3. Otherwise (module mode) — read `starterVersion` directly from `starter.json`.
 
 Use that value as `search-code.py --version <v>`. Without `--version`, the script defaults to latest `main`.
+
+## Update these skills (update-skills)
+
+Keep the skills themselves up to date from the public repo. `update-skills.py` fetches the latest skill files, compares the parent `version` (frontmatter field in this file), and updates local files when the remote version is newer. Local-only state (`.skill-storage/`) is preserved.
+
+```bash
+python3 update-skills.py               # check + update if remote is newer
+python3 update-skills.py --check       # report only, don't write
+python3 update-skills.py --force       # update regardless of version
+python3 update-skills.py --version 0.5.7   # pin a branch/tag (default main)
+```
+
+Version comparison reads `version:` from the top of `SKILL.md`; identical or older remote versions are ignored. Author/`license` are declared in each skill's frontmatter (`author: DevAtrii`, `license: MIT`).
 
 ## Load order
 

@@ -32,4 +32,6 @@ temp
 temp.txt
 .starter
 .agents/skills/kmp-starter/.skill-storage/codes
+.agents/skills/kmp-starter/tests/report.md
+.agents/skills/kmp-starter/tests/report.json
 __pycache__/

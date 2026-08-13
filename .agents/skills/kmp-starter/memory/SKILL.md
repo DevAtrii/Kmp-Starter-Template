@@ -1,6 +1,10 @@
 ---
 name: kmp-starter-memory
 description: Persistent per-project memory for KMP Starter Template apps. Use when starting work on a project (read memory first), when learning the project structure, or after making significant changes (write/update memory).
+version: 1
+author: DevAtrii
+license: MIT
+
 ---
 
 # Memory

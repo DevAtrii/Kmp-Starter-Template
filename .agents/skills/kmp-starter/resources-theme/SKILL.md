@@ -1,6 +1,10 @@
 ---
 name: kmp-starter-resources-theme
 description: Resources and theming on the KMP Starter Template — centralized resources module, string externalization, localization, theme via ThemeDataStore, and colors/typography.
+version: 1
+author: DevAtrii
+license: MIT
+
 ---
 
 # Resources & Theme

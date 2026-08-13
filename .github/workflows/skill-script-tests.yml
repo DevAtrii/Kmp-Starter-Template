@@ -7,12 +7,14 @@ on:
       - .agents/skills/kmp-starter/search-docs.py
       - .agents/skills/kmp-starter/search-code.py
       - .agents/skills/kmp-starter/scan-project.py
+      - .agents/skills/kmp-starter/update-skills.py
       - .agents/skills/kmp-starter/tests/**
   pull_request:
     paths:
       - .agents/skills/kmp-starter/search-docs.py
       - .agents/skills/kmp-starter/search-code.py
       - .agents/skills/kmp-starter/scan-project.py
+      - .agents/skills/kmp-starter/update-skills.py
       - .agents/skills/kmp-starter/tests/**
 
 permissions:

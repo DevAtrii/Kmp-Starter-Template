@@ -1,6 +1,10 @@
 ---
 name: kmp-starter-architecture
 description: Clean Architecture module and package layout for KMP Starter Template features — data/domain/presentation layers, core dependency rule, screen-based package organization, the Screen vs Content composable split, and dialog/bottom-sheet (BaseDialog/BaseBottomSheet) conventions.
+version: 1
+author: DevAtrii
+license: MIT
+
 ---
 
 # Architecture

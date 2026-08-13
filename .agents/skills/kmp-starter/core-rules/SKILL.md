@@ -1,6 +1,10 @@
 ---
 name: kmp-starter-core-rules
 description: Non-negotiable rules for building on the KMP Starter Template — priority order, Golden Rule, terminology, state vs UI-state boundaries, visibility, demo removal, snackbars, and UI weight. Read before writing any code.
+version: 1
+author: DevAtrii
+license: MIT
+
 ---
 
 # Core Rules

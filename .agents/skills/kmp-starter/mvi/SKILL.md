@@ -1,6 +1,10 @@
 ---
 name: kmp-starter-mvi
 description: How to implement MVI on the KMP Starter Template — State, Actions, Events, and the MviViewModel base class (initialState, onAction, onStateStart, emitEvent/emitEventAsync).
+version: 1
+author: DevAtrii
+license: MIT
+
 ---
 
 # MVI

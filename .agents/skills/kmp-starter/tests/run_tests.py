@@ -240,6 +240,10 @@ def collect_script_runs():
     finally:
         td.cleanup()
 
+    # update-skills (--help, safe offline; real update needs network)
+    rc, out = run_script("update-skills.py", ["--help"])
+    runs.append(("update-skills.py --help", rc, out))
+
     return runs
 
 
