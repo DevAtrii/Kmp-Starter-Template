@@ -29,5 +29,19 @@ jobs:
           python-version: 3.x
 
       - name: Run skill script tests
-        run: |
-          python3 -m unittest discover -s .agents/skills/kmp-starter/tests -p 'test_*.py' -v
+        id: tests
+        run: python3 .agents/skills/kmp-starter/tests/run_tests.py --json
+
+      - name: Show report
+        if: always()
+        run: cat .agents/skills/kmp-starter/tests/report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: |
+            .agents/skills/kmp-starter/tests/report.md
+            .agents/skills/kmp-starter/tests/report.json
+          if-no-files-found: ignore
