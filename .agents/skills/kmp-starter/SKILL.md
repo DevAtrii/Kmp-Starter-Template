@@ -50,6 +50,20 @@ Key page locations (use with `--get`):
 
 **Do not use WebFetch to browse the docs.** Always search/read through `search-docs.py`.
 
+## Map the project (scan-project)
+
+Before exploring a project by hand, run the bundled `scan-project.py` — it reads the project structure and writes a concise map for the memory system (see the [memory](memory/SKILL.md) skill).
+
+```bash
+python3 scan-project.py                          # scan cwd, derive project slug
+python3 scan-project.py --root /path/to/app      # scan a specific project dir
+python3 scan-project.py --project my-app         # explicit slug
+python3 scan-project.py --print                  # print the map, don't write a file
+python3 scan-project.py --json                   # machine-readable JSON
+```
+
+What it captures: module tree (`:starter/*`, `:features/*`, other), feature slices (data/domain/presentation), Navigation3 `NavKey` routes, wired Koin modules, and key versions from `libs.versions.toml`. Output goes to `{skill}/.skill-storage/{project}/structure.md`.
+
 ## Load order
 
 Read this file first, then read child skills as each concern arises:
@@ -97,8 +111,8 @@ Keep persistent memory per project under `{skill}/.skill-storage/{project}/` (`m
 
 Do not write code until you have:
 
-- [ ] Explored the module structure (`settings.gradle.kts`)
-- [ ] Understood navigation (`features/navigation`, `composeApp/core/navigation`)
+- [ ] Run `python3 scan-project.py --project {slug}` to map the project
+- [ ] Read `.skill-storage/{slug}/structure.md` (modules, features, nav, Koin)
 - [ ] Understood `features/*` layout (data / domain / presentation)
 - [ ] Understood `features/core*` (shared foundation)
 - [ ] Read existing implementations (e.g. `features/core/*` onboarding slice)

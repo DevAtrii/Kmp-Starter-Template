@@ -22,6 +22,16 @@ Store memory inside the skill directory, keyed by project:
 - `{skill}` = the directory containing this `SKILL.md`.
 - `{project}` = a stable, filesystem-safe slug for the project (lowercase, hyphens). Derive from the app/package name (e.g. `com.example.myapp` → `myapp`, or the app name `notes-app`). Use the **same slug** every session for the same project.
 
+### Generate `structure.md` automatically
+
+Use the bundled `scan-project.py` to produce `structure.md` (module tree, feature slices, nav routes, Koin wiring, versions):
+
+```bash
+python3 scan-project.py --root /path/to/project --project my-app
+```
+
+It writes `{skill}/.skill-storage/{project}/structure.md` directly. Run it at the start of a session on an unfamiliar project, then read the file instead of re-walking the whole tree.
+
 ## When to read
 
 At the start of any session on a project:
