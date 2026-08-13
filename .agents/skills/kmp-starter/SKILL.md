@@ -27,6 +27,7 @@ Docs are **not** guaranteed to be available locally. When implementation details
   - `https://starter.atherio.dev/fundamentals/...` — architecture, DI, MVI, Platform, DataStores, Resources, Languages, Navigation, Reviews/Updates, Logging, SPM, Writing Code, File Manager
   - `https://starter.atherio.dev/features/...` — Core, Remote Config, Analytics, Database, Purchases
   - `https://starter.atherio.dev/customization/...` — Metadata, Theming
+  - `https://starter.atherio.dev/ui/...` — Components, Utils, Layouts (and `/utils/` for non-UI utils)
 
 Fetch a page with WebFetch (e.g. `https://starter.atherio.dev/getting-started/`) when you need the authoritative details for a concern.
 
@@ -43,6 +44,8 @@ Read this file first, then read child skills as each concern arises:
 | [navigation](navigation/SKILL.md) | Adding/registering a screen or nested nav. |
 | [data](data/SKILL.md) | Repositories, Logics, DataStore, Room, files. |
 | [resources-theme](resources-theme/SKILL.md) | Strings, locales, colors, typography, theme. |
+| [ui](ui/SKILL.md) | Reusable UI components, UI utils, layouts. |
+| [utils](utils/SKILL.md) | Non-UI Kotlin helpers (variables, time, JSON, FieldState, IntentUtils, Log, DataStore delegates). |
 | [platform](platform/SKILL.md) | Platform checks, logging, native/Swift bindings. |
 | [starter-features](starter-features/SKILL.md) | Analytics, Remote Config, Purchases, Reviews, Updates, Onboarding. |
 | [memory](memory/SKILL.md) | Read at session start; write after significant changes. |
