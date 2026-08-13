@@ -81,15 +81,15 @@ class PurchasesViewModel(
                 )
             }
 
-            PurchasesActions.OnPrivacyPolicyClick -> viewModelScope.launch {
+            is PurchasesActions.OnPrivacyPolicyClick -> viewModelScope.launch {
                 intentUtils.openUrl(
-                    url = "https://google.com",
+                    url = action.url,
                 )
             }
 
-            PurchasesActions.OnTermsOfUseClick -> viewModelScope.launch {
+            is PurchasesActions.OnTermsOfUseClick -> viewModelScope.launch {
                 intentUtils.openUrl(
-                    url = "https://google.com",
+                    url = action.url,
                 )
             }
         }

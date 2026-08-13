@@ -53,6 +53,7 @@ import com.kmpstarter.feature_resources.privacy_policy
 import com.kmpstarter.feature_resources.starter_purchases_error_button_try_again
 import com.kmpstarter.feature_resources.starter_purchases_products_not_found
 import com.kmpstarter.feature_resources.terms_of_use
+import com.kmpstarterapp.core.AppConstants
 
 internal fun starterDefaultPaywallV1(): Paywalls =
     Paywalls.V1(
@@ -72,6 +73,8 @@ internal fun starterDefaultPaywallV1(): Paywalls =
                 faqsTitle = Res.string.paywall_v1_faqs_title,
                 features = starterDefaultPaywallV1Features(),
             ),
+        privacyPolicyUrl = AppConstants.PRIVACY_POLICY,
+        termsOfUseUrl = AppConstants.TERMS_OF_USE,
     )
 
 private fun starterDefaultPaywallV1Features(): List<PurchaseFeature> =

@@ -21,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kmpstarter.feature_purchases_domain.models.PaywallMetadata
 import com.kmpstarter.feature_purchases_domain.models.Product
@@ -37,11 +36,18 @@ import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
 import com.kmpstarter.utils.logging.Log
 import org.koin.compose.viewmodel.koinViewModel
 
-sealed class Paywalls {
+sealed class Paywalls(
+) {
+    abstract val privacyPolicyUrl: String
+    abstract val termsOfUseUrl: String
 
     data class V1(
+        override val privacyPolicyUrl: String,
+        override val termsOfUseUrl: String,
         val ui: PaywallV1UiContent,
     ) : Paywalls()
+
+
 }
 
 @Composable
@@ -50,7 +56,7 @@ fun PurchasesScreen(
     viewModel: PurchasesViewModel = koinViewModel(),
     onNavigate: () -> Unit,
     onProductsLoadFailure: (Throwable) -> Unit = {},
-    onPurchaseFailure: (Throwable, ProductId) -> Unit = {_,_->},
+    onPurchaseFailure: (Throwable, ProductId) -> Unit = { _, _ -> },
     onRestoreFailure: (Throwable) -> Unit = {},
     onPurchaseSuccess: (ProductId) -> Unit = {},
 ) {
@@ -60,7 +66,11 @@ fun PurchasesScreen(
     ObserveAsEvents(flow = viewModel.uiEvents) { event ->
         when (event) {
             is PurchasesEvents.OnProductsLoadFailure -> onProductsLoadFailure(event.exception)
-            is PurchasesEvents.OnPurchaseFailure -> onPurchaseFailure(event.exception,event.productId)
+            is PurchasesEvents.OnPurchaseFailure -> onPurchaseFailure(
+                event.exception,
+                event.productId
+            )
+
             is PurchasesEvents.OnPurchaseSuccess -> onPurchaseSuccess(event.productId)
             is PurchasesEvents.OnRestoreFailure -> onRestoreFailure(event.exception)
         }
@@ -96,10 +106,16 @@ fun PurchasesScreen(
             viewModel.onAction(PurchasesActions.RestorePurchases)
         },
         onPrivacyClick = {
-            viewModel.onAction(PurchasesActions.OnPrivacyPolicyClick)
+            viewModel.onAction(
+                PurchasesActions.OnPrivacyPolicyClick(
+                    url =paywall.privacyPolicyUrl,
+                )
+            )
         },
         onTermsClick = {
-            viewModel.onAction(PurchasesActions.OnTermsOfUseClick)
+            viewModel.onAction(PurchasesActions.OnTermsOfUseClick(
+                url = paywall.termsOfUseUrl
+            ))
         },
         onPurchaseClick = {
             viewModel.onAction(PurchasesActions.StartPurchase)

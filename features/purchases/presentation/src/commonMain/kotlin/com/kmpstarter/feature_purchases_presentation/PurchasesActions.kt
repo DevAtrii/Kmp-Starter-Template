@@ -23,7 +23,7 @@ sealed class PurchasesActions {
    data  object StartPurchase : PurchasesActions()
     data object LoadProducts : PurchasesActions()
     data object RestorePurchases : PurchasesActions()
-    data object OnPrivacyPolicyClick : PurchasesActions()
-    data object OnTermsOfUseClick : PurchasesActions()
+    data class OnPrivacyPolicyClick(val url: String) : PurchasesActions()
+    data class OnTermsOfUseClick(val url: String) : PurchasesActions()
 
 }

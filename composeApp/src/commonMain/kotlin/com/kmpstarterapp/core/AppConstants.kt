@@ -28,5 +28,8 @@ object AppConstants {
     const val GOOGLE_WEB_CLIENT_ID =
         "xxx"
 
+    const val PRIVACY_POLICY =  "https://warp.atherio.dev"
+    const val TERMS_OF_USE =  "https://warp.atherio.dev"
+
     const val MIXPANEL_API_TOKEN = "add-your-mixpanel-token-here"
 }

@@ -16,6 +16,7 @@
 package com.kmpstarterapp.core.navigation
 
 import androidx.navigation3.runtime.NavKey
+import com.kmpstarter.feature_navigation.StarterNavigator
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -30,5 +31,6 @@ sealed class AppScreens : NavKey {
     data object Onboarding : AppScreens()
 
     @Serializable
-    data object Purchases : AppScreens()
+    data class Purchases(val onNavigate: (StarterNavigator) -> Unit = { it.navigateUp() }) :
+        AppScreens()
 }

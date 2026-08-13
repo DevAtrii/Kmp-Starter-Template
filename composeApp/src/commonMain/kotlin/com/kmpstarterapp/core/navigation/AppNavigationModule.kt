@@ -16,7 +16,6 @@
 package com.kmpstarterapp.core.navigation
 
 import androidx.compose.runtime.rememberCoroutineScope
-import com.kmpstarterapp.core.ui.screens.WelcomeScreen
 import com.kmpstarter.feature_analytics_domain.EventsTracker
 import com.kmpstarter.feature_core_domain.AppEvents
 import com.kmpstarter.feature_core_presentation.screens.OnboardingV1Screen
@@ -24,6 +23,7 @@ import com.kmpstarter.feature_core_presentation.screens.SplashScreen
 import com.kmpstarter.feature_navigation.StarterNavigator
 import com.kmpstarter.feature_navigation.di.navigationCoreModule
 import com.kmpstarter.feature_purchases_presentation.ui.screens.PurchasesScreen
+import com.kmpstarterapp.core.ui.screens.WelcomeScreen
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -40,7 +40,7 @@ val appNavigationModule = module {
         WelcomeScreen(
             onGetStartedClick = {
                 navigator.navigateTo(
-                    route = AppScreens.Purchases
+                    route = AppScreens.Purchases()
                 )
             }
         )
@@ -79,7 +79,7 @@ val appNavigationModule = module {
         PurchasesScreen(
             paywall = starterDefaultPaywallV1(),
             onNavigate = {
-                navigator.navigateUp()
+                route.onNavigate.invoke(navigator)
             },
             onProductsLoadFailure = {
                 scope.launch {
