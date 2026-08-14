@@ -120,6 +120,7 @@ Read this file first, then read child skills as each concern arises:
 | Child skill | Read when |
 | --- | --- |
 | [create-fresh-app](create-fresh-app/SKILL.md) | Researching/planning a brand-new app or validating an idea (before scaffolding). |
+| [native-app](native-app/SKILL.md) | Building a no-shared-UI app — Compose Android + native SwiftUI iOS (ios-runtime + SKIE). |
 | [core-rules](core-rules/SKILL.md) | Always. Governs every decision. |
 | [architecture](architecture/SKILL.md) | Before touching any feature/layer/module. |
 | [mvi](mvi/SKILL.md) | Creating a ViewModel, State, Action, or Event. |
