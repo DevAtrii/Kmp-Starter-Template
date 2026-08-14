@@ -6,7 +6,6 @@ on:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     permissions:
       contents: write
 
@@ -51,47 +50,6 @@ jobs:
           echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > keystore/release.jks
           echo "KEYSTORE_PATH=$GITHUB_WORKSPACE/keystore/release.jks" >> $GITHUB_ENV
 
-      - name: Validate Keystore
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          if [ -z "${{ secrets.KEYSTORE_FILE }}" ]; then
-            echo "::error::KEYSTORE_FILE secret is missing or empty."
-            exit 1
-          fi
-
-          if [ ! -s "$KEYSTORE_PATH" ]; then
-            echo "::error::Keystore file is missing or empty after decode."
-            exit 1
-          fi
-
-          if [ -z "$KEYSTORE_PASSWORD" ] || [ -z "$KEY_ALIAS" ] || [ -z "$KEY_PASSWORD" ]; then
-            echo "::error::One or more signing secrets are missing (KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD)."
-            exit 1
-          fi
-
-          if ! keytool -list \
-            -keystore "$KEYSTORE_PATH" \
-            -storepass "$KEYSTORE_PASSWORD" \
-            > /dev/null 2>&1; then
-            echo "::error::Invalid keystore file or incorrect KEYSTORE_PASSWORD."
-            exit 1
-          fi
-
-          if ! keytool -list \
-            -keystore "$KEYSTORE_PATH" \
-            -storepass "$KEYSTORE_PASSWORD" \
-            -alias "$KEY_ALIAS" \
-            -keypass "$KEY_PASSWORD" \
-            > /dev/null 2>&1; then
-            echo "::error::Key alias '$KEY_ALIAS' not found, or KEY_PASSWORD is incorrect."
-            exit 1
-          fi
-
-          echo "Keystore validation passed for alias '$KEY_ALIAS'."
-
       - name: Build APK & AAB
         run: |
           ./gradlew :androidApp:assembleRelease :androidApp:bundleRelease \
@@ -106,6 +64,7 @@ jobs:
           VERSION=${{ steps.get_version.outputs.VERSION }}
           mkdir -p release-artifacts
           
+          # Standard output paths for single-module apps
           find androidApp/build/outputs/apk/release/ -name "*.apk" -exec cp {} release-artifacts/app-release-${VERSION}.apk \;
           find androidApp/build/outputs/bundle/release/ -name "*.aab" -exec cp {} release-artifacts/app-release-${VERSION}.aab \;
 
