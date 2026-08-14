@@ -141,10 +141,13 @@ def fetch_remote_version(repo, ref) -> str:
     return fm.get("version")
 
 
-def download_remote_tree(repo, ref) -> Path:
-    """Download + extract the remote skill dir into a temp dir; return its path."""
-    tmp = tempfile.TemporaryDirectory()
-    td = Path(tmp.name)
+def download_remote_tree(repo, ref) -> tuple:
+    """Download + extract the remote skill dir into a temp dir.
+
+    Returns ``(skill_dir, tmp_root)``. The caller is responsible for removing
+    ``tmp_root`` after syncing — it must stay alive while files are read.
+    """
+    td = Path(tempfile.mkdtemp(prefix="kmp-skills-"))
     url = archive_url(repo, ref)
     tgz = td / "src.tar.gz"
     tgz.write_bytes(fetch_bytes(url))
@@ -158,7 +161,7 @@ def download_remote_tree(repo, ref) -> Path:
     skill_dir = roots[0] / SKILL_REL
     if not skill_dir.is_dir():
         raise RuntimeError(f"Skill dir not found in archive: {SKILL_REL}")
-    return skill_dir
+    return skill_dir, td
 
 
 # ---------------------------------------------------------------------------
@@ -209,8 +212,11 @@ def cmd_update(repo, ref, force, check_only):
         print("--check: not writing.")
         return 0
 
-    src = download_remote_tree(repo, ref)
-    synced = sync_tree(src, SKILL_DIR)
+    src, tmp_root = download_remote_tree(repo, ref)
+    try:
+        synced = sync_tree(src, SKILL_DIR)
+    finally:
+        shutil.rmtree(tmp_root, ignore_errors=True)
     print(f"Updated {len(synced)} file(s):")
     for s in synced:
         print(f"  {s}")
