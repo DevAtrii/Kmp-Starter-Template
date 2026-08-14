@@ -597,9 +597,9 @@ def iter_code_files(root: Path, exts, skip_dirs=False):
     for p in root.rglob("*"):
         if not p.is_file():
             continue
-        if any(ig in p.parts for ig in IGNORE_DIRS):
-            continue
         rel = p.relative_to(root)
+        if any(ig in rel.parts for ig in IGNORE_DIRS):
+            continue
         if skip_dirs and should_skip_dir(rel.parts):
             continue
         if should_include(rel, exts):
