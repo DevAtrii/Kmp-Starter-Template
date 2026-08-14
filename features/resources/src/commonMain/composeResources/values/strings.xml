@@ -40,6 +40,7 @@
     <string name="starter_onboarding_slide_3_description">Help us grow by letting us know where you heard about this starter template.</string>
 
     <string name="starter_onboarding_source_google_play">Google Play Store</string>
+    <string name="starter_onboarding_source_app_store">App Store</string>
     <string name="starter_onboarding_source_social_media">Social Media (X/FB/IG)</string>
     <string name="starter_onboarding_source_reddit">Reddit Community</string>
     <string name="starter_onboarding_source_youtube">YouTube Video</string>

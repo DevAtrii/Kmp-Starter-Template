@@ -42,6 +42,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.Button
@@ -64,6 +65,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kmpstarter.core.platform.Platform
+import com.kmpstarter.core.platform.platform
 import com.kmpstarter.feature_core_presentation.viewmodels.OnboardingActions
 import com.kmpstarter.feature_core_presentation.viewmodels.OnboardingEvents
 import com.kmpstarter.feature_core_presentation.viewmodels.OnboardingViewModel
@@ -76,6 +79,7 @@ import com.kmpstarter.feature_resources.starter_onboarding_slide_2_description
 import com.kmpstarter.feature_resources.starter_onboarding_slide_2_title
 import com.kmpstarter.feature_resources.starter_onboarding_slide_3_description
 import com.kmpstarter.feature_resources.starter_onboarding_slide_3_title
+import com.kmpstarter.feature_resources.starter_onboarding_source_app_store
 import com.kmpstarter.feature_resources.starter_onboarding_source_friend
 import com.kmpstarter.feature_resources.starter_onboarding_source_google_play
 import com.kmpstarter.feature_resources.starter_onboarding_source_other
@@ -103,13 +107,21 @@ private data class TrafficSource(
     val title: StringResource,
     val icon: ImageVector,
 )
-
-private val trafficSources = listOf(
-    TrafficSource(
+private val storeTrafficSource = when (platform) {
+    is Platform.Android -> TrafficSource(
         id = "google_play",
         title = Res.string.starter_onboarding_source_google_play,
         icon = Icons.Default.PlayArrow
-    ),
+    )
+
+    is Platform.Ios -> TrafficSource(
+        id = "app_store",
+        title = Res.string.starter_onboarding_source_app_store,
+        icon = Icons.Default.ShoppingBag
+    )
+}
+private val trafficSources = listOf(
+    storeTrafficSource,
     TrafficSource(
         id = "social_media",
         title = Res.string.starter_onboarding_source_social_media,
