@@ -1,7 +1,6 @@
 ---
 name: kmp-starter-koin
 description: Dependency injection with Koin on the KMP Starter Template — one module per layer, plugin selection, singleOf bindings, registration in InitKoin, viewModelOf/parameterized koinViewModel, and scoped navigators + ViewModels for nested nav.
-version: 1
 author: DevAtrii
 license: MIT
 

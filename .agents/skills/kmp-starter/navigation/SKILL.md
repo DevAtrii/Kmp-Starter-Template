@@ -1,7 +1,6 @@
 ---
 name: kmp-starter-navigation
 description: Navigation on the KMP Starter Template using navigation3 — AppScreens, polymorphic registration, AppNavigationModule routes, StarterNavigator, nested navigation (scoped navigators, Nav3Transitions, entry decorators), and ResultStore.
-version: 1
 author: DevAtrii
 license: MIT
 

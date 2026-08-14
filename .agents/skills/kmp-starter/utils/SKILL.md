@@ -1,7 +1,6 @@
 ---
 name: kmp-starter-utils
 description: Pure Kotlin helpers on the KMP Starter Template — the starter/utils module (no Compose). Variable/string/int/bool extensions, time & kotlinx-datetime, JSON, FieldState/ComparableState, IntentUtils, Log, DataStore delegates, StarterFileManager, EnumException, ExperimentalStarterApi.
-version: 1
 author: DevAtrii
 license: MIT
 

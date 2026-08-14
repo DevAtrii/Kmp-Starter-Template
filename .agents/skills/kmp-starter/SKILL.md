@@ -1,7 +1,7 @@
 ---
-name: kmp-starter-app
+name: kmp-starter
 description: Build production Android & iOS apps on the KMP Starter Template (Clean Architecture, MVI, Koin, Compose Multiplatform). Use when scaffolding a NEW project via the CLI, or when creating/editing features, screens, modules, or any code inside an EXISTING Kmp-Starter-Template project, or when the user references KMP Starter or the Starter Template.
-version: 1
+version: 2
 author: DevAtrii
 license: MIT
 ---
@@ -16,7 +16,7 @@ Build and evolve apps **on top of** the KMP Starter Template. Do not reinvent it
 
 This skill applies in two situations:
 
-- **New project** — scaffold with the CLI (`starter create`, see docs below), then build features on the generated structure.
+- **New project** — if the user wants a *brand-new app*, first run the [create-fresh-app](create-fresh-app/SKILL.md) skill to research + plan + get approval. Then scaffold with the CLI (`starter create`, see docs below) and build features on the generated structure.
 - **Existing project** — you are already inside a Kmp-Starter-Template project and need to add a feature, screen, module, or change existing code. Skip scaffolding; go straight to "Phase 1 — Understand the project", then implement.
 
 ## Documentation (search + read via script)
@@ -119,6 +119,7 @@ Read this file first, then read child skills as each concern arises:
 
 | Child skill | Read when |
 | --- | --- |
+| [create-fresh-app](create-fresh-app/SKILL.md) | Researching/planning a brand-new app or validating an idea (before scaffolding). |
 | [core-rules](core-rules/SKILL.md) | Always. Governs every decision. |
 | [architecture](architecture/SKILL.md) | Before touching any feature/layer/module. |
 | [mvi](mvi/SKILL.md) | Creating a ViewModel, State, Action, or Event. |
@@ -129,7 +130,7 @@ Read this file first, then read child skills as each concern arises:
 | [ui](ui/SKILL.md) | Reusable UI components, UI utils, layouts. |
 | [utils](utils/SKILL.md) | Non-UI Kotlin helpers (variables, time, JSON, FieldState, IntentUtils, Log, DataStore delegates). |
 | [platform](platform/SKILL.md) | Platform checks, logging, native/Swift bindings. |
-| [starter-features](starter-features/SKILL.md) | Analytics, Remote Config, Purchases, Reviews, Updates, Onboarding. |
+| [starter-features](starter-features/SKILL.md) | Analytics, Remote Config, Purchases, Database, Reviews, Updates, Splash/Onboarding, Notifications, Locale (each has a child skill). |
 | [memory](memory/SKILL.md) | Read at session start; write after significant changes. |
 
 ## Priority order

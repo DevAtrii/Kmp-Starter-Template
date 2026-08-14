@@ -1,7 +1,6 @@
 ---
 name: kmp-starter-data
 description: Data layer on the KMP Starter Template — repositories and data sources, Logics guidance, DataStore persistence, Room database, StarterFileManager, and the Calf file picker.
-version: 1
 author: DevAtrii
 license: MIT
 

@@ -1,7 +1,6 @@
 ---
 name: kmp-starter-platform
 description: Platform-specific behavior on the KMP Starter Template — the Platform class, logging, native iOS bindings, and SPM dependency integration.
-version: 1
 author: DevAtrii
 license: MIT
 
