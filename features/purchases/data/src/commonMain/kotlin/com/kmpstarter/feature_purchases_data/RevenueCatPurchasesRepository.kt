@@ -153,7 +153,7 @@ class RevenueCatPurchasesRepository(
     }
 
     override suspend fun getDiscountProduct(): Result<Product> {
-        val product = if (discountProduct == null) loadDiscountProduct() else discountProduct
+        val product = loadDiscountProduct() ?: discountProduct
         Log.i(TAG, "getDiscountProduct: discount product $product")
         if (product == null)
             return Result.failure(PurchaseException(reason = PurchaseExceptionReason.ProductNotFound))
