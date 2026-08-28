@@ -27,4 +27,5 @@ data class AnalyticsProviderId(
 
 object AnalyticsProviderIds {
     val Mixpanel = AnalyticsProviderId("mixpanel")
+    val Firebase = AnalyticsProviderId("firebase")
 }

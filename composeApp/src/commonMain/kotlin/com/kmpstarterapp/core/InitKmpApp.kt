@@ -19,6 +19,9 @@ import com.kmpstarter.core.platform.platform
 import com.kmpstarter.feature_analytics_data.MixPanelAnalyticsScope
 import com.kmpstarter.feature_analytics_data.getProvider
 import com.kmpstarter.feature_analytics_data.initMixPanel
+import com.kmpstarter.feature_analytics_data_firebase.FirebaseAnalyticsScope
+import com.kmpstarter.feature_analytics_data_firebase.getProvider
+import com.kmpstarter.feature_analytics_data_firebase.initFirebaseAnalytics
 import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProvider
 import com.kmpstarter.feature_analytics_domain.initAnalytics
 import com.kmpstarter.feature_purchases_data.initRevenueCat

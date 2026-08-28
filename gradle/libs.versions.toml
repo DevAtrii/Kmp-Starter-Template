@@ -11,8 +11,8 @@ app-version-minor = "0"
 app-version-patch = "0"
 # starter libs versions
 lib-version-major = "0"
-lib-version-minor = "5"
-lib-version-patch = "9"
+lib-version-minor = "6"
+lib-version-patch = "0"
 # cli versions
 cli-version-major = "0"
 cli-version-minor = "5"
