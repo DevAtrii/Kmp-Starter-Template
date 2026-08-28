@@ -124,6 +124,9 @@ private object AppConfig {
     */
 }
 
+@Composable
+expect fun SomeDebugPlatformWork(modifier: Modifier = Modifier)
+
 /**
  * The main entry point of the application UI.
  */
@@ -133,6 +136,7 @@ fun App() {
     LaunchOnce {
         appInitializer.initialize()
     }
+    SomeDebugPlatformWork()
 
     val snackbarHostState = remember {
         SnackbarHostState()
