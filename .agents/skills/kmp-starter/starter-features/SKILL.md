@@ -14,7 +14,7 @@ Each built-in feature has a dedicated child skill with full detail, file locatio
 
 | Feature | Child skill | When to read |
 | --- | --- | --- |
-| Analytics | [analytics](analytics/SKILL.md) | Adding/tracking events, swapping Mixpanel |
+| Analytics | [analytics](analytics/SKILL.md) | Adding/tracking events, combining providers, runtime swaps |
 | Remote Config | [remote-config](remote-config/SKILL.md) | Typed config keys, feature flags |
 | Purchases (RevenueCat) | [purchases](purchases/SKILL.md) | Paywalls, entitlements, IAP, metadata |
 | Database (Room) | [database](database/SKILL.md) | Entities, DAOs, migrations |
@@ -27,7 +27,7 @@ Each built-in feature has a dedicated child skill with full detail, file locatio
 
 | Feature | Key entry points |
 | --- | --- |
-| Analytics | `AppEvents` (sealed, core domain) + `EventsTracker.track(...)` |
+| Analytics | `AppEvents` (sealed, core domain) + `EventsTracker` / `Analytics` |
 | Remote Config | `ConfigKeys<T>` (sealed) + `GetConfigLogic` / `rememberRemoteConfig` |
 | Purchases | `PurchasesViewModel` / `PurchasesLogics`, `rememberIsProUser()`, `AppScreens.Purchases`, `StarterPaywallDefaults.kt`, `publish/purchases.json` |
 | Database | `KmpStarterDatabase`, `KmpStarterDatabaseMigrations`, entities + DAOs |

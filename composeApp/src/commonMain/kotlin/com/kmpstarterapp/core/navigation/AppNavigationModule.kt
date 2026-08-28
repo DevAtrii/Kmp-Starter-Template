@@ -109,11 +109,14 @@ val appNavigationModule = module {
                     )
                 }
             },
-            onPurchaseSuccess = {
+            onPurchaseSuccess = { trx ->
                 scope.launch {
                     eventsTracker.track(
                         event = AppEvents.OnPurchaseSuccess(
-                            it.product.id
+                            transactionId = trx.transactionId,
+                            value = trx.amount,
+                            currency = trx.currency,
+                            itemId = trx.product.id
                         )
                     )
                 }

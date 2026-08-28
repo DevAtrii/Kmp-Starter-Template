@@ -15,8 +15,10 @@
 
 package com.kmpstarter.feature_analytics_data
 
+import com.kmpstarter.feature_analytics_domain.AnalyticsProvider
+import com.kmpstarter.feature_analytics_domain.AnalyticsProviderId
+import com.kmpstarter.feature_analytics_domain.AnalyticsProviderIds
 import com.kmpstarter.feature_analytics_domain.AppEvent
-import com.kmpstarter.feature_analytics_domain.EventsTracker
 import interop.MixPanelBridge
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.Dispatchers
@@ -27,17 +29,17 @@ import kotlinx.coroutines.withContext
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class EventsTrackerImpl(
     private val mixPanelBridge: MixPanelBridge,
-) : EventsTracker {
+) : AnalyticsProvider {
+    actual override val id: AnalyticsProviderId = AnalyticsProviderIds.Mixpanel
+
+    actual override val isEnabled: Boolean
+        get() = MixPanelAnalyticsScope.enabled
+
     actual override suspend fun track(event: AppEvent) {
         track(
             event = event.event,
             properties = event.properties
         )
-    }
-
-
-    init {
-        mixPanelBridge.setEnabled(this.isEnabled)
     }
 
     actual override suspend fun track(event: String) = withContext(Dispatchers.IO) {
@@ -91,7 +93,7 @@ actual class EventsTrackerImpl(
     }
 
     actual override suspend fun hasOptedIn(): Boolean {
-        return !mixPanelBridge.hasOptedIn()
+        return mixPanelBridge.hasOptedIn()
     }
 
     actual override suspend fun flush() = withContext(Dispatchers.IO) {

@@ -16,7 +16,11 @@
 package com.kmpstarterapp.core
 
 import com.kmpstarter.core.platform.platform
+import com.kmpstarter.feature_analytics_data.MixPanelAnalyticsScope
+import com.kmpstarter.feature_analytics_data.getProvider
 import com.kmpstarter.feature_analytics_data.initMixPanel
+import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProvider
+import com.kmpstarter.feature_analytics_domain.initAnalytics
 import com.kmpstarter.feature_purchases_data.initRevenueCat
 import com.kmpstarter.feature_remote_config_domain.RemoteConfig
 import com.kmpstarter.utils.logging.StarterLogger
@@ -61,15 +65,29 @@ fun initKmpApp(
     ) {
         logLevel = if (platform.debug) LogLevel.DEBUG else LogLevel.ERROR
     }
+    initAppAnalytics()
+    initRemoteConfig()
+}
+
+private fun initAppAnalytics() {
+    /*initialize all providers before calling initAnalytics{}*/
     initMixPanel(
         apiKey = AppConstants.MIXPANEL_API_TOKEN
     ) {
         logging = platform.debug
     }
-    initRemoteConfig()
+
+    /*registering all providers*/
+    initAnalytics {
+        providers(
+            MixPanelAnalyticsScope.getProvider(),
+            /*Dummy Analytics provider to showcase multiple providers feature*/
+            // StarterAnalyticsProvider.create(),
+        )
+    }
 }
 
-fun initLogger() {
+private fun initLogger() {
     StarterLogger.setLogLevel(
         if (platform.debug) StarterLogger.LogLevel.VERBOSE else StarterLogger.LogLevel.OFF
     )

@@ -15,12 +15,22 @@
 
 package com.kmpstarter.feature_analytics_data
 
-import com.kmpstarter.core.platform.platform
+import com.kmpstarter.feature_analytics_domain.AnalyticsProvider
 import com.kmpstarter.utils.logging.Log
+import org.koin.core.scope.Scope
+
+
+expect class MixPanelPlatform
+
+context(scope: Scope)
+expect fun MixPanelAnalyticsScope.get(): MixPanelPlatform
+
+
+expect fun MixPanelAnalyticsScope.getProvider(): AnalyticsProvider
 
 
 object MixPanelAnalyticsScope {
-    var logging: Boolean = platform.debug
+    var logging: Boolean = false
     var flushInterval: Int = 3
     var enabled: Boolean = true
     var trackAutomaticEvents: Boolean = true
@@ -42,23 +52,3 @@ fun initMixPanel(
     MixPanelAnalyticsScope.apiKey = apiKey
     MixPanelAnalyticsScope.apply(configure)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

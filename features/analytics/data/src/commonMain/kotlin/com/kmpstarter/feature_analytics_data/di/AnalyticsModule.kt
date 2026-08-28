@@ -20,7 +20,6 @@ import org.koin.dsl.module
 
 internal expect val platformAnalyticsModule: Module
 
-
 val analyticsDataModule = module {
     includes(
         platformAnalyticsModule

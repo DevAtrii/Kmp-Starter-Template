@@ -721,6 +721,11 @@ class StarterProjectsRepositoryImpl(
                 starterModule = StarterModules.Starter.Utils,
             ),
             KoinModuleEntry(
+                importLine = "import com.kmpstarter.feature_analytics_domain.di.analyticsDomainModule",
+                moduleSymbol = "analyticsDomainModule",
+                starterModule = StarterModules.Features.Analytics.Domain,
+            ),
+            KoinModuleEntry(
                 importLine = "import com.kmpstarter.feature_analytics_data.di.analyticsDataModule",
                 moduleSymbol = "analyticsDataModule",
                 starterModule = StarterModules.Features.Analytics.Data,

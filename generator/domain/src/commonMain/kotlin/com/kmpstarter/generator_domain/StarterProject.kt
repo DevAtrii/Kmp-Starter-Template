@@ -203,7 +203,9 @@ sealed class StarterModules : BaseModule {
 
                 override fun dependencies(): List<StarterModules> = listOf()
 
-                override fun koinModules(): List<String> = listOf()
+                override fun koinModules(): List<String> = listOf(
+                    "analyticsDomainModule"
+                )
             }
         }
 

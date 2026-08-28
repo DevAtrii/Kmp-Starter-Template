@@ -15,8 +15,10 @@
 
 package com.kmpstarter.feature_analytics_data
 
+import com.kmpstarter.feature_analytics_domain.AnalyticsProvider
+import com.kmpstarter.feature_analytics_domain.AnalyticsProviderId
+import com.kmpstarter.feature_analytics_domain.AnalyticsProviderIds
 import com.kmpstarter.feature_analytics_domain.AppEvent
-import com.kmpstarter.feature_analytics_domain.EventsTracker
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,7 +27,12 @@ import org.json.JSONObject
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class EventsTrackerImpl(
     private val mixpanelAPI: MixpanelAPI,
-) :  EventsTracker {
+) : AnalyticsProvider {
+    actual override val id: AnalyticsProviderId = AnalyticsProviderIds.Mixpanel
+
+    actual override val isEnabled: Boolean
+        get() = MixPanelAnalyticsScope.enabled
+
     actual override suspend fun track(event: AppEvent) {
         track(
             event = event.event,

@@ -16,25 +16,14 @@
 package com.kmpstarter.feature_analytics_data.di
 
 
-import com.kmpstarter.feature_analytics_data.EventsTrackerImpl
 import com.kmpstarter.feature_analytics_data.MixPanelAnalyticsScope
-import com.kmpstarter.feature_analytics_domain.EventsTracker
-import interop.MixPanelBridge
+import com.kmpstarter.feature_analytics_data.get
 import kotlinx.cinterop.ExperimentalForeignApi
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.bind
 import org.koin.dsl.module
 
 @OptIn(ExperimentalForeignApi::class)
 actual val platformAnalyticsModule = module {
     single {
-        val mixPanelBridge = MixPanelBridge(
-            token = MixPanelAnalyticsScope.apiKey,
-            trackAutomaticEvents = MixPanelAnalyticsScope.trackAutomaticEvents,
-            flushInterval = MixPanelAnalyticsScope.flushInterval.toLong(),
-            enabled = MixPanelAnalyticsScope.enabled
-        )
-        mixPanelBridge
+        MixPanelAnalyticsScope.get()
     }
-    singleOf(::EventsTrackerImpl).bind<EventsTracker>()
 }

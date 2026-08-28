@@ -51,10 +51,20 @@ sealed class AppEvents(
 
     // purchases
     data class OnPurchaseSuccess(
-        val productId: String,
+        val transactionId: String,
+        val value: Double,
+        val currency: String,
+        val itemId: String,
     ) : AppEvents(
-        event = "purchase_success",
-        pair = "product_id" to productId,
+        event = "in_app_purchase",
+        properties = mapOf(
+            "transaction_id" to transactionId,
+            "value" to value,
+            "currency" to currency,
+            "items" to listOf(
+                mapOf("item_id" to itemId)
+            )
+        )
     )
 
     data class OnPurchaseFailure(

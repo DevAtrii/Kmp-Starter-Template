@@ -15,11 +15,10 @@
 
 package com.kmpstarterapp.core.di
 
-import com.kmpstarterapp.core.KmpAppInitializer
 import com.kmpstarter.core.datastore.di.dataStoreModule
 import com.kmpstarter.core.events.di.eventsModule
-import com.kmpstarterapp.core.navigation.appNavigationModule
 import com.kmpstarter.feature_analytics_data.di.analyticsDataModule
+import com.kmpstarter.feature_analytics_domain.di.analyticsDomainModule
 import com.kmpstarter.feature_core_data.di.coreDataModule
 import com.kmpstarter.feature_core_domain.di.coreDomainModule
 import com.kmpstarter.feature_core_presentation.di.corePresentationModule
@@ -36,6 +35,8 @@ import com.kmpstarter.feature_your_feature_data.di.featureYourDataModule
 import com.kmpstarter.feature_your_feature_domain.di.featureYourDomainModule
 import com.kmpstarter.feature_your_feature_presentation.di.featureYourPresentationModule
 import com.kmpstarter.utils.di.utilsModule
+import com.kmpstarterapp.core.KmpAppInitializer
+import com.kmpstarterapp.core.navigation.appNavigationModule
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
@@ -57,6 +58,7 @@ private val starterModules = module {
         purchasesDomainModule,
         purchasesPresentationModule,
         /*Feature: Analytics*/
+        analyticsDomainModule,
         analyticsDataModule,
         /*Feature: Navigation*/
         appNavigationModule,
