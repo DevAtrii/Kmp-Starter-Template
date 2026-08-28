@@ -18,6 +18,8 @@ package com.kmpstarter.core.platform
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.os.Build
+import com.kmpstarter.utils.StarterAndroidProvider
+import com.kmpstarter.utils.requireActivity
 import org.koin.mp.KoinPlatform
 
 
@@ -29,7 +31,8 @@ actual val platform: Platform
         return Platform.Android(
             osVersion = Build.VERSION.SDK_INT,
             debug = isDebug,
-            appInfo = getAppInfo(context = context)
+            appInfo = getAppInfo(context = context),
+            activity = StarterAndroidProvider.requireActivity()
         )
     }
 

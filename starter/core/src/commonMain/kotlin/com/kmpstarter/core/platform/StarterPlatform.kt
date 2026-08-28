@@ -15,6 +15,30 @@
 
 package com.kmpstarter.core.platform
 
+import com.kmpstarter.utils.starter.ExperimentalStarterApi
+
+/**
+ * Platform-specific application context.
+ *
+ * On Android, this maps to [android.content.Context].
+ * It represents application-level context and must not be cast to [android.app.Activity].
+ *
+ * On iOS, this represents the platform-specific context required by the implementation.
+ */
+expect abstract class AndroidContext
+
+/**
+ * Platform-specific Activity.
+ *
+ * On Android, this maps to [android.app.Activity].
+ *
+ * This type should only be used when an Activity instance is required.
+ * Do not obtain it by casting [AndroidContext], since application context
+ * is not an Activity.
+ */
+@ExperimentalStarterApi
+expect class AndroidActivity
+
 data class IosVersion(
     val major: Int,
     val minor: Int,
@@ -46,10 +70,11 @@ sealed class Platform(
         isDynamicColorSupported = false
     )
 
-    data class Android(
+    data class Android @OptIn(ExperimentalStarterApi::class) constructor(
         override val osVersion: Int,
         override val debug: Boolean,
         override val appInfo: AppInfo,
+        val activity: AndroidActivity,
     ) : Platform(
         osVersion = osVersion,
         debug = debug,
