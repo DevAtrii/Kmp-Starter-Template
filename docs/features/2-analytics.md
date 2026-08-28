@@ -105,6 +105,28 @@ Look up this backend with `AnalyticsProviderIds.Firebase`.
 !!! info
     See the [Firebase Analytics docs](https://firebase.google.com/docs/analytics) and [GitLive Firebase KMP](https://firebaseopensource.com/projects/gitliveapp/firebase-kotlin-sdk/).
 
+#### Debug (Android)
+
+Enable [DebugView](https://firebase.google.com/docs/analytics/debugview) so events show in the Firebase console in near real-time (without this, events can take hours). Replace `com.kmpstarter` with your `applicationId` if you changed the package:
+
+```bash
+adb shell setprop debug.firebase.analytics.app com.kmpstarter
+```
+
+Verbose FA logs:
+
+```bash
+adb shell setprop log.tag.FA VERBOSE
+adb shell setprop log.tag.FA-SVC VERBOSE
+adb logcat -v time -s FA FA-SVC
+```
+
+Disable debug mode:
+
+```bash
+adb shell setprop debug.firebase.analytics.app .none
+```
+
 ---
 
 ## Architecture
