@@ -16,8 +16,8 @@
 package com.kmpstarter.feature_analytics_data.di
 
 
-import com.kmpstarter.feature_analytics_data.MixPanelAnalyticsScope
 import com.kmpstarter.feature_analytics_data.EventsTrackerImpl
+import com.kmpstarter.feature_analytics_data.MixPanelAnalyticsScope
 import com.kmpstarter.feature_analytics_domain.EventsTracker
 import interop.MixPanelBridge
 import kotlinx.cinterop.ExperimentalForeignApi

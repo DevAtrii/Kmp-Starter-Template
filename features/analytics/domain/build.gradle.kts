@@ -56,6 +56,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
+                implementation(projects.starter.core)
             }
         }
 
