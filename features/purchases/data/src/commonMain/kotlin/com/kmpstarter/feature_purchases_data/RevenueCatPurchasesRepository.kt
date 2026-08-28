@@ -206,7 +206,6 @@ class RevenueCatPurchasesRepository(
                         transactionId = trxId,
                         currency = currency
                     )
-                    Log.d(TAG,"startPurchase: $purchased")
                     return Result.success(purchased)
                 }
 

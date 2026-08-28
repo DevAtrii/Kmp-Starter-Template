@@ -109,6 +109,7 @@ class KmpLibraryPublishPlugin : Plugin<Project> {
                 ":features:navigation",
                 // analytics
                 ":features:analytics:data",
+                ":features:analytics:data-firebase",
                 ":features:analytics:domain",
                 // locale
                 ":features:locale",
@@ -139,6 +140,7 @@ class KmpLibraryPublishPlugin : Plugin<Project> {
                 ":features:navigation" -> "feature-navigation"
                 // analytics
                 ":features:analytics:data" -> "feature-analytics-data"
+                ":features:analytics:data-firebase" -> "feature-analytics-data-firebase"
                 ":features:analytics:domain" -> "feature-analytics-domain"
                 // core
                 ":features:core:data" -> "feature-core-data"

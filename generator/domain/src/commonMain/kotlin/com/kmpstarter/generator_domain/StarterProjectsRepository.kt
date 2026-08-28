@@ -47,6 +47,7 @@ interface StarterProjectsRepository {
         /** when ProjectMode.LIB then keep these modules & add rest as library*/
         val LIB_MODE_DELETABLE_MODULES = listOf(
             ":features:analytics:data",
+            ":features:analytics:data-firebase",
             ":features:analytics:domain",
             ":features:locale",
             ":features:navigation",

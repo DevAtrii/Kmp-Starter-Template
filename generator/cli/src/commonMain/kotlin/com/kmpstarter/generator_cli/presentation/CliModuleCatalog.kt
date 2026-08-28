@@ -39,6 +39,7 @@ object CliModuleCatalog {
 
         // Analytics
         option(StarterModules.Features.Analytics.Data, "Analytics Data"),
+        option(StarterModules.Features.Analytics.DataFirebase, "Analytics Data Firebase"),
         option(StarterModules.Features.Analytics.Domain, "Analytics Domain"),
 
         // Notifications

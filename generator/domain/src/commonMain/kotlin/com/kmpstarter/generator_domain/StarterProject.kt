@@ -128,6 +128,7 @@ sealed class StarterModules : BaseModule {
 
             // Analytics
             Features.Analytics.Data,
+            Features.Analytics.DataFirebase,
             Features.Analytics.Domain,
 
             // Core
@@ -196,6 +197,40 @@ sealed class StarterModules : BaseModule {
                 override fun koinModules(): List<String> = listOf(
                     "analyticsDataModule"
                 )
+            }
+
+            @Serializable
+            data object DataFirebase : Analytics() {
+                override val packageName: String =
+                    "com.kmpstarter.feature_analytics_data_firebase"
+
+                override fun dependencies(): List<StarterModules> = listOf(
+                    Domain,
+                    Starter.Core,
+                )
+
+                override fun koinModules(): List<String> = listOf(
+                    "analyticsFirebaseDataModule"
+                )
+
+                override fun moduleFilePath(): String {
+                    return "features/analytics/data-firebase"
+                }
+
+                override fun moduleGradleDep(mode: ProjectMode): String {
+                    if (mode == ProjectMode.MODULE) {
+                        return "projects.features.analytics.dataFirebase"
+                    }
+                    return "libs.starter.feature.analytics.data.firebase"
+                }
+
+                override fun moduleGradlePath(): String {
+                    return ":features:analytics:data-firebase"
+                }
+
+                override fun mavenArtifactId(): String {
+                    return "feature-analytics-data-firebase"
+                }
             }
 
             data object Domain : Analytics() {

@@ -236,6 +236,7 @@ starter-ui-layouts = { module = "io.github.devatrii:starter-ui-layouts", version
 # Features
 starter-feature-navigation = { module = "io.github.devatrii:feature-navigation", version.ref = "starter" }
 starter-feature-analytics-data = { module = "io.github.devatrii:feature-analytics-data", version.ref = "starter" }
+starter-feature-analytics-data-firebase = { module = "io.github.devatrii:feature-analytics-data-firebase", version.ref = "starter" }
 starter-feature-analytics-domain = { module = "io.github.devatrii:feature-analytics-domain", version.ref = "starter" }
 starter-feature-core-data = { module = "io.github.devatrii:feature-core-data", version.ref = "starter" }
 starter-feature-core-domain = { module = "io.github.devatrii:feature-core-domain", version.ref = "starter" }

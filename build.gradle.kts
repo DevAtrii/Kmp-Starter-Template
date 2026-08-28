@@ -40,6 +40,7 @@ private val publishableKmpModules =
         ":starter:ui:layouts",
         ":features:navigation",
         ":features:analytics:data",
+        ":features:analytics:data-firebase",
         ":features:analytics:domain",
         ":features:locale",
         ":features:remote_config:data",

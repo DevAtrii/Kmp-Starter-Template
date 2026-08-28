@@ -731,6 +731,11 @@ class StarterProjectsRepositoryImpl(
                 starterModule = StarterModules.Features.Analytics.Data,
             ),
             KoinModuleEntry(
+                importLine = "import com.kmpstarter.feature_analytics_data_firebase.di.analyticsFirebaseDataModule",
+                moduleSymbol = "analyticsFirebaseDataModule",
+                starterModule = StarterModules.Features.Analytics.DataFirebase,
+            ),
+            KoinModuleEntry(
                 importLine = "import com.kmpstarter.feature_core_data.di.coreDataModule",
                 moduleSymbol = "coreDataModule",
                 starterModule = StarterModules.Features.Core.Data,
