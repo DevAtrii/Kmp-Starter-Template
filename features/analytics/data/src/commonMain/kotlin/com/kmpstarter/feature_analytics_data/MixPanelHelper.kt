@@ -19,7 +19,7 @@ import com.kmpstarter.core.platform.platform
 import com.kmpstarter.utils.logging.Log
 
 
-object AnalyticsScope {
+object MixPanelAnalyticsScope {
     var logging: Boolean = platform.debug
     var flushInterval: Int = 3
     var enabled: Boolean = true
@@ -31,16 +31,16 @@ object AnalyticsScope {
     }
 }
 
-fun initAnalytics(
+fun initMixPanel(
     apiKey: String,
-    configure: AnalyticsScope.() -> Unit = {},
+    configure: MixPanelAnalyticsScope.() -> Unit = {},
 ) {
-    if (AnalyticsScope.isInitialized()) {
+    if (MixPanelAnalyticsScope.isInitialized()) {
         Log.i("AnalyticsScope", "analytics apiKey already initialised")
         return
     }
-    AnalyticsScope.apiKey = apiKey
-    AnalyticsScope.apply(configure)
+    MixPanelAnalyticsScope.apiKey = apiKey
+    MixPanelAnalyticsScope.apply(configure)
 }
 
 

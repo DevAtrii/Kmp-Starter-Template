@@ -16,7 +16,7 @@
 package com.kmpstarter.feature_analytics_data.di
 
 
-import com.kmpstarter.feature_analytics_data.AnalyticsScope
+import com.kmpstarter.feature_analytics_data.MixPanelAnalyticsScope
 import com.kmpstarter.feature_analytics_data.EventsTrackerImpl
 import com.kmpstarter.feature_analytics_domain.EventsTracker
 import interop.MixPanelBridge
@@ -29,10 +29,10 @@ import org.koin.dsl.module
 actual val platformAnalyticsModule = module {
     single {
         val mixPanelBridge = MixPanelBridge(
-            token = AnalyticsScope.apiKey,
-            trackAutomaticEvents = AnalyticsScope.trackAutomaticEvents,
-            flushInterval = AnalyticsScope.flushInterval.toLong(),
-            enabled = AnalyticsScope.enabled
+            token = MixPanelAnalyticsScope.apiKey,
+            trackAutomaticEvents = MixPanelAnalyticsScope.trackAutomaticEvents,
+            flushInterval = MixPanelAnalyticsScope.flushInterval.toLong(),
+            enabled = MixPanelAnalyticsScope.enabled
         )
         mixPanelBridge
     }

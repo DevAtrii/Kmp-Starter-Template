@@ -18,7 +18,7 @@ package com.kmpstarter.feature_analytics_data.di
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-expect val platformAnalyticsModule: Module
+internal expect val platformAnalyticsModule: Module
 
 
 val analyticsDataModule = module {

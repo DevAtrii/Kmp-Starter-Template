@@ -16,7 +16,7 @@
 package com.kmpstarterapp.core
 
 import com.kmpstarter.core.platform.platform
-import com.kmpstarter.feature_analytics_data.initAnalytics
+import com.kmpstarter.feature_analytics_data.initMixPanel
 import com.kmpstarter.feature_purchases_data.initRevenueCat
 import com.kmpstarter.feature_remote_config_domain.RemoteConfig
 import com.kmpstarter.utils.logging.StarterLogger
@@ -61,7 +61,7 @@ fun initKmpApp(
     ) {
         logLevel = if (platform.debug) LogLevel.DEBUG else LogLevel.ERROR
     }
-    initAnalytics(
+    initMixPanel(
         apiKey = AppConstants.MIXPANEL_API_TOKEN
     ) {
         logging = platform.debug
