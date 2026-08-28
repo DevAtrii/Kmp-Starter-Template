@@ -22,6 +22,7 @@ import com.kmpstarter.feature_purchases_domain.PurchaseExceptionReason
 import com.kmpstarter.feature_purchases_domain.models.PaywallMetadata
 import com.kmpstarter.feature_purchases_domain.models.Product
 import com.kmpstarter.feature_purchases_domain.models.ProductId
+import com.kmpstarter.feature_purchases_domain.models.PurchaseTransaction
 import com.kmpstarter.feature_purchases_domain.repositories.PurchasesBackendState
 import com.kmpstarter.feature_purchases_domain.repositories.PurchasesRepository
 import com.kmpstarter.utils.kotlinx_serialization.toJsonElement
@@ -161,7 +162,7 @@ class RevenueCatPurchasesRepository(
     }
 
 
-    override suspend fun startPurchase(productId: ProductId): Result<Product> {
+    override suspend fun startPurchase(productId: ProductId): Result<PurchaseTransaction> {
         val storeProduct =
             if (productId == discountStoreProduct?.id) discountStoreProduct else getStoreProduct(
                 id = productId
@@ -194,7 +195,19 @@ class RevenueCatPurchasesRepository(
                     _purchasesState.update {
                         PurchasesBackendState.Purchased(product)
                     }
-                    return Result.success(product)
+                    val price = storeProduct.price
+                    val amount = price.amountMicros / 1_000_000.0
+                    val currency = price.currencyCode
+
+                    val purchased = PurchaseTransaction(
+                        product = product,
+                        amount = amount,
+                        amountMicros = price.amountMicros,
+                        transactionId = trxId,
+                        currency = currency
+                    )
+                    Log.d(TAG,"startPurchase: $purchased")
+                    return Result.success(purchased)
                 }
 
                 else -> {

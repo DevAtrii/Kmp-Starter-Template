@@ -113,7 +113,7 @@ val appNavigationModule = module {
                 scope.launch {
                     eventsTracker.track(
                         event = AppEvents.OnPurchaseSuccess(
-                            it
+                            it.product.id
                         )
                     )
                 }

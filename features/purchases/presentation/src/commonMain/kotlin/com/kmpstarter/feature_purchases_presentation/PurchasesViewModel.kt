@@ -133,17 +133,17 @@ class PurchasesViewModel(
                 )
             }
             purchasesLogics.startPurchase(productId = selectedProduct.id)
-                .onSuccess { product ->
+                .onSuccess { purchasedProduct ->
                     _state.update {
                         it.copy(
-                            activeProducts = it.activeProducts + product,
+                            activeProducts = it.activeProducts + purchasedProduct.product,
                             isPurchased = true,
                             isPurchasing = false
                         )
                     }
                     emitEvent(
                         PurchasesEvents.OnPurchaseSuccess(
-                            productId = selectedProduct.id
+                            purchased = purchasedProduct
                         )
                     )
                 }.onFailure { err ->

@@ -15,11 +15,12 @@
 
 package com.kmpstarterapp.core
 
-import com.kmpstarterapp.core.di.initKoin
 import com.kmpstarter.core.platform.platform
 import com.kmpstarter.feature_analytics_data.initAnalytics
 import com.kmpstarter.feature_purchases_data.initRevenueCat
 import com.kmpstarter.feature_remote_config_domain.RemoteConfig
+import com.kmpstarter.utils.logging.StarterLogger
+import com.kmpstarterapp.core.di.initKoin
 import com.revenuecat.purchases.kmp.LogLevel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,6 +55,7 @@ fun initKmpApp(
 
     // 2. Feature-Specific Initialization (YOU CAN INIT OTHER STUFF HERE)
     // Configures platform-specific billing and remote toggle logic.
+    initLogger()
     initRevenueCat(
         apiKey = AppConstants.REVENUE_CAT_API_KEY,
     ) {
@@ -65,6 +67,12 @@ fun initKmpApp(
         logging = platform.debug
     }
     initRemoteConfig()
+}
+
+fun initLogger() {
+    StarterLogger.setLogLevel(
+        if (platform.debug) StarterLogger.LogLevel.VERBOSE else StarterLogger.LogLevel.OFF
+    )
 }
 
 

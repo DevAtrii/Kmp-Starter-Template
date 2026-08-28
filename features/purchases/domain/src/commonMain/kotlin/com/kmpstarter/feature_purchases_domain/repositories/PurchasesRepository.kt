@@ -19,6 +19,7 @@ import com.kmpstarter.feature_purchases_domain.PurchaseException
 import com.kmpstarter.feature_purchases_domain.models.PaywallMetadata
 import com.kmpstarter.feature_purchases_domain.models.Product
 import com.kmpstarter.feature_purchases_domain.models.ProductId
+import com.kmpstarter.feature_purchases_domain.models.PurchaseTransaction
 import kotlinx.coroutines.flow.StateFlow
 
 
@@ -83,7 +84,7 @@ interface PurchasesRepository {
      * Launches the store's purchase flow for the given [productId].
      * @param productId The unique identifier of the product (SKU).
      */
-    suspend fun startPurchase(productId: ProductId): Result<Product>
+    suspend fun startPurchase(productId: ProductId): Result<PurchaseTransaction>
 
     /** Retrieves configuration data used to render the Paywall UI (e.g., colors, imagery, text). */
     suspend fun getPaywallMetadata(): Result<PaywallMetadata>

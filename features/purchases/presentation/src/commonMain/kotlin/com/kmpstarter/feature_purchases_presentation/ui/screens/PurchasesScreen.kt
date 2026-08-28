@@ -25,6 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kmpstarter.feature_purchases_domain.models.PaywallMetadata
 import com.kmpstarter.feature_purchases_domain.models.Product
 import com.kmpstarter.feature_purchases_domain.models.ProductId
+import com.kmpstarter.feature_purchases_domain.models.PurchaseTransaction
 import com.kmpstarter.feature_purchases_presentation.PurchasesActions
 import com.kmpstarter.feature_purchases_presentation.PurchasesEvents
 import com.kmpstarter.feature_purchases_presentation.PurchasesViewModel
@@ -58,7 +59,7 @@ fun PurchasesScreen(
     onProductsLoadFailure: (Throwable) -> Unit = {},
     onPurchaseFailure: (Throwable, ProductId) -> Unit = { _, _ -> },
     onRestoreFailure: (Throwable) -> Unit = {},
-    onPurchaseSuccess: (ProductId) -> Unit = {},
+    onPurchaseSuccess: (PurchaseTransaction) -> Unit = {},
 ) {
     LaunchOnce {
         viewModel.onAction(PurchasesActions.LoadProducts)
@@ -71,7 +72,7 @@ fun PurchasesScreen(
                 event.productId
             )
 
-            is PurchasesEvents.OnPurchaseSuccess -> onPurchaseSuccess(event.productId)
+            is PurchasesEvents.OnPurchaseSuccess -> onPurchaseSuccess(event.purchased)
             is PurchasesEvents.OnRestoreFailure -> onRestoreFailure(event.exception)
         }
     }
