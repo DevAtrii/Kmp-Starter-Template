@@ -23,6 +23,7 @@ import com.kmpstarter.utils.starter.ExperimentalStarterApi
 
 typealias PlatformLauncher = Any
 
+/** Kept for API compatibility. Android/iOS both no-op; do not launch from this. */
 interface UpdateLauncher {
     fun provide(
         onUpdated: () -> Unit,

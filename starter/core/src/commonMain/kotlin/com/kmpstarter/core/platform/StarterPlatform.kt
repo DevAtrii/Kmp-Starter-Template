@@ -74,7 +74,7 @@ sealed class Platform(
         override val osVersion: Int,
         override val debug: Boolean,
         override val appInfo: AppInfo,
-        val activity: AndroidActivity,
+        val activity: AndroidActivity?,
     ) : Platform(
         osVersion = osVersion,
         debug = debug,

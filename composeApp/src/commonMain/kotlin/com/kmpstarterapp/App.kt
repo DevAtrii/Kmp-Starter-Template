@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation3.runtime.NavKey
 import com.kmpstarter.core.datastore.theme.ThemeDataStore
 import com.kmpstarter.core.events.controllers.SnackbarController
+import com.kmpstarter.core.platform.ifAndroid
+import com.kmpstarter.core.platform.platform
 import com.kmpstarter.feature_locale.LocaleProvider
 import com.kmpstarter.feature_locale.StarterLocale
 import com.kmpstarter.feature_locale.StarterLocales
@@ -46,6 +48,7 @@ import com.kmpstarter.ui_utils.composition_locals.LocalThemeMode
 import com.kmpstarter.ui_utils.side_effects.LaunchOnce
 import com.kmpstarter.ui_utils.side_effects.ObserveAsEvents
 import com.kmpstarter.ui_utils.store.AppUpdateProvider
+import com.kmpstarter.utils.logging.Log
 import com.kmpstarter.utils.starter.ExperimentalStarterApi
 import com.kmpstarterapp.core.KmpAppInitializer
 import com.kmpstarterapp.core.navigation.AppScreens
@@ -128,6 +131,7 @@ private object AppConfig {
 /**
  * The main entry point of the application UI.
  */
+@OptIn(ExperimentalStarterApi::class)
 @Composable
 fun App() {
     val appInitializer: KmpAppInitializer = koinInject()

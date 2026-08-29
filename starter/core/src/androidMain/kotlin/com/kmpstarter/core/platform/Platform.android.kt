@@ -32,7 +32,7 @@ actual val platform: Platform
             osVersion = Build.VERSION.SDK_INT,
             debug = isDebug,
             appInfo = getAppInfo(context = context),
-            activity = StarterAndroidProvider.requireActivity()
+            activity = runCatching { StarterAndroidProvider.requireActivity() }.getOrNull()
         )
     }
 

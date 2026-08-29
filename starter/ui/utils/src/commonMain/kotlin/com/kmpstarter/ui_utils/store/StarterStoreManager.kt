@@ -24,6 +24,10 @@ expect class StarterStoreManager {
     suspend fun askForReview()
 
 
+    /**
+     * Android: Play in-app update. [launcher] is unused (activity-based flow).
+     * iOS: no in-app update API; calls [onUpdateUnAvailable].
+     */
     suspend fun checkAppUpdate(
         launcher: UpdateLauncher,
         force: Boolean,
