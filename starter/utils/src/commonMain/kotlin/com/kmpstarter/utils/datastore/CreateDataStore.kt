@@ -55,7 +55,7 @@ expect class AppDataStore {
     val dataStore: DataStore<Preferences>
 }
 
-object CreateDataStore {
+internal object CreateDataStore {
     private val lock = SynchronizedObject()
     private lateinit var dataStore: DataStore<Preferences>
     fun getDataStore(producePath: () -> String): DataStore<Preferences> {
@@ -71,7 +71,7 @@ object CreateDataStore {
     }
 }
 
-expect fun createDataStore(context: Any? = null): DataStore<Preferences>
+internal expect fun createDataStore(context: Any? = null): DataStore<Preferences>
 
 
 
