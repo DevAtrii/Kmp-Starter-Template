@@ -5,8 +5,9 @@ import android.os.RemoteException
 import com.android.installreferrer.api.InstallReferrerClient
 import com.android.installreferrer.api.InstallReferrerClient.InstallReferrerResponse
 import com.android.installreferrer.api.InstallReferrerStateListener
+import com.kmpstarter.feature_analytics_domain.Analytics
 import com.kmpstarter.feature_analytics_domain.AppEvent
-import com.kmpstarter.feature_analytics_domain.EventsTracker
+import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProviderIds
 import com.kmpstarter.feature_analytics_domain.setUserProperties
 import com.kmpstarter.utils.datastore.AppDataStore
 import com.kmpstarter.utils.datastore.booleanDataStore
@@ -35,7 +36,7 @@ private data class InstallAttributionEvent(val props: Map<String, String>) : App
  * leave the flag unset → retry next cold start.
  */
 internal class InstallReferrerTracker(
-    private val eventsTracker: EventsTracker,
+    private val eventsTracker: Analytics,
     appDataStore: AppDataStore,
 ) {
     companion object {
@@ -112,6 +113,10 @@ internal class InstallReferrerTracker(
             Log.i(TAG, "User props are empty")
             return
         }
+        val mixPanelTracker = eventsTracker.provider(StarterAnalyticsProviderIds.Mixpanel)
+        mixPanelTracker.setDefaultEventParameters(
+            params = userProps
+        )
         eventsTracker.setUserProperties(values = userProps)
     }
 
