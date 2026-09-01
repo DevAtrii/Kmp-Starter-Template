@@ -30,7 +30,8 @@ import org.koin.mp.KoinPlatform
 
 class InitCommand : CliktCommand(name = "init") {
 
-    override fun help(context: Context) = "Create starter.json in an existing project directory"
+    override fun help(context: Context) =
+        "Add KMP Starter to an existing project (writes starter.json and includes required modules)"
 
     private val dirOption: String? by option("--dir", help = "Target project directory")
 
@@ -40,6 +41,8 @@ class InitCommand : CliktCommand(name = "init") {
         .choice("lib" to ProjectMode.LIB, "module" to ProjectMode.MODULE)
 
     private val versionOption: String? by option("--version", help = "Starter template version")
+
+    private val zipOption: String? by option("--zip", help = "Path to a local starter source zip")
 
     override fun run() {
         runBlocking {
@@ -76,8 +79,12 @@ class InitCommand : CliktCommand(name = "init") {
             packageName = pkg,
             mode = mode,
             starterVersion = version,
+            sourceZipPath = zipOption,
         ).onSuccess { result ->
             echo("Created ${result.starterJsonPath}")
+            if (result.adopted) {
+                echo("  included required starter modules into the existing KMP app")
+            }
             echo("  package=$pkg mode=$mode version=${version ?: viewModel.defaultStarterVersion()}")
         }.onFailure { error ->
             throw CliktError(error.message ?: "Failed to initialize starter.json.")

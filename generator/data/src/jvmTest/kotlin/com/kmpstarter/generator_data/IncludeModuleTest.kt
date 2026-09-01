@@ -58,16 +58,19 @@ class IncludeModuleTest {
     }
 
     @Test
-    fun libModeRejectsLocalModules() = runBlocking {
+    fun libModeCopiesLocalDatabaseModule() = runBlocking {
         val env = existingProject(mode = ProjectMode.LIB)
-        val error = assertFailsWith<IllegalStateException> {
-            env.repo.includeModule(
-                workingDir = env.projectDir.toString(),
-                module = StarterModules.Features.Database,
-                mode = ProjectMode.LIB,
-            ).getOrThrow()
-        }
-        assertContains(error.message ?: "", "Local modules can't be included")
+        env.repo.includeModule(
+            workingDir = env.projectDir.toString(),
+            module = StarterModules.Features.Database,
+            mode = ProjectMode.LIB,
+        ).getOrThrow()
+
+        assertTrue(Files.exists(env.projectDir.resolve("features/database/build.gradle.kts")))
+        val settings = env.projectDir.resolve("settings.gradle.kts").readText()
+        assertContains(settings, """include(":features:database")""")
+        val composeApp = env.projectDir.resolve("composeApp/build.gradle.kts").readText()
+        assertContains(composeApp, "implementation(projects.features.database)")
     }
 
     @Test

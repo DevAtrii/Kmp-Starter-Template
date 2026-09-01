@@ -28,6 +28,7 @@ import com.kmpstarter.generator_domain.StarterJson
 import com.kmpstarter.generator_domain.StarterModules
 import com.kmpstarter.generator_domain.StarterProject
 import com.kmpstarter.generator_domain.StarterProjectsRepository
+import com.kmpstarter.generator_domain.AdoptResult
 import com.kmpstarter.generator_domain.UpgradeResult
 import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.DEFAULT_PACKAGE_NAME
 import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.LIB_MODE_DELETABLE_MODULES
@@ -1235,9 +1236,9 @@ class StarterProjectsRepositoryImpl(
         targetModule: String,
         sourceZipPath: String?,
     ): Result<Unit> = runCatching {
+        val resolvedTarget = resolveExistingTargetModule(workingDir, targetModule)
+
         if (mode == ProjectMode.LIB) {
-            if (module.moduleGradlePath() in LOCAL_MODULES)
-                throw IllegalStateException("Local modules can't be included in Library Mode")
             val starterRawJson =
                 fileManager.getFileAs(path = "$workingDir/$STARTER_JSON_FILE").getOrElse {
                     throw IllegalStateException("Please call init first & init starter.json")
@@ -1247,7 +1248,7 @@ class StarterProjectsRepositoryImpl(
                 version = starterJson.starterVersion,
                 sourceZipPath = sourceZipPath,
             )
-            extractSourceCodeTo(
+            val sourceCodePath = extractSourceCodeTo(
                 workingDir = workingDir,
                 version = sourceCode.version,
                 zipBytes = sourceCode.content,
@@ -1298,15 +1299,33 @@ class StarterProjectsRepositoryImpl(
                 content = tomlFileContent.encodeToByteArray()
             ).getOrThrow()
 
-            collectModulesWithDependencies(module)
-                .filter { it.moduleGradlePath() !in LOCAL_MODULES }
-                .forEach { starterModule ->
-                    addModuleDependencyToTarget(
-                        workingDir = workingDir,
-                        targetModule = targetModule,
-                        dependency = "implementation(${starterModule.moduleGradleDep(mode)})",
-                    )
-                }
+            val graph = collectModulesWithDependencies(module)
+            graph.filter { it.moduleGradlePath() !in LOCAL_MODULES }.forEach { starterModule ->
+                addModuleDependencyToTarget(
+                    workingDir = workingDir,
+                    targetModule = resolvedTarget,
+                    dependency = "implementation(${starterModule.moduleGradleDep(ProjectMode.LIB)})",
+                )
+            }
+
+            val localModules = graph.filter { it.moduleGradlePath() in LOCAL_MODULES }
+            if (localModules.isNotEmpty()) {
+                ensureTypeSafeProjectAccessors(workingDir)
+                copySourceModules(
+                    workingDir = workingDir,
+                    sourceCodePath = sourceCodePath,
+                    modulesToCopy = localModules,
+                    targetPackageName = resolveTargetPackageName(workingDir, packageName),
+                    rewriteLocalPackages = true,
+                )
+            }
+            if (module.moduleGradlePath() in LOCAL_MODULES) {
+                addModuleDependencyToTarget(
+                    workingDir = workingDir,
+                    targetModule = resolvedTarget,
+                    dependency = "implementation(${module.moduleGradleDep(ProjectMode.MODULE)})",
+                )
+            }
             return@runCatching
         }
 
@@ -1322,52 +1341,18 @@ class StarterProjectsRepositoryImpl(
         )
 
         val modulesToInclude = collectModulesWithDependencies(module)
-        val targetPackageName = resolveTargetPackageName(workingDir, packageName)
-        val newlyCopiedLocalModulePaths = mutableListOf<String>()
-
-        modulesToInclude.forEach { starterModule ->
-            val moduleDir = "$workingDir/${starterModule.moduleFilePath()}"
-            val sourceModuleDir = "$sourceCodePath/${starterModule.moduleFilePath()}"
-            val moduleGradlePath = "$moduleDir/build.gradle.kts"
-
-            if (fileManager.getFile(moduleGradlePath).isFailure) {
-                if (fileManager.getFile("$sourceModuleDir/build.gradle.kts").isFailure) {
-                    throw IllegalStateException(
-                        "Module '${starterModule.moduleGradlePath()}' not found in source code."
-                    )
-                }
-                copyDirectory(from = sourceModuleDir, to = moduleDir).getOrThrow()
-                if (starterModule.moduleGradlePath() in LOCAL_MODULES) {
-                    newlyCopiedLocalModulePaths += moduleDir
-                }
-            }
-
-            addModuleInsideSettingsGradleKts(
-                module = starterModule.moduleGradlePath(),
-                workingDir = workingDir,
-            ).getOrThrow()
-        }
-
-        if (newlyCopiedLocalModulePaths.isNotEmpty()) {
-            updatePackageNameInModulePaths(
-                modulePaths = newlyCopiedLocalModulePaths,
-                targetPackageName = targetPackageName,
-            ).getOrThrow()
-        }
-
-        val gradleFiles = modulesToInclude.flatMap { starterModule ->
-            fileManager.getFilesRecursively("$workingDir/${starterModule.moduleFilePath()}")
-                .filter { it.endsWith("build.gradle.kts") }
-        }
-        mergeExternalCatalogEntries(
+        ensureTypeSafeProjectAccessors(workingDir)
+        copySourceModules(
             workingDir = workingDir,
-            sourceTomlPath = "$sourceCodePath/gradle/libs.versions.toml",
-            gradleFilePaths = gradleFiles,
-        ).getOrThrow()
+            sourceCodePath = sourceCodePath,
+            modulesToCopy = modulesToInclude,
+            targetPackageName = resolveTargetPackageName(workingDir, packageName),
+            rewriteLocalPackages = true,
+        )
 
         addModuleDependencyToTarget(
             workingDir = workingDir,
-            targetModule = targetModule,
+            targetModule = resolvedTarget,
             dependency = "implementation(${module.moduleGradleDep(ProjectMode.MODULE)})",
         )
     }
@@ -1458,6 +1443,176 @@ class StarterProjectsRepositoryImpl(
             upgraded = upgraded,
             skippedBecauseDirty = skipped,
         )
+    }
+
+    override suspend fun adoptExistingProject(
+        workingDir: String,
+        mode: ProjectMode,
+        modules: List<StarterModules>?,
+        packageName: String?,
+        targetModule: String?,
+        sourceZipPath: String?,
+        starterVersion: String?,
+    ): Result<AdoptResult> = runCatching {
+        val resolvedTarget = targetModule?.takeIf { requested ->
+            fileManager.getFile("$workingDir/$requested/build.gradle.kts").isSuccess
+        } ?: detectKmpAppModule(workingDir)
+        val resolvedPackage = packageName ?: detectExistingPackageName(workingDir)
+        val sourceCode = resolveSourceCode(version = starterVersion, sourceZipPath = sourceZipPath)
+
+        writeStarterJson(
+            workingDir = workingDir,
+            starterJson = StarterJson(
+                packageName = resolvedPackage,
+                starterVersion = sourceCode.version,
+                mode = mode,
+            ),
+        )
+        ensureGitignoreStarterFolder(workingDir)
+        ensureTypeSafeProjectAccessors(workingDir)
+
+        val toInclude = modules ?: StarterModules.required()
+        toInclude.forEach { starterModule ->
+            includeModule(
+                workingDir = workingDir,
+                module = starterModule,
+                mode = mode,
+                packageName = resolvedPackage,
+                targetModule = resolvedTarget,
+                sourceZipPath = sourceZipPath,
+            ).getOrThrow()
+        }
+
+        AdoptResult(
+            targetModule = resolvedTarget,
+            packageName = resolvedPackage,
+            included = toInclude.map { it.moduleGradlePath() },
+        )
+    }
+
+    private suspend fun copySourceModules(
+        workingDir: String,
+        sourceCodePath: String,
+        modulesToCopy: List<StarterModules>,
+        targetPackageName: String,
+        rewriteLocalPackages: Boolean,
+    ) {
+        val newlyCopiedLocalModulePaths = mutableListOf<String>()
+        modulesToCopy.forEach { starterModule ->
+            val moduleDir = "$workingDir/${starterModule.moduleFilePath()}"
+            val sourceModuleDir = "$sourceCodePath/${starterModule.moduleFilePath()}"
+            val moduleGradlePath = "$moduleDir/build.gradle.kts"
+
+            if (fileManager.getFile(moduleGradlePath).isFailure) {
+                if (fileManager.getFile("$sourceModuleDir/build.gradle.kts").isFailure) {
+                    throw IllegalStateException(
+                        "Module '${starterModule.moduleGradlePath()}' not found in source code."
+                    )
+                }
+                copyDirectory(from = sourceModuleDir, to = moduleDir).getOrThrow()
+                if (rewriteLocalPackages && starterModule.moduleGradlePath() in LOCAL_MODULES) {
+                    newlyCopiedLocalModulePaths += moduleDir
+                }
+            }
+
+            addModuleInsideSettingsGradleKts(
+                module = starterModule.moduleGradlePath(),
+                workingDir = workingDir,
+            ).getOrThrow()
+        }
+
+        if (newlyCopiedLocalModulePaths.isNotEmpty()) {
+            updatePackageNameInModulePaths(
+                modulePaths = newlyCopiedLocalModulePaths,
+                targetPackageName = targetPackageName,
+            ).getOrThrow()
+        }
+
+        val gradleFiles = modulesToCopy.flatMap { starterModule ->
+            fileManager.getFilesRecursively("$workingDir/${starterModule.moduleFilePath()}")
+                .filter { it.endsWith("build.gradle.kts") }
+        }
+        if (gradleFiles.isNotEmpty()) {
+            mergeExternalCatalogEntries(
+                workingDir = workingDir,
+                sourceTomlPath = "$sourceCodePath/gradle/libs.versions.toml",
+                gradleFilePaths = gradleFiles,
+            ).getOrThrow()
+        }
+    }
+
+    private suspend fun resolveExistingTargetModule(
+        workingDir: String,
+        requested: String,
+    ): String {
+        if (fileManager.getFile("$workingDir/$requested/build.gradle.kts").isSuccess) {
+            return requested
+        }
+        return detectKmpAppModule(workingDir)
+    }
+
+    private suspend fun detectKmpAppModule(workingDir: String): String {
+        listOf("composeApp", "shared").forEach { name ->
+            val content = fileManager.getFileAs("$workingDir/$name/build.gradle.kts").getOrNull()
+            if (content != null && "commonMain" in content) return name
+        }
+        throw IllegalStateException(
+            "Could not find a KMP app module. Expected composeApp/ or shared/ with commonMain.dependencies."
+        )
+    }
+
+    private suspend fun detectExistingPackageName(workingDir: String): String {
+        val androidApp = fileManager.getFileAs("$workingDir/androidApp/build.gradle.kts").getOrNull()
+        if (androidApp != null) {
+            Regex("""applicationId\s*=\s*"([^"]+)"""")
+                .find(androidApp)
+                ?.groupValues
+                ?.get(1)
+                ?.let { return it }
+            Regex("""namespace\s*=\s*"([^"]+)"""")
+                .find(androidApp)
+                ?.groupValues
+                ?.get(1)
+                ?.let { return it }
+        }
+        val shared = fileManager.getFileAs("$workingDir/shared/build.gradle.kts").getOrNull()
+        if (shared != null) {
+            Regex("""namespace\s*=\s*"([^"]+)"""")
+                .find(shared)
+                ?.groupValues
+                ?.get(1)
+                ?.removeSuffix(".shared")
+                ?.let { return it }
+        }
+        return DEFAULT_PACKAGE_NAME
+    }
+
+    private suspend fun ensureTypeSafeProjectAccessors(workingDir: String) {
+        val path = "$workingDir/settings.gradle.kts"
+        val content = fileManager.getFileAs(path).getOrThrow()
+        if ("TYPESAFE_PROJECT_ACCESSORS" in content) return
+        val nameMatch = Regex("""rootProject\.name\s*=\s*"[^"]*"""").find(content)
+        val updated = if (nameMatch != null) {
+            content.replaceRange(
+                nameMatch.range,
+                nameMatch.value + "\n\nenableFeaturePreview(\"TYPESAFE_PROJECT_ACCESSORS\")",
+            )
+        } else {
+            "enableFeaturePreview(\"TYPESAFE_PROJECT_ACCESSORS\")\n$content"
+        }
+        fileManager.writeFile(path = path, content = updated.encodeToByteArray()).getOrThrow()
+    }
+
+    private suspend fun ensureGitignoreStarterFolder(workingDir: String) {
+        val path = "$workingDir/.gitignore"
+        val existing = fileManager.getFileAs(path).getOrNull().orEmpty()
+        if (existing.lineSequence().any { it.trim() == ".starter" }) return
+        val updated = if (existing.isBlank()) {
+            ".starter\n"
+        } else {
+            existing.trimEnd() + "\n.starter\n"
+        }
+        fileManager.writeFile(path = path, content = updated.encodeToByteArray()).getOrThrow()
     }
 
     private suspend fun readStarterJsonOrNull(workingDir: String): StarterJson? {

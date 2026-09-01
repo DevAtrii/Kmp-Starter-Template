@@ -24,6 +24,12 @@ data class UpgradeResult(
     val skippedBecauseDirty: List<String>,
 )
 
+data class AdoptResult(
+    val targetModule: String,
+    val packageName: String,
+    val included: List<String>,
+)
+
 
 
 interface StarterProjectsRepository {
@@ -114,4 +120,18 @@ interface StarterProjectsRepository {
         force: Boolean = false,
         sourceZipPath: String? = null,
     ): Result<UpgradeResult>
+
+    /**
+     * Add the starter template into an existing KMP app (JetBrains wizard or similar).
+     * Detects the shared/composeApp module and application package when omitted.
+     */
+    suspend fun adoptExistingProject(
+        workingDir: String,
+        mode: ProjectMode,
+        modules: List<StarterModules>? = null,
+        packageName: String? = null,
+        targetModule: String? = null,
+        sourceZipPath: String? = null,
+        starterVersion: String? = null,
+    ): Result<AdoptResult>
 }

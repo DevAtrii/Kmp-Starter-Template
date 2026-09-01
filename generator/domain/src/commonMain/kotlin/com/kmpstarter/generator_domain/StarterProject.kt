@@ -193,6 +193,21 @@ sealed class StarterModules : BaseModule {
             // Utils
             Starter.Utils,
         )
+
+        fun required() = listOf(
+            Starter.Core,
+            Starter.Utils,
+            Native.Bindings,
+            Starter.Ui.Utils,
+            Starter.Ui.Components,
+            Starter.Ui.Layouts,
+            Features.Core.Data,
+            Features.Core.Domain,
+            Features.Core.Presentation,
+            Features.Resources,
+            Features.Navigation,
+            Features.Locale,
+        )
     }
 
     @Serializable

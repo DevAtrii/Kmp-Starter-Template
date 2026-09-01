@@ -22,6 +22,19 @@ import kotlin.test.assertTrue
 class StarterModulesContractTest {
 
     @Test
+    fun requiredModulesMatchCliCatalogStack() {
+        val required = StarterModules.required().map { it.moduleGradlePath() }.toSet()
+        assertTrue(":starter:core" in required)
+        assertTrue(":starter:ui:layouts" in required)
+        assertTrue(":features:core:data" in required)
+        assertTrue(":features:resources" in required)
+        assertTrue(":features:navigation" in required)
+        assertTrue(":features:locale" in required)
+        assertTrue(":features:database" !in required)
+        assertEquals(12, StarterModules.required().size)
+    }
+
+    @Test
     fun layoutsPullsComponentsUtilsCoreAndBindings() {
         val layouts = StarterModules.Starter.Ui.Layouts
         val deps = collect(layouts).map { it.moduleGradlePath() }

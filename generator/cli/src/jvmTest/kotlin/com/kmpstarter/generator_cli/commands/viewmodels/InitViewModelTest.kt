@@ -15,6 +15,7 @@
 
 package com.kmpstarter.generator_cli.commands.viewmodels
 
+import com.kmpstarter.generator_data.StarterProjectsRepositoryImpl
 import com.kmpstarter.generator_data.impl.FileManagerImpl
 import com.kmpstarter.generator_data.interfaces.SourceCode
 import com.kmpstarter.generator_data.interfaces.StarterProjectSourceCodeProvider
@@ -42,6 +43,13 @@ class InitViewModelTest {
                 override suspend fun getSourceCode(version: String?) =
                     Result.success(SourceCode(version = version ?: "0.6.0", content = ByteArray(0)))
             },
+            repository = StarterProjectsRepositoryImpl(
+                fileManager = fileManager,
+                sourceCodeProvider = object : StarterProjectSourceCodeProvider {
+                    override suspend fun getSourceCode(version: String?) =
+                        Result.success(SourceCode(version = version ?: "0.6.0", content = ByteArray(0)))
+                },
+            ),
         )
 
         val result = viewModel.init(
@@ -66,6 +74,13 @@ class InitViewModelTest {
                 override suspend fun getSourceCode(version: String?) =
                     Result.success(SourceCode("0.6.0", ByteArray(0)))
             },
+            repository = StarterProjectsRepositoryImpl(
+                fileManager = FileManagerImpl(),
+                sourceCodeProvider = object : StarterProjectSourceCodeProvider {
+                    override suspend fun getSourceCode(version: String?) =
+                        Result.success(SourceCode("0.6.0", ByteArray(0)))
+                },
+            ),
         )
         assertEquals("com.kmpstarter", viewModel.defaultPackageName())
     }

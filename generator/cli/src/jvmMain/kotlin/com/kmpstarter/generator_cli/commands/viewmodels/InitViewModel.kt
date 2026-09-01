@@ -21,6 +21,7 @@ import com.kmpstarter.generator_data.interfaces.StarterProjectFileManager
 import com.kmpstarter.generator_data.interfaces.StarterProjectSourceCodeProvider
 import com.kmpstarter.generator_domain.ProjectMode
 import com.kmpstarter.generator_domain.StarterJson
+import com.kmpstarter.generator_domain.StarterProjectsRepository
 import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.DEFAULT_PACKAGE_NAME
 import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.STARTER_JSON_FILE
 import kotlinx.serialization.encodeToString
@@ -28,11 +29,13 @@ import kotlinx.serialization.json.Json
 
 data class InitResult(
     val starterJsonPath: String,
+    val adopted: Boolean,
 )
 
 class InitViewModel(
     private val fileManager: StarterProjectFileManager,
     private val sourceCodeProvider: StarterProjectSourceCodeProvider,
+    private val repository: StarterProjectsRepository,
 ) : ViewModel() {
 
     suspend fun init(
@@ -40,10 +43,26 @@ class InitViewModel(
         packageName: String,
         mode: ProjectMode,
         starterVersion: String?,
+        sourceZipPath: String? = null,
     ): Result<InitResult> = runCatching {
         val workingDir = CliPaths.resolve(fileManager.getCurrentDir(), dir)
-        val version = starterVersion ?: sourceCodeProvider.getSourceCode().getOrThrow().version
+        val zip = sourceZipPath?.let { CliPaths.resolve(fileManager.getCurrentDir(), it) }
 
+        if (fileManager.getFile("$workingDir/settings.gradle.kts").isSuccess) {
+            repository.adoptExistingProject(
+                workingDir = workingDir,
+                mode = mode,
+                packageName = packageName,
+                sourceZipPath = zip,
+                starterVersion = starterVersion,
+            ).getOrThrow()
+            return@runCatching InitResult(
+                starterJsonPath = "$workingDir/$STARTER_JSON_FILE",
+                adopted = true,
+            )
+        }
+
+        val version = starterVersion ?: sourceCodeProvider.getSourceCode().getOrThrow().version
         val starterJson = StarterJson(
             packageName = packageName,
             starterVersion = version,
@@ -55,7 +74,7 @@ class InitViewModel(
             content = Json.encodeToString(starterJson).encodeToByteArray(),
         ).getOrThrow()
 
-        InitResult(starterJsonPath = path)
+        InitResult(starterJsonPath = path, adopted = false)
     }
 
     suspend fun defaultStarterVersion(): String =
