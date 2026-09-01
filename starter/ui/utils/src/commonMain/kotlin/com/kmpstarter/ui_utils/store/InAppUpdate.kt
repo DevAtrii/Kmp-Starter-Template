@@ -18,6 +18,7 @@ package com.kmpstarter.ui_utils.store
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.kmpstarter.utils.logging.Log
+import com.kmpstarter.utils.starter.AndroidOnlyStarterApi
 import com.kmpstarter.utils.starter.ExperimentalStarterApi
 
 
@@ -36,6 +37,7 @@ interface UpdateLauncher {
 expect fun rememberUpdateLauncher(): UpdateLauncher
 
 
+@OptIn(AndroidOnlyStarterApi::class)
 @Composable
 @ExperimentalStarterApi
 fun AppUpdateProvider(

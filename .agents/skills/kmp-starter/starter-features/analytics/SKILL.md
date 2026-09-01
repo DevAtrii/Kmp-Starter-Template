@@ -1,6 +1,6 @@
 ---
 name: kmp-starter-feature-analytics
-description: The KMP Starter Template analytics system — AppEvent/EventsTracker, Analytics routing, Mixpanel provider, combining providers, and runtime swaps.
+description: The KMP Starter Template analytics system — AppEvent/EventsTracker, Analytics routing, Mixpanel + Firebase providers, combining providers, and runtime swaps.
 author: DevAtrii
 license: MIT
 
@@ -8,17 +8,20 @@ license: MIT
 
 # Analytics
 
-Modular, provider-agnostic analytics. Track type-safe `AppEvent` models. Routing lives in **domain**. You pass providers in `initAnalytics { providers(...) }` after each backend's own `init*`. Mixpanel is opt-in.
+Modular, provider-agnostic analytics. Track type-safe `AppEvent` models. Routing lives in **domain**. You pass providers in `initAnalytics { providers(...) }` after each backend's own `init*`. Mixpanel and Firebase Analytics are opt-in.
+
+Kotlin types are `StarterAnalyticsProvider` / `StarterAnalyticsProviderId` / `StarterAnalyticsProviderIds`. Swift still sees `AnalyticsProvider` via `@ObjCName`.
 
 ## Where things live
 
 | Piece | Module | Path |
 | --- | --- | --- |
 | `AppEvent` (base) | analytics domain | `features/analytics/domain/.../AppEvent.kt` |
-| `EventsTracker` / `Analytics` / `AnalyticsProvider` | analytics domain | `features/analytics/domain/...` |
-| `AnalyticsProviderIds` | analytics domain | `features/analytics/domain/.../AnalyticsProviderId.kt` |
+| `EventsTracker` / `Analytics` / `StarterAnalyticsProvider` | analytics domain | `features/analytics/domain/...` |
+| `StarterAnalyticsProviderId` / `StarterAnalyticsProviderIds` | analytics domain | `features/analytics/domain/.../StarterAnalyticsProviderId.kt` |
 | Router + `analyticsDomainModule` | analytics domain | `features/analytics/domain/.../AnalyticsRouter.kt` |
 | Mixpanel `EventsTrackerImpl` + `analyticsDataModule` | analytics data | `features/analytics/data/...` |
+| `FirebaseStarterAnalyticsProvider` + `analyticsFirebaseDataModule` | analytics data-firebase | `features/analytics/data-firebase/...` |
 | `AppEvents` (sealed) | core domain | `features/core/domain/.../AppEvents.kt` |
 
 ## 1. Define events (one sealed hierarchy)
@@ -76,6 +79,11 @@ class SignInViewModel(
             eventsTracker.track(
                 event = AppEvents.SignInSuccess(userId = userId),
             )
+            eventsTracker.setUserId(userId)
+            eventsTracker.setUserProperty(key = "plan", value = "pro")
+            eventsTracker.setUserProperties(
+                values = mapOf("plan" to "pro", "locale" to "en"),
+            )
         }
     }
 }
@@ -83,13 +91,13 @@ class SignInViewModel(
 
 Keep analytics calls in the presentation layer (ViewModel is best). Typed `AppEvent` is preferred over the string overloads `track(event)`, `track(event, pair)`, `track(event, properties)`.
 
-`EventsTracker` also exposes `setUserId`, `optIn`/`optOut`/`toggleOptInOut`/`hasOptedIn`, `flush`, `reset`.
+`EventsTracker` also exposes `setUserId`, `setUserProperty` / `setUserProperties` (`String` keys + values), `optIn`/`optOut`/`toggleOptInOut`/`hasOptedIn`, `flush`, `reset`.
 
 Koin binds the same router as `Analytics` and `EventsTracker`. Inject `Analytics` only for lookup, `combine`, or `setActiveProviders`.
 
-## 3. Setup (Mixpanel token)
+## 3. Setup (Mixpanel token + Firebase)
 
-Set the token in `composeApp/.../core/AppConstants.kt`, then wire **after** Koin:
+Set the Mixpanel token in `composeApp/.../core/AppConstants.kt`. Firebase uses platform config (`google-services.json` / `GoogleService-Info.plist`), not an API token. Wire **after** Koin:
 
 ```kotlin
 object AppConstants {
@@ -99,39 +107,12 @@ object AppConstants {
 initMixPanel(apiKey = AppConstants.MIXPANEL_API_TOKEN) {
     logging = platform.debug
 }
-initAnalytics {
-    providers(MixPanelAnalyticsScope.getProvider())
+initFirebaseAnalytics {
+    enabled = true
+    sessionTimeoutInterval = 30.minutes
+    defaultEventParameters = mapOf("app_flavor" to "prod")
+    analyticsStorage = FirebaseAnalytics.ConsentStatus.GRANTED
 }
-```
-
-Skip Mixpanel (and `analyticsDataModule`) if the consumer does not want it.
-
-## 4. Multiple providers
-
-All providers passed to `initAnalytics` start active. `setActiveProviders` reroutes the **same** injected instance; SDKs stay alive.
-
-```kotlin
-val analytics: Analytics = koinInject()
-
-analytics.provider(AnalyticsProviderIds.Mixpanel).track(AppEvents.DummyEvent)
-
-analytics.combine(
-    AnalyticsProviderIds.Mixpanel,
-    AnalyticsProviderId("firebase"),
-).track(AppEvents.DummyEvent)
-
-analytics.setActiveProviders(
-    AnalyticsProviderIds.Mixpanel,
-    AnalyticsProviderId("firebase"),
-)
-analytics.setActiveProviders() // disable routed tracking
-```
-
-Add a backend by implementing `AnalyticsProvider`, giving it its own `init*` if needed, and passing it in `initAnalytics`:
-
-```kotlin
-initMixPanel(apiKey = token)
-initFirebaseAnalytics(...)
 initAnalytics {
     providers(
         MixPanelAnalyticsScope.getProvider(),
@@ -140,13 +121,53 @@ initAnalytics {
 }
 ```
 
-Do **not** auto-register Mixpanel (or Firebase) as `EventsTracker` in Koin. Starter does not ship a Firebase Analytics SDK adapter.
+`initFirebaseAnalytics` options: `enabled`, `sessionTimeoutInterval`, `defaultEventParameters: Map<String, String>`, consent fields. **No** `userProperties` on init — use `setUserProperty` after `initAnalytics`.
+
+Skip a backend (and its data module) if the consumer does not want it.
+
+Lookups: `StarterAnalyticsProviderIds.Mixpanel` / `.Firebase`. Custom id: `StarterAnalyticsProviderId("posthog")`.
+
+## 4. Multiple providers
+
+All providers passed to `initAnalytics` start active. `setActiveProviders` reroutes the **same** injected instance; SDKs stay alive.
+
+```kotlin
+val analytics: Analytics = koinInject()
+
+analytics.provider(StarterAnalyticsProviderIds.Mixpanel).track(AppEvents.DummyEvent)
+
+analytics.combine(
+    StarterAnalyticsProviderIds.Mixpanel,
+    StarterAnalyticsProviderIds.Firebase,
+).track(AppEvents.DummyEvent)
+
+analytics.setActiveProviders(
+    StarterAnalyticsProviderIds.Mixpanel,
+    StarterAnalyticsProviderIds.Firebase,
+)
+analytics.setActiveProviders() // disable routed tracking
+```
+
+Add a backend by implementing `StarterAnalyticsProvider`, giving it its own `init*` if needed, and passing it in `initAnalytics`:
+
+```kotlin
+initMixPanel(apiKey = token)
+initFirebaseAnalytics { }
+initAnalytics {
+    providers(
+        MixPanelAnalyticsScope.getProvider(),
+        FirebaseAnalyticsScope.getProvider(),
+    )
+}
+```
+
+Do **not** auto-register Mixpanel (or Firebase) as `EventsTracker` in Koin.
 
 ## Rules
 
 - Do **not** introduce a parallel analytics system.
 - Keep calls in the presentation layer.
-- Register `analyticsDomainModule` in `InitKoin`. Call `initAnalytics` after Koin + provider inits. Mixpanel: `analyticsDataModule` + `initMixPanel` + pass `getProvider()` only if you want it.
+- Register `analyticsDomainModule` in `InitKoin`. Call `initAnalytics` after Koin + provider inits. Mixpanel: `analyticsDataModule` + `initMixPanel` + pass `getProvider()` only if you want it. Firebase: `analyticsFirebaseDataModule` + `initFirebaseAnalytics` + pass `FirebaseAnalyticsScope.getProvider()`.
 
 ## Reference
 

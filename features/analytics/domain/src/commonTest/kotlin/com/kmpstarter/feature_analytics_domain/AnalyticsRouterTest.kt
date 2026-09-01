@@ -247,4 +247,6 @@ private class FakeStarterAnalyticsProvider(
     override suspend fun reset() {
         resetCount += 1
     }
+
+    override suspend fun setUserProperty(key: String, value: String) = Unit
 }

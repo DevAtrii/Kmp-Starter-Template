@@ -16,6 +16,7 @@
 package com.kmpstarter.ui_utils.store
 
 import androidx.compose.runtime.Composable
+import com.kmpstarter.utils.starter.AndroidOnlyStarterApi
 
 
 expect class StarterStoreManager {
@@ -28,6 +29,7 @@ expect class StarterStoreManager {
      * Android: Play in-app update. [launcher] is unused (activity-based flow).
      * iOS: no in-app update API; calls [onUpdateUnAvailable].
      */
+    @AndroidOnlyStarterApi
     suspend fun checkAppUpdate(
         launcher: UpdateLauncher,
         force: Boolean,

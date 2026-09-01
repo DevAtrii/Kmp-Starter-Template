@@ -15,31 +15,33 @@
 
 package com.kmpstarter.feature_analytics_data_firebase
 
+import com.kmpstarter.feature_analytics_domain.AppEvent
 import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProvider
 import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProviderId
 import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProviderIds
-import com.kmpstarter.feature_analytics_domain.AppEvent
 import com.kmpstarter.utils.datastore.AppDataStore
-import com.kmpstarter.utils.datastore.booleanDataStore
 import com.kmpstarter.utils.logging.Log
 import dev.gitlive.firebase.analytics.FirebaseAnalytics
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.jvm.JvmInline
 
+@JvmInline
+value class FirebaseAnalyticsEnabled(val value: Boolean)
+
+@OptIn(ExperimentalAtomicApi::class)
 class FirebaseStarterAnalyticsProvider(
     private val analytics: FirebaseAnalytics,
-    appDataStore: AppDataStore,
+    enabled: FirebaseAnalyticsEnabled,
 ) : StarterAnalyticsProvider {
     companion object {
         private const val TAG = "FirebaseAnalyticsProvider"
     }
 
-    private val analyticsEnabledDs = appDataStore.booleanDataStore(
-        name = "_starter_firebase_analytics_enabled",
-        default = true
-    )
 
-    suspend fun setEnabled(enabled: Boolean) {
-        analyticsEnabledDs.set(enabled)
-    }
+    private val _isEnabled = AtomicBoolean(enabled.value)
+    override val isEnabled get() = _isEnabled.load()
+
 
     override val id: StarterAnalyticsProviderId
         get() = StarterAnalyticsProviderIds.Firebase
@@ -64,8 +66,7 @@ class FirebaseStarterAnalyticsProvider(
         event: String,
         properties: Map<String, Any>?,
     ) {
-        val enabled = analyticsEnabledDs.get()!!
-        if (!enabled) {
+        if (!isEnabled) {
             Log.i(TAG, "FIREBASE ANALYTICS ARE DISABLED")
             return
         }
@@ -81,10 +82,12 @@ class FirebaseStarterAnalyticsProvider(
 
     override suspend fun optIn() {
         analytics.setAnalyticsCollectionEnabled(true)
+        _isEnabled.store(true)
     }
 
     override suspend fun optOut() {
         analytics.setAnalyticsCollectionEnabled(false)
+        _isEnabled.store(false)
     }
 
     override suspend fun toggleOptInOut() {
@@ -92,8 +95,7 @@ class FirebaseStarterAnalyticsProvider(
     }
 
     override suspend fun hasOptedIn(): Boolean {
-        val enabled = analyticsEnabledDs.get()!!
-        return enabled
+        return isEnabled
     }
 
     override suspend fun flush() {
@@ -102,6 +104,10 @@ class FirebaseStarterAnalyticsProvider(
 
     override suspend fun reset() {
         analytics.resetAnalyticsData()
+    }
+
+    override suspend fun setUserProperty(key: String, value: String) {
+        analytics.setUserProperty(name = key, value = value)
     }
 
 }

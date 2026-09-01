@@ -16,7 +16,6 @@
 package com.kmpstarter.feature_analytics_data_firebase
 
 import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProvider
-import com.kmpstarter.utils.datastore.AppDataStore
 import com.kmpstarter.utils.logging.Log
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.analytics.FirebaseAnalytics
@@ -29,7 +28,6 @@ object FirebaseAnalyticsScope {
     var enabled: Boolean = true
     var sessionTimeoutInterval: Duration = 30.minutes
     var defaultEventParameters: Map<String, String> = emptyMap()
-    var userProperties: Map<String, String> = emptyMap()
     var adPersonalization: FirebaseAnalytics.ConsentStatus? = null
     var adStorage: FirebaseAnalytics.ConsentStatus? = null
     var adUserData: FirebaseAnalytics.ConsentStatus? = null
@@ -62,9 +60,6 @@ internal fun FirebaseAnalyticsScope.get(): FirebaseAnalytics {
     if (defaultEventParameters.isNotEmpty()) {
         analytics.setDefaultEventParameters(defaultEventParameters)
     }
-    userProperties.forEach { (name, value) ->
-        analytics.setUserProperty(name = name, value = value)
-    }
     val consent = buildMap {
         adPersonalization?.let {
             put(FirebaseAnalytics.ConsentType.AD_PERSONALIZATION, it)
@@ -89,6 +84,6 @@ fun FirebaseAnalyticsScope.getProvider(): StarterAnalyticsProvider {
     val koin = getKoin()
     return FirebaseStarterAnalyticsProvider(
         analytics = koin.get(),
-        appDataStore = koin.get<AppDataStore>(),
+        enabled = FirebaseAnalyticsEnabled(value = enabled)
     )
 }

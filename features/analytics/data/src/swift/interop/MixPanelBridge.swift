@@ -86,6 +86,14 @@ import Mixpanel
         mixpanel.identify(distinctId: userId)
     }
 
+    @objc public func setUserProperty(
+        key: String,
+        value: String
+    ) {
+        guard isEnabled else { return }
+        mixpanel.people.set(property: key, to: value)
+    }
+
     // MARK: - Opt In / Out
 
     @objc public func optIn() {

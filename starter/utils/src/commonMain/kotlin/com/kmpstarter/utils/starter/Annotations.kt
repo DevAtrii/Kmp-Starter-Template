@@ -28,3 +28,37 @@ package com.kmpstarter.utils.starter
     AnnotationTarget.CONSTRUCTOR
 )
 annotation class ExperimentalStarterApi
+
+@Suppress("ExperimentalAnnotationRetention")
+@RequiresOptIn(
+    level = RequiresOptIn.Level.ERROR,
+    message = "This API is available on Android only. It is not supported on other platforms."
+)
+@Retention(AnnotationRetention.BINARY) // Corrected: Ensures enforcement across module boundaries
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.CONSTRUCTOR
+)
+annotation class AndroidOnlyStarterApi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

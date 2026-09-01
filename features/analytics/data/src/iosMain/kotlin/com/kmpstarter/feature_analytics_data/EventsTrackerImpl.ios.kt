@@ -15,10 +15,10 @@
 
 package com.kmpstarter.feature_analytics_data
 
+import com.kmpstarter.feature_analytics_domain.AppEvent
 import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProvider
 import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProviderId
 import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProviderIds
-import com.kmpstarter.feature_analytics_domain.AppEvent
 import interop.MixPanelBridge
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.Dispatchers
@@ -103,4 +103,9 @@ actual class EventsTrackerImpl(
     actual override suspend fun reset() = withContext(Dispatchers.IO) {
         mixPanelBridge.reset()
     }
+
+    actual override suspend fun setUserProperty(key: String, value: String) =
+        withContext(Dispatchers.IO) {
+            mixPanelBridge.setUserPropertyWithKey(key = key, value = value)
+        }
 }

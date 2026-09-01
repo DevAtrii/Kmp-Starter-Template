@@ -24,11 +24,11 @@ import kotlin.native.ObjCName
 interface EventsTracker {
 
     val isEnabled: Boolean
-        get() = true
 
     suspend fun track(
         event: AppEvent,
     )
+
     suspend fun track(
         event: String,
     )
@@ -57,10 +57,21 @@ interface EventsTracker {
     suspend fun reset()
 
 
-
+    suspend fun setUserProperty(
+        key: String,
+        value: String,
+    )
 
 }
 
+
+suspend fun EventsTracker.setUserProperties(
+    values: Map<String, String>,
+) {
+    values.forEach { (key, value) ->
+        setUserProperty(key = key, value = value)
+    }
+}
 
 
 

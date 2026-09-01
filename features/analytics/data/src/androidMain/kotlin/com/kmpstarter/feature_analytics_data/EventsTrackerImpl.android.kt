@@ -15,10 +15,10 @@
 
 package com.kmpstarter.feature_analytics_data
 
+import com.kmpstarter.feature_analytics_domain.AppEvent
 import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProvider
 import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProviderId
 import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProviderIds
-import com.kmpstarter.feature_analytics_domain.AppEvent
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -107,5 +107,11 @@ actual class EventsTrackerImpl(
 
     actual override suspend fun reset() = withContext(Dispatchers.IO) {
         mixpanelAPI.reset()
+    }
+
+    actual override suspend fun setUserProperty(key: String, value: String) = withContext(
+        Dispatchers.IO
+    ) {
+        mixpanelAPI.people.set(key, value)
     }
 }

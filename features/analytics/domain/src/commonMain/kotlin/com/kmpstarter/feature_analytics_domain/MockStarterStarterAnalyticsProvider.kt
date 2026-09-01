@@ -20,6 +20,9 @@ class MockStarterStarterAnalyticsProvider : StarterAnalyticsProvider {
     private var isOpted = true
     private var userId: String? = null
 
+    override val isEnabled: Boolean
+        get() = isOpted
+
     override val id: StarterAnalyticsProviderId
         get() = StarterAnalyticsProviderId("_starter_analytics")
 
@@ -85,6 +88,11 @@ class MockStarterStarterAnalyticsProvider : StarterAnalyticsProvider {
         userId = null
         isOpted = true
         log("reset")
+    }
+
+    override suspend fun setUserProperty(key: String, value: String) {
+        if (!isEnabled || !isOpted) return
+        log("setUserProperty $key=$value")
     }
 
     private fun log(message: String) {

@@ -99,6 +99,12 @@ internal class CompositeEventsTracker(
         forEachProvider(currentProviders()) { it.reset() }
     }
 
+    override suspend fun setUserProperty(key: String, value: String) {
+        val current = currentProviders()
+        if (current.none { it.isEnabled }) return
+        forEachProvider(current) { it.setUserProperty(key, value) }
+    }
+
     private fun currentProviders(): List<StarterAnalyticsProvider> = providers()
 
     private suspend inline fun forEachProvider(

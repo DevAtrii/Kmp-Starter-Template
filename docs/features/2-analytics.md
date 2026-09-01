@@ -82,7 +82,6 @@ initFirebaseAnalytics {
     enabled = true
     sessionTimeoutInterval = 30.minutes
     defaultEventParameters = mapOf("app_flavor" to "prod")
-    userProperties = mapOf("plan" to "free")
     analyticsStorage = FirebaseAnalytics.ConsentStatus.GRANTED
 }
 ```
@@ -91,8 +90,7 @@ initFirebaseAnalytics {
 | :--- | :--- | :--- |
 | `enabled` | `true` | Collection on/off (`setAnalyticsCollectionEnabled`) |
 | `sessionTimeoutInterval` | `30.minutes` | Session timeout |
-| `defaultEventParameters` | empty | Attached to every event |
-| `userProperties` | empty | `setUserProperty` on init |
+| `defaultEventParameters` | empty `Map<String, String>` | Attached to every event |
 | `adPersonalization` | unset | Consent (`AD_PERSONALIZATION`) |
 | `adStorage` | unset | Consent (`AD_STORAGE`) |
 | `adUserData` | unset | Consent (`AD_USER_DATA`) |
@@ -100,7 +98,9 @@ initFirebaseAnalytics {
 
 Unset consent fields are skipped. `flush()` is a no-op — Firebase has no manual flush.
 
-Look up this backend with `AnalyticsProviderIds.Firebase`.
+User properties are **not** part of init. Call `EventsTracker.setUserProperty` (or `setUserProperties`) after `initAnalytics`.
+
+Look up this backend with `StarterAnalyticsProviderIds.Firebase`. Impl class: `FirebaseStarterAnalyticsProvider`.
 
 !!! info
     See the [Firebase Analytics docs](https://firebase.google.com/docs/analytics) and [GitLive Firebase KMP](https://firebaseopensource.com/projects/gitliveapp/firebase-kotlin-sdk/).
@@ -135,9 +135,9 @@ adb shell setprop debug.firebase.analytics.app .none
 | :--- | :--- |
 | `AppEvent` | Base analytics event (`event` name + optional `properties`) in **analytics domain** |
 | `AppEvents` | Your sealed hierarchy of all app events (starter ships one in **core domain**) |
-| `EventsTracker` | Interface that sends events to the active provider set |
-| `AnalyticsProvider` | One concrete backend. Mixpanel: **analytics data**. Firebase: **analytics data-firebase** (0.6.0) |
-| `Analytics` / `AnalyticsProviderIds` | Facade + well-known ids (`Mixpanel`, `Firebase`) in **analytics domain**. Data modules are optional |
+| `EventsTracker` | Interface that sends events / user id / user properties to the active provider set |
+| `StarterAnalyticsProvider` | One concrete backend (`EventsTracker` + `id`). Mixpanel: **analytics data**. Firebase: `FirebaseStarterAnalyticsProvider` in **analytics data-firebase** (0.6.0). Swift still sees `AnalyticsProvider` via `@ObjCName` |
+| `Analytics` / `StarterAnalyticsProviderId` / `StarterAnalyticsProviderIds` | Facade + well-known ids (`Mixpanel`, `Firebase`) in **analytics domain**. Data modules are optional |
 | `analyticsDomainModule` | Binds the router as `Analytics` + `EventsTracker` from [initAnalytics] |
 | `analyticsDataModule` | Mixpanel SDK wiring. You still pass Mixpanel in `initAnalytics { providers(...) }` |
 | `analyticsFirebaseDataModule` | Firebase SDK wiring (0.6.0). You still pass Firebase in `initAnalytics { providers(...) }` |
@@ -241,6 +241,21 @@ eventsTracker.track(
 
 You can still call the string overloads (`track(event)`, `track(event, pair)`, `track(event, properties)`) when needed, but **typed `AppEvent` is preferred**.
 
+Set a user id and user properties on the same tracker (fans out to active providers):
+
+```kotlin
+eventsTracker.setUserId(userId)
+eventsTracker.setUserProperty(key = "plan", value = "pro")
+eventsTracker.setUserProperties(
+    values = mapOf(
+        "plan" to "pro",
+        "locale" to "en",
+    ),
+)
+```
+
+`setUserProperty` / `setUserProperties` take `String` keys and values. Mixpanel maps them to people properties. Firebase maps them to `setUserProperty`.
+
 Koin binds the same router as both `Analytics` and `EventsTracker`. ViewModels can keep injecting `EventsTracker`. Inject `Analytics` only when you need lookup, combining, or runtime swaps.
 
 ---
@@ -258,10 +273,10 @@ class SignInViewModel(
 
     fun onSignIn(userId: String) {
         viewModelScope.launch {
-            analytics.provider(AnalyticsProviderIds.Mixpanel).track(
+            analytics.provider(StarterAnalyticsProviderIds.Mixpanel).track(
                 event = AppEvents.SignInSuccess(userId = userId),
             )
-            analytics.provider(AnalyticsProviderIds.Firebase).track(
+            analytics.provider(StarterAnalyticsProviderIds.Firebase).track(
                 event = AppEvents.SignInSuccess(userId = userId),
             )
         }
@@ -275,8 +290,8 @@ class SignInViewModel(
 
 ```kotlin
 val mixpanelAndFirebase = analytics.combine(
-    AnalyticsProviderIds.Mixpanel,
-    AnalyticsProviderIds.Firebase,
+    StarterAnalyticsProviderIds.Mixpanel,
+    StarterAnalyticsProviderIds.Firebase,
 )
 mixpanelAndFirebase.track(AppEvents.DummyEvent)
 ```
@@ -287,12 +302,12 @@ mixpanelAndFirebase.track(AppEvents.DummyEvent)
 
 ```kotlin
 analytics.setActiveProviders(
-    AnalyticsProviderIds.Mixpanel,
-    AnalyticsProviderIds.Firebase,
+    StarterAnalyticsProviderIds.Mixpanel,
+    StarterAnalyticsProviderIds.Firebase,
 )
 // existing EventsTracker injections now fan out to both
 
-analytics.setActiveProviders(AnalyticsProviderIds.Firebase)
+analytics.setActiveProviders(StarterAnalyticsProviderIds.Firebase)
 // same instance now routes to Firebase only
 
 analytics.setActiveProviders()
@@ -305,18 +320,18 @@ analytics.setActiveProviders()
 
 ## Adding a custom provider
 
-Implement `AnalyticsProvider` in a **data** module. Mixpanel is `analytics/data`. Firebase is `analytics/data-firebase`. Give it its own `init*` if the SDK needs a token. Pass the instance in `initAnalytics` — do not auto-bind it as the app-wide `EventsTracker`.
+Implement `StarterAnalyticsProvider` in a **data** module. Mixpanel is `analytics/data`. Firebase is `analytics/data-firebase` (`FirebaseStarterAnalyticsProvider`). Give it its own `init*` if the SDK needs a token. Pass the instance in `initAnalytics` — do not auto-bind it as the app-wide `EventsTracker`.
 
 ```kotlin linenums="1"
-class PostHogEventsTracker : AnalyticsProvider {
+class PostHogEventsTracker : StarterAnalyticsProvider {
 
-    override val id = AnalyticsProviderId("posthog")
-    // ... EventsTracker methods
+    override val id = StarterAnalyticsProviderId("posthog")
+    // ... EventsTracker methods, including setUserProperty
 }
 
 fun initPostHog(...) { /* SDK init */ }
 
-fun PostHogAnalyticsScope.getProvider(): AnalyticsProvider = PostHogEventsTracker()
+fun PostHogAnalyticsScope.getProvider(): StarterAnalyticsProvider = PostHogEventsTracker()
 ```
 
 ```kotlin
@@ -335,7 +350,7 @@ initAnalytics {
 !!! note
     - Domain layer, ViewModels, and Compose code remain unchanged.
     - Switching or combining providers does not require rewriting event definitions.
-    - Use `AnalyticsProviderIds.Mixpanel` / `AnalyticsProviderIds.Firebase` for the shipped backends. Custom backends pick their own `AnalyticsProviderId`.
+    - Use `StarterAnalyticsProviderIds.Mixpanel` / `StarterAnalyticsProviderIds.Firebase` for the shipped backends. Custom backends pick their own `StarterAnalyticsProviderId`.
 
 ---
 
@@ -373,7 +388,13 @@ initAnalytics {
 
     **3. Custom backends**
 
-    Do not replace `EventsTracker` in Koin. Implement `AnalyticsProvider`, init the SDK yourself, pass it in `initAnalytics`.
+    Do not replace `EventsTracker` in Koin. Implement `StarterAnalyticsProvider`, init the SDK yourself, pass it in `initAnalytics`.
+
+    **4. Type rename**
+
+    `AnalyticsProvider` → `StarterAnalyticsProvider` (Swift still `AnalyticsProvider` via `@ObjCName`). `AnalyticsProviderId` / `AnalyticsProviderIds` → `StarterAnalyticsProviderId` / `StarterAnalyticsProviderIds`. Firebase class: `FirebaseStarterAnalyticsProvider`.
+
+    User properties: `EventsTracker.setUserProperty(key, value)` / `setUserProperties(map)`. Removed from `initFirebaseAnalytics`.
 
     !!! warning
         Call `initAnalytics` after `initKoin` and after each provider's `init*`. `MixPanelAnalyticsScope.getProvider()` needs Koin plus a Mixpanel token. `FirebaseAnalyticsScope.getProvider()` needs Koin plus `analyticsFirebaseDataModule`.
