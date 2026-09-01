@@ -35,12 +35,28 @@ data class StarterProject(
     val modules: List<StarterModules> = StarterModules.all(),
 ) {
     fun getFeatureNameAsPascalCasing(): String =
+        featureTokens().joinToString("") { part ->
+            part.replaceFirstChar(Char::uppercase)
+        }
+
+    /** Gradle include / folder: `my-notes` → `:features:my-notes:data`. */
+    fun featureGradleIncludeName(): String = featureTokens().joinToString("-")
+
+    /** Typesafe project accessor: `my-notes` → `projects.features.myNotes`. */
+    fun featureGradleAccessorName(): String {
+        val tokens = featureTokens()
+        if (tokens.isEmpty()) return ""
+        return tokens.first() + tokens.drop(1).joinToString("") { it.replaceFirstChar(Char::uppercase) }
+    }
+
+    /** Kotlin package segment: `my-notes` → `feature_my_notes`. */
+    fun featurePackageSegment(): String = featureTokens().joinToString("_")
+
+    private fun featureTokens(): List<String> =
         featureName
             ?.split('_', '-', ' ')
+            ?.map { it.lowercase() }
             ?.filter { it.isNotBlank() }
-            ?.joinToString("") { part ->
-                part.replaceFirstChar(Char::uppercase)
-            }
             .orEmpty()
 }
 
@@ -94,9 +110,7 @@ interface BaseModule {
     }
 
 
-    fun koinModules(): List<String> {
-        throw NotImplementedError()
-    }
+    fun koinModules(): List<String> = emptyList()
 
     fun mavenArtifactId(): String {
         val libDep = moduleGradleDep(ProjectMode.LIB).removePrefix("libs.starter.")
@@ -250,9 +264,7 @@ sealed class StarterModules : BaseModule {
             data object Data : Core() {
                 override val packageName: String = "com.kmpstarter.feature_core_data"
 
-                override fun koinModules(): List<String> {
-                    return super.koinModules()
-                }
+                override fun koinModules(): List<String> = listOf("coreDataModule")
 
                 override fun dependencies(): List<StarterModules> = listOf(
                     Starter.Core,
@@ -263,9 +275,7 @@ sealed class StarterModules : BaseModule {
             data object Domain : Core() {
                 override val packageName: String = "com.kmpstarter.feature_core_domain"
 
-                override fun koinModules(): List<String> {
-                    return super.koinModules()
-                }
+                override fun koinModules(): List<String> = listOf("coreDomainModule")
 
                 override fun dependencies(): List<StarterModules> = listOf()
             }
@@ -273,9 +283,7 @@ sealed class StarterModules : BaseModule {
             data object Presentation : Core() {
                 override val packageName: String = "com.kmpstarter.feature_core_presentation"
 
-                override fun koinModules(): List<String> {
-                    return super.koinModules()
-                }
+                override fun koinModules(): List<String> = listOf("corePresentationModule")
 
                 override fun dependencies(): List<StarterModules> = listOf(
                     Domain,
@@ -290,7 +298,7 @@ sealed class StarterModules : BaseModule {
             override val packageName: String = "com.kmpstarter.feature_database"
 
             override fun koinModules(): List<String> {
-                return super.koinModules()
+                    return listOf("databaseModule")
             }
 
             override fun dependencies(): List<StarterModules> = listOf()
@@ -300,7 +308,7 @@ sealed class StarterModules : BaseModule {
             override val packageName: String = "com.kmpstarter.feature_locale"
 
             override fun koinModules(): List<String> {
-                return super.koinModules()
+                return emptyList()
             }
 
             override fun dependencies(): List<StarterModules> = listOf(
@@ -313,7 +321,7 @@ sealed class StarterModules : BaseModule {
             override val packageName: String = "com.kmpstarter.feature_navigation"
 
             override fun koinModules(): List<String> {
-                return super.koinModules()
+                    return listOf("appNavigationModule")
             }
 
             override fun dependencies(): List<StarterModules> = listOf()
@@ -325,7 +333,7 @@ sealed class StarterModules : BaseModule {
                 override val packageName: String = "com.kmpstarter.feature_notifications_core"
 
                 override fun koinModules(): List<String> {
-                    return super.koinModules()
+                    return listOf("notificationsCoreModule")
                 }
 
                 override fun dependencies(): List<StarterModules> = listOf(
@@ -338,7 +346,7 @@ sealed class StarterModules : BaseModule {
                 override val packageName: String = "com.kmpstarter.feature_notifications_local"
 
                 override fun koinModules(): List<String> {
-                    return super.koinModules()
+                    return listOf("notificationsLocalModule")
                 }
 
                 override fun dependencies(): List<StarterModules> = listOf(
@@ -351,7 +359,7 @@ sealed class StarterModules : BaseModule {
                 override val packageName: String = "com.kmpstarter.feature_notifications_push"
 
                 override fun koinModules(): List<String> {
-                    return super.koinModules()
+                    return listOf("notificationsPushModule")
                 }
 
                 override fun dependencies(): List<StarterModules> = listOf(
@@ -367,7 +375,7 @@ sealed class StarterModules : BaseModule {
                 override val packageName: String = "com.kmpstarter.feature_purchases_data"
 
                 override fun koinModules(): List<String> {
-                    return super.koinModules()
+                    return listOf("purchasesDataModule")
                 }
 
                 override fun dependencies(): List<StarterModules> = listOf(
@@ -380,7 +388,7 @@ sealed class StarterModules : BaseModule {
                 override val packageName: String = "com.kmpstarter.feature_purchases_domain"
 
                 override fun koinModules(): List<String> {
-                    return super.koinModules()
+                    return listOf("purchasesDomainModule")
                 }
 
                 override fun dependencies(): List<StarterModules> = listOf(
@@ -392,7 +400,7 @@ sealed class StarterModules : BaseModule {
                 override val packageName: String = "com.kmpstarter.feature_purchases_presentation"
 
                 override fun koinModules(): List<String> {
-                    return super.koinModules()
+                    return listOf("purchasesPresentationModule")
                 }
 
                 override fun dependencies(): List<StarterModules> = listOf(
@@ -408,7 +416,7 @@ sealed class StarterModules : BaseModule {
                 override val packageName: String = "com.kmpstarter.feature_remote_config_data"
 
                 override fun koinModules(): List<String> {
-                    return super.koinModules()
+                    return listOf("remoteConfigDataModule")
                 }
 
                 override fun dependencies(): List<StarterModules> = listOf(
@@ -439,7 +447,7 @@ sealed class StarterModules : BaseModule {
                 override val packageName: String = "com.kmpstarter.feature_remote_config_domain"
 
                 override fun koinModules(): List<String> {
-                    return super.koinModules()
+                    return listOf("remoteConfigDomainModule")
                 }
 
                 override fun dependencies(): List<StarterModules> = listOf(
@@ -470,7 +478,7 @@ sealed class StarterModules : BaseModule {
                     "com.kmpstarter.feature_remote_config_presentation"
 
                 override fun koinModules(): List<String> {
-                    return super.koinModules()
+                    return emptyList()
                 }
 
                 override fun dependencies(): List<StarterModules> = listOf(
@@ -502,7 +510,7 @@ sealed class StarterModules : BaseModule {
             override val packageName: String = "com.kmpstarter.feature_resources"
 
             override fun koinModules(): List<String> {
-                return super.koinModules()
+                return emptyList()
             }
 
             override fun dependencies(): List<StarterModules> = listOf(
@@ -521,7 +529,7 @@ sealed class StarterModules : BaseModule {
             override val packageName: String = "com.kmpstarter.core"
 
             override fun koinModules(): List<String> {
-                return super.koinModules()
+                    return listOf("dataStoreModule", "eventsModule")
             }
 
             override fun dependencies(): List<StarterModules> = listOf(
@@ -535,7 +543,7 @@ sealed class StarterModules : BaseModule {
                 override val packageName: String = "com.kmpstarter.native_bindings"
 
                 override fun koinModules(): List<String> {
-                    return super.koinModules()
+                    return emptyList()
                 }
 
                 override fun dependencies(): List<StarterModules> = listOf()
@@ -549,7 +557,7 @@ sealed class StarterModules : BaseModule {
                 override val packageName: String = "com.kmpstarter.ui_utils"
 
                 override fun koinModules(): List<String> {
-                    return super.koinModules()
+                    return emptyList()
                 }
 
                 override fun dependencies(): List<StarterModules> = listOf(
@@ -562,7 +570,7 @@ sealed class StarterModules : BaseModule {
                 override val packageName: String = "com.kmpstarter.ui_components"
 
                 override fun koinModules(): List<String> {
-                    return super.koinModules()
+                    return emptyList()
                 }
 
                 override fun dependencies(): List<StarterModules> = listOf(
@@ -575,7 +583,7 @@ sealed class StarterModules : BaseModule {
                 override val packageName: String = "com.kmpstarter.ui_layouts"
 
                 override fun koinModules(): List<String> {
-                    return super.koinModules()
+                    return emptyList()
                 }
 
                 override fun dependencies(): List<StarterModules> = listOf(
@@ -590,7 +598,7 @@ sealed class StarterModules : BaseModule {
             override val packageName: String = "com.kmpstarter.utils"
 
             override fun koinModules(): List<String> {
-                return super.koinModules()
+                    return listOf("utilsModule")
             }
 
             override fun dependencies(): List<StarterModules> = listOf(

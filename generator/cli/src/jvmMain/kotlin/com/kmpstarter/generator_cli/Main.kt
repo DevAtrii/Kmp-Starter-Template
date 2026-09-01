@@ -20,8 +20,10 @@ import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.options.versionOption
 import com.kmpstarter.generator_cli.commands.CreateCommand
+import com.kmpstarter.generator_cli.commands.ExcludeCommand
 import com.kmpstarter.generator_cli.commands.IncludeCommand
 import com.kmpstarter.generator_cli.commands.InitCommand
+import com.kmpstarter.generator_cli.commands.UpgradeCommand
 import com.kmpstarter.generator_cli.commands.VersionCommand
 import com.kmpstarter.generator_cli.di.cliDiModule
 import com.kmpstarter.generator_data.di.closeGeneratorResources
@@ -54,6 +56,8 @@ fun main(args: Array<String>) {
                 CreateCommand(),
                 InitCommand(),
                 IncludeCommand(),
+                ExcludeCommand(),
+                UpgradeCommand(),
                 VersionCommand(),
             )
             .main(args)

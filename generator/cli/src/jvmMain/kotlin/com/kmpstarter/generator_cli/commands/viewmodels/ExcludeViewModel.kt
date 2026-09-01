@@ -25,32 +25,26 @@ import com.kmpstarter.generator_domain.StarterProjectsRepository
 import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.STARTER_JSON_FILE
 import kotlinx.serialization.json.Json
 
-class IncludeViewModel(
+class ExcludeViewModel(
     private val repository: StarterProjectsRepository,
     private val fileManager: StarterProjectFileManager,
 ) : ViewModel() {
 
-    suspend fun include(
+    suspend fun exclude(
         dir: String,
         module: StarterModules,
         mode: ProjectMode?,
-        packageName: String?,
         targetModule: String,
-        sourceZipPath: String? = null,
     ): Result<Unit> = runCatching {
         val workingDir = CliPaths.resolve(fileManager.getCurrentDir(), dir)
         val resolvedMode = mode ?: readStarterJson(workingDir)?.mode
             ?: error("Project mode is required. Pass --mode or create starter.json with init.")
 
-        repository.includeModule(
+        repository.excludeModule(
             workingDir = workingDir,
             module = module,
             mode = resolvedMode,
-            packageName = packageName,
             targetModule = targetModule,
-            sourceZipPath = sourceZipPath?.let {
-                CliPaths.resolve(fileManager.getCurrentDir(), it)
-            },
         ).getOrThrow()
     }
 

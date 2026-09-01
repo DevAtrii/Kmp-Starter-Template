@@ -67,6 +67,14 @@ kotlin {
             implementation(libs.slf4j.nop)
         }
 
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
+
+        jvmTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
+
         jsMain.dependencies {
             implementation(libs.wrappers.browser)
             implementation(libs.ktor.client.js)

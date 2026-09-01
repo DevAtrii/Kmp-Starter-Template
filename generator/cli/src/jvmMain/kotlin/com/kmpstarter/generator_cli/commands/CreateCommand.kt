@@ -18,7 +18,6 @@ package com.kmpstarter.generator_cli.commands
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.CliktError
 import com.github.ajalt.clikt.core.Context
-import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.choice
@@ -59,6 +58,8 @@ class CreateCommand : CliktCommand(name = "create") {
 
     private val noExtract: Boolean by option("--no-extract", help = "Save zip only; do not extract")
         .flag(default = false)
+
+    private val zipOption: String? by option("--zip", help = "Path to a local starter source zip")
 
     override fun run() {
         runBlocking {
@@ -134,6 +135,7 @@ class CreateCommand : CliktCommand(name = "create") {
             project = project,
             outputZipPath = output,
             extract = extract,
+            sourceZipPath = zipOption,
         ).onSuccess { result ->
             echo("Created project '$name'")
             echo("  zip: ${result.zipPath}")

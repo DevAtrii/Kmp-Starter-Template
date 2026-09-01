@@ -37,12 +37,16 @@ class CreateViewModel(
         project: StarterProject,
         outputZipPath: String,
         extract: Boolean,
+        sourceZipPath: String? = null,
         progress: TerminalProgress = TerminalProgress(),
     ): Result<CreateResult> {
         val result = runCatching {
             val zipBytes = repository.generate(
                 project = project,
                 onProgress = progress,
+                sourceZipPath = sourceZipPath?.let {
+                    CliPaths.resolve(fileManager.getCurrentDir(), it)
+                },
             ).getOrThrow()
 
             progress.onStep(GenerateStep.SAVING_ZIP)

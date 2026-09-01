@@ -78,6 +78,16 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
         }
 
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
+
+        jvmTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(projects.generator.data)
+            implementation(libs.kotlinx.coroutines.core)
+        }
+
     }
 
 }

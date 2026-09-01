@@ -15,6 +15,7 @@
 
 package com.kmpstarter.generator_data
 
+import com.kmpstarter.generator_data.impl.LocalSourceCodeProvider
 import com.kmpstarter.generator_data.interfaces.SourceCode
 import com.kmpstarter.generator_data.interfaces.StarterProjectFileManager
 import com.kmpstarter.generator_data.interfaces.StarterProjectFileManager.Companion.getFileAs
@@ -27,6 +28,7 @@ import com.kmpstarter.generator_domain.StarterJson
 import com.kmpstarter.generator_domain.StarterModules
 import com.kmpstarter.generator_domain.StarterProject
 import com.kmpstarter.generator_domain.StarterProjectsRepository
+import com.kmpstarter.generator_domain.UpgradeResult
 import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.DEFAULT_PACKAGE_NAME
 import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.LIB_MODE_DELETABLE_MODULES
 import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.LOCAL_MODULES
@@ -36,6 +38,7 @@ import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.TOOLI
 import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.TOOLING_SOURCE_CODE_FILES
 import com.kmpstarter.generator_domain.StarterProjectsRepository.Companion.TOOLING_SOURCE_CODE_FOLDERS
 import kotlinx.serialization.json.Json
+import kotlin.random.Random
 
 class StarterProjectsRepositoryImpl(
     private val fileManager: StarterProjectFileManager,
@@ -44,68 +47,75 @@ class StarterProjectsRepositoryImpl(
     /** This directory will be used temporary for creating project
      * for example workingDir could be `/Users/ahmed/Coding/note-app/.starter/generation`
      * this should be used inside `generate` function**/
-    private val currentWorkingDir = fileManager.getCurrentDir() + "/.starter/generation"
+    private var currentWorkingDir: String =
+        fileManager.getCurrentDir() + "/$STARTER_FOLDER/generation"
 
     override suspend fun generate(
         project: StarterProject,
         onProgress: GenerateProgress,
-    ): Result<ProjectZip> = runCatching {
-        // PreGeneration delete workingDir
-        fileManager.delete(path = currentWorkingDir).getOrThrow()
+        sourceZipPath: String?,
+    ): Result<ProjectZip> {
+        currentWorkingDir =
+            "${fileManager.getCurrentDir()}/$STARTER_FOLDER/generation-${Random.nextLong().toULong().toString(radix = 16)}"
+        return try {
+            runCatching {
+                fileManager.delete(path = currentWorkingDir).getOrThrow()
 
-        // Step 0: Getting SourceCode
-        onProgress.onStep(GenerateStep.GETTING_SOURCE_CODE)
-        val sourceCode = sourceCodeProvider.getSourceCode().getOrThrow()
-        val sourceCodeZipBytes = sourceCode.content
+                onProgress.onStep(GenerateStep.GETTING_SOURCE_CODE)
+                val sourceCode = resolveSourceCode(version = null, sourceZipPath = sourceZipPath)
 
-        // Step 1: Extracting ZipFile
-        onProgress.onStep(GenerateStep.EXTRACTING_SOURCE_CODE)
-        val zipPath =
-            "${currentWorkingDir}/$STARTER_FOLDER/source_code/${sourceCode.version}/code.zip"
-        fileManager.writeFile(
-            path = zipPath,
-            content = sourceCodeZipBytes
-        ).getOrThrow()
-        fileManager.extractZip(path = zipPath, output = currentWorkingDir).getOrThrow()
+                onProgress.onStep(GenerateStep.EXTRACTING_SOURCE_CODE)
+                val zipPath =
+                    "${currentWorkingDir}/$STARTER_FOLDER/source_code/${sourceCode.version}/code.zip"
+                fileManager.writeFile(
+                    path = zipPath,
+                    content = sourceCode.content,
+                ).getOrThrow()
+                fileManager.extractZip(path = zipPath, output = currentWorkingDir).getOrThrow()
 
-        // Step 2
-        onProgress.onStep(GenerateStep.REMOVING_TOOLING)
-        removeToolingSourceCode(project = project).getOrThrow()
+                onProgress.onStep(GenerateStep.REMOVING_TOOLING)
+                removeToolingSourceCode(project = project).getOrThrow()
 
-        // Step 3:
-        onProgress.onStep(GenerateStep.CONFIGURING_WORKFLOWS)
-        configureGitHubWorkflows(project = project).getOrThrow()
+                onProgress.onStep(GenerateStep.CONFIGURING_WORKFLOWS)
+                configureGitHubWorkflows(project = project).getOrThrow()
 
-        // Step 4
-        onProgress.onStep(GenerateStep.CONFIGURING_MODULES)
-        configureProjectModules(project = project, sourceCode = sourceCode).getOrThrow()
-        onProgress.onStep(GenerateStep.CONFIGURING_GRADLE_PLUGINS)
-        configureGradlePlugins(project = project).getOrThrow()
+                onProgress.onStep(GenerateStep.CONFIGURING_MODULES)
+                configureProjectModules(project = project, sourceCode = sourceCode).getOrThrow()
+                onProgress.onStep(GenerateStep.CONFIGURING_GRADLE_PLUGINS)
+                configureGradlePlugins(project = project).getOrThrow()
 
-        // Step 5
-        onProgress.onStep(GenerateStep.CONFIGURING_FEATURE)
-        configureYourFeature(project = project).getOrThrow()
-        // Step 6
-        onProgress.onStep(GenerateStep.CONFIGURING_PROJECT_NAME)
-        configureProjectName(project = project).getOrThrow()
-        // Step 7
-        onProgress.onStep(GenerateStep.CONFIGURING_PACKAGE_NAME)
-        configurePackageName(project = project).getOrThrow()
-        // Step 8
-        onProgress.onStep(GenerateStep.CREATING_STARTER_JSON)
-        createStarterJson(project = project, sourceCode = sourceCode).getOrThrow()
+                onProgress.onStep(GenerateStep.CONFIGURING_FEATURE)
+                configureYourFeature(project = project).getOrThrow()
 
-        // Step 9
-        onProgress.onStep(GenerateStep.PACKAGING_ZIP)
-        val result = fileManager.createZip(
-            path = currentWorkingDir
-        ).getOrThrow()
+                onProgress.onStep(GenerateStep.CONFIGURING_PROJECT_NAME)
+                configureProjectName(project = project).getOrThrow()
 
-        onProgress.onStep(GenerateStep.CLEANING_UP)
-        fileManager.delete(path = currentWorkingDir).getOrThrow()
-        return@runCatching result
-    }.onFailure { _ ->
-        //fileManager.delete(path = currentWorkingDir).getOrThrow()
+                onProgress.onStep(GenerateStep.CONFIGURING_PACKAGE_NAME)
+                configurePackageName(project = project).getOrThrow()
+
+                onProgress.onStep(GenerateStep.CREATING_STARTER_JSON)
+                createStarterJson(project = project, sourceCode = sourceCode).getOrThrow()
+
+                onProgress.onStep(GenerateStep.PACKAGING_ZIP)
+                fileManager.createZip(path = currentWorkingDir).getOrThrow()
+            }
+        } finally {
+            onProgress.onStep(GenerateStep.CLEANING_UP)
+            fileManager.delete(path = currentWorkingDir)
+        }
+    }
+
+    private suspend fun resolveSourceCode(
+        version: String?,
+        sourceZipPath: String?,
+    ): SourceCode {
+        if (sourceZipPath != null) {
+            return LocalSourceCodeProvider(
+                fileManager = fileManager,
+                zipPath = sourceZipPath,
+            ).getSourceCode(version).getOrThrow()
+        }
+        return sourceCodeProvider.getSourceCode(version).getOrThrow()
     }
 
 
@@ -192,6 +202,11 @@ class StarterProjectsRepositoryImpl(
             return@runCatching
 
 
+        val includeName = project.featureGradleIncludeName()
+        val accessorName = project.featureGradleAccessorName()
+        val packageSegment = project.featurePackageSegment()
+        val pascalName = project.getFeatureNameAsPascalCasing()
+
         listOf(
             ":features:your-feature:presentation",
             ":features:your-feature:domain",
@@ -203,9 +218,9 @@ class StarterProjectsRepositoryImpl(
         }
 
         listOf(
-            ":features:${project.featureName}:presentation",
-            ":features:${project.featureName}:domain",
-            ":features:${project.featureName}:data",
+            ":features:$includeName:presentation",
+            ":features:$includeName:domain",
+            ":features:$includeName:data",
         ).forEach { module ->
             addModuleInsideSettingsGradleKts(
                 module = module
@@ -220,7 +235,7 @@ class StarterProjectsRepositoryImpl(
             val fileContent = fileManager.getFileAs(filePath).getOrThrow()
             val replacedContent = fileContent.replace(
                 ".yourFeature",
-                ".${project.featureName}"
+                ".$accessorName"
             )
             fileManager.writeFile(
                 path = filePath,
@@ -240,7 +255,7 @@ class StarterProjectsRepositoryImpl(
             // language="kotlin"
             val replacedContent = fileContent.replace(
                 "val featureYour",
-                "val feature${project.getFeatureNameAsPascalCasing()}"
+                "val feature$pascalName"
             )
             fileManager.writeFile(
                 path = filePath,
@@ -250,7 +265,7 @@ class StarterProjectsRepositoryImpl(
             // rename file names
             val toFileName = filePath.split("/").last().replace(
                 "FeatureYour",
-                "Feature${project.getFeatureNameAsPascalCasing()}"
+                "Feature$pascalName"
             )
             fileManager.rename(
                 path = filePath,
@@ -272,12 +287,12 @@ class StarterProjectsRepositoryImpl(
             }.forEach { filePath ->
                 val content = fileManager.getFileAs(path = filePath).getOrThrow()
                 val updated = content
-                    .replace(".feature_your_feature", ".feature_${project.featureName}")
+                    .replace(".feature_your_feature", ".feature_$packageSegment")
                     .let {
                         if (filePath.endsWith(".kts")) {
                             it.replace(
                                 ":featureYour",
-                                ":feature${project.getFeatureNameAsPascalCasing()}"
+                                ":feature$pascalName"
                             )
                         } else {
                             it
@@ -297,7 +312,7 @@ class StarterProjectsRepositoryImpl(
         ).filter {
             it.split("/").last().startsWith("feature_your_feature")
         }.forEach { path ->
-            val newPath = path.replace("/feature_your_feature", "/feature_${project.featureName}")
+            val newPath = path.replace("/feature_your_feature", "/feature_$packageSegment")
             fileManager.rename(
                 path = path,
                 to = newPath
@@ -309,7 +324,7 @@ class StarterProjectsRepositoryImpl(
         val initKtContent = fileManager.getFileAs(path = initKtFilePath).getOrThrow()
         val updated = initKtContent.replace(
             "featureYour",
-            "feature${project.getFeatureNameAsPascalCasing()}",
+            "feature$pascalName",
         )
 
         fileManager.writeFile(
@@ -324,7 +339,7 @@ class StarterProjectsRepositoryImpl(
         ).forEach { dir ->
             fileManager.rename(
                 path = dir,
-                to = project.featureName!!.replace("-", "_").lowercase()
+                to = includeName
             ).getOrThrow()
         }
 
@@ -333,9 +348,9 @@ class StarterProjectsRepositoryImpl(
         val composeAppGradlePath = "$currentWorkingDir/composeApp/build.gradle.kts"
         val composeAppGradleContent = fileManager.getFileAs(composeAppGradlePath).getOrThrow()
         val yourFeatureDeps = buildString {
-            appendLine("implementation(projects.features.${project.featureName}.data)")
-            appendLine("implementation(projects.features.${project.featureName}.domain)")
-            appendLine("implementation(projects.features.${project.featureName}.presentation)")
+            appendLine("implementation(projects.features.$accessorName.data)")
+            appendLine("implementation(projects.features.$accessorName.domain)")
+            appendLine("implementation(projects.features.$accessorName.presentation)")
         }
         val updatedComposeAppGradleContent = buildString {
             val parts = composeAppGradleContent.split("// External Libraries")
@@ -387,10 +402,10 @@ class StarterProjectsRepositoryImpl(
             .filter {
                 val isTooling = it.startsWith("$currentWorkingDir/$STARTER_FOLDER") ||
                         it.startsWith("$currentWorkingDir/build-logic") ||
-                        it.startsWith("$currentWorkingDir/build.gradle.kts") || it.startsWith(
-                    "$currentWorkingDir/iosApp"
-                )
-                val isSource = it.endsWith("kt") || it.endsWith("kts")
+                        it.startsWith("$currentWorkingDir/build.gradle.kts")
+                val isSource = it.endsWith(".kt") || it.endsWith(".kts") ||
+                    it.endsWith(".xcconfig") || it.endsWith(".plist") ||
+                    it.endsWith(".pbxproj") || it.endsWith(".json")
                 isSource && !isTooling
             }
 
@@ -422,8 +437,6 @@ class StarterProjectsRepositoryImpl(
                 val suffix = if (packageDir.endsWith("app")) oldPath + "app" else oldPath
                 val sourceRoot = packageDir.removeSuffix(suffix)
                 val newPackageDir = sourceRoot + newPath
-                if (suffix == "app" && !packageDir.contains("__MACOSX"))
-                    println("suffix=$suffix,newPath=$newPath, newPackageDir=$newPackageDir,\nsource=$sourceRoot")
                 fileManager.mkDirs(newPackageDir).getOrThrow()
 
                 fileManager.moveFiles(
@@ -850,21 +863,7 @@ class StarterProjectsRepositoryImpl(
             val content = fileManager.getFileAs(settingsGradle)
                 .getOrThrow()
 
-            val updated = content.replace(
-                Regex(
-                    """(?s)\s*val\s+starterLibsDir\s*=\s*rootDir\.resolve\("\.starter-libs"\)\s*
-if\s*\(\s*starterLibsDir\.exists\(\)\s*\)\s*\{
-\s*maven\(starterLibsDir\.toURI\(\)\)\s*\{
-\s*name\s*=\s*"starterLibsLocal"\s*
-content\s*\{
-\s*includeGroup\("io\.github\.devatrii"\)\s*
-\}
-\s*\}
-\s*\}
-"""
-                ),
-                ""
-            )
+            val updated = stripStarterLibsLocalRepo(content)
 
             // todo remove build-logic KmpLibraryPublishPlugin
 
@@ -874,9 +873,40 @@ content\s*\{
             ).getOrThrow()
         }
 
+    private fun stripStarterLibsLocalRepo(content: String): String {
+        val marker = "val starterLibsDir"
+        val start = content.indexOf(marker)
+        if (start < 0) return content
+        val lineStart = content.lastIndexOf('\n', start).let { if (it < 0) 0 else it + 1 }
+        val ifIndex = content.indexOf("if", start)
+        if (ifIndex < 0) return content
+        val openBrace = content.indexOf('{', ifIndex)
+        if (openBrace < 0) return content
+        var depth = 0
+        var i = openBrace
+        while (i < content.length) {
+            when (content[i]) {
+                '{' -> depth++
+                '}' -> {
+                    depth--
+                    if (depth == 0) {
+                        var end = i + 1
+                        if (end < content.length && content[end] == '\n') end++
+                        return content.removeRange(lineStart, end)
+                    }
+                }
+            }
+            i++
+        }
+        return content
+    }
+
     /** enter module like `:starter:core`*/
-    private suspend fun removeModuleFromSettingsGradleKts(module: String): Result<Unit> {
-        val path = "$currentWorkingDir/settings.gradle.kts"
+    private suspend fun removeModuleFromSettingsGradleKts(
+        module: String,
+        workingDir: String = currentWorkingDir,
+    ): Result<Unit> {
+        val path = "$workingDir/settings.gradle.kts"
         val settingsGradleKtsContent = fileManager.getFileAs(path = path).getOrThrow()
         val textToReplace = "include(\"$module\")"
         val newSettingsGradleKtsContent = settingsGradleKtsContent.replace(textToReplace, "")
@@ -1203,27 +1233,29 @@ content\s*\{
         mode: ProjectMode,
         packageName: String?,
         targetModule: String,
+        sourceZipPath: String?,
     ): Result<Unit> = runCatching {
         if (mode == ProjectMode.LIB) {
-            if (LOCAL_MODULES.find { it == module.moduleGradlePath() } != null)
+            if (module.moduleGradlePath() in LOCAL_MODULES)
                 throw IllegalStateException("Local modules can't be included in Library Mode")
             val starterRawJson =
                 fileManager.getFileAs(path = "$workingDir/$STARTER_JSON_FILE").getOrElse {
                     throw IllegalStateException("Please call init first & init starter.json")
                 }
             val starterJson: StarterJson = Json.decodeFromString(starterRawJson)
-            val sourceCode = sourceCodeProvider.getSourceCode(version = starterJson.starterVersion).getOrThrow()
-            val sourceCodePath = extractSourceCodeTo(
+            val sourceCode = resolveSourceCode(
+                version = starterJson.starterVersion,
+                sourceZipPath = sourceZipPath,
+            )
+            extractSourceCodeTo(
                 workingDir = workingDir,
                 version = sourceCode.version,
                 zipBytes = sourceCode.content,
             )
 
-            // check if libraries exist inside libs.versions.toml, if not add them
             val tomlFilePath = "$workingDir/gradle/libs.versions.toml"
             var tomlFileContent = fileManager.getFileAs(tomlFilePath).getOrThrow()
 
-            // Ensure starter version exists.
             if (!Regex("""(?m)^starter\s*=""").containsMatchIn(tomlFileContent)) {
                 tomlFileContent = tomlFileContent.replaceFirst(
                     Regex("""(?m)^\[versions]$"""),
@@ -1234,7 +1266,6 @@ content\s*\{
                 )
             }
 
-            // Generate missing starter library entries.
             val missingEntries = StarterModules.all()
                 .filter { it.moduleGradlePath() !in LOCAL_MODULES }
                 .map { starterModule ->
@@ -1267,16 +1298,23 @@ content\s*\{
                 content = tomlFileContent.encodeToByteArray()
             ).getOrThrow()
 
-            addModuleDependencyToTarget(
-                workingDir = workingDir,
-                targetModule = targetModule,
-                dependency = "implementation(${module.moduleGradleDep(mode)})",
-            )
+            collectModulesWithDependencies(module)
+                .filter { it.moduleGradlePath() !in LOCAL_MODULES }
+                .forEach { starterModule ->
+                    addModuleDependencyToTarget(
+                        workingDir = workingDir,
+                        targetModule = targetModule,
+                        dependency = "implementation(${starterModule.moduleGradleDep(mode)})",
+                    )
+                }
             return@runCatching
         }
 
-        // ProjectMode.MODULE
-        val sourceCode = sourceCodeProvider.getSourceCode().getOrThrow()
+        val starterJson = readStarterJsonOrNull(workingDir)
+        val sourceCode = resolveSourceCode(
+            version = starterJson?.starterVersion,
+            sourceZipPath = sourceZipPath,
+        )
         val sourceCodePath = extractSourceCodeTo(
             workingDir = workingDir,
             version = sourceCode.version,
@@ -1335,12 +1373,164 @@ content\s*\{
     }
 
     override suspend fun excludeModule(
+        workingDir: String,
         module: StarterModules,
         mode: ProjectMode,
-        packageName: String?,
         targetModule: String,
-    ): Result<Unit> {
-        // IDK maybe remove this one for now
-        TODO("Not yet implemented")
+    ): Result<Unit> = runCatching {
+        removeModuleDependencyFromTarget(
+            workingDir = workingDir,
+            targetModule = targetModule,
+            dependency = "implementation(${module.moduleGradleDep(mode)})",
+        )
+        if (mode == ProjectMode.MODULE) {
+            removeModuleFromSettingsGradleKts(
+                module = module.moduleGradlePath(),
+                workingDir = workingDir,
+            ).getOrThrow()
+            fileManager.delete("$workingDir/${module.moduleFilePath()}").getOrThrow()
+        }
+    }
+
+    override suspend fun upgrade(
+        workingDir: String,
+        modules: List<StarterModules>?,
+        targetVersion: String?,
+        force: Boolean,
+        sourceZipPath: String?,
+    ): Result<UpgradeResult> = runCatching {
+        val starterJson = readStarterJsonOrNull(workingDir)
+            ?: throw IllegalStateException("Please call init first & init starter.json")
+        val fromVersion = starterJson.starterVersion
+        val sourceCode = resolveSourceCode(
+            version = targetVersion,
+            sourceZipPath = sourceZipPath,
+        )
+        val toVersion = sourceCode.version
+
+        if (starterJson.mode == ProjectMode.LIB) {
+            bumpStarterVersionInToml(workingDir, toVersion)
+            writeStarterJson(workingDir, starterJson.copy(starterVersion = toVersion))
+            return@runCatching UpgradeResult(
+                fromVersion = fromVersion,
+                toVersion = toVersion,
+                upgraded = listOf("starter"),
+                skippedBecauseDirty = emptyList(),
+            )
+        }
+
+        val oldSource = resolveSourceCode(version = fromVersion, sourceZipPath = sourceZipPath)
+        val oldSourcePath = extractSourceCodeTo(
+            workingDir = workingDir,
+            version = "upgrade-from-$fromVersion",
+            zipBytes = oldSource.content,
+        )
+        val newSourcePath = extractSourceCodeTo(
+            workingDir = workingDir,
+            version = "upgrade-to-$toVersion",
+            zipBytes = sourceCode.content,
+        )
+
+        val targets = modules ?: discoverIncludedStarterModules(workingDir)
+        val upgraded = mutableListOf<String>()
+        val skipped = mutableListOf<String>()
+
+        targets.forEach { starterModule ->
+            val moduleDir = "$workingDir/${starterModule.moduleFilePath()}"
+            if (fileManager.getFile("$moduleDir/build.gradle.kts").isFailure) {
+                return@forEach
+            }
+            val templateDir = "$oldSourcePath/${starterModule.moduleFilePath()}"
+            val newModuleDir = "$newSourcePath/${starterModule.moduleFilePath()}"
+            if (!force && isModuleDirty(moduleDir, templateDir)) {
+                skipped += starterModule.moduleGradlePath()
+                return@forEach
+            }
+            fileManager.delete(moduleDir).getOrThrow()
+            copyDirectory(from = newModuleDir, to = moduleDir).getOrThrow()
+            upgraded += starterModule.moduleGradlePath()
+        }
+
+        writeStarterJson(workingDir, starterJson.copy(starterVersion = toVersion))
+        UpgradeResult(
+            fromVersion = fromVersion,
+            toVersion = toVersion,
+            upgraded = upgraded,
+            skippedBecauseDirty = skipped,
+        )
+    }
+
+    private suspend fun readStarterJsonOrNull(workingDir: String): StarterJson? {
+        val raw = fileManager.getFileAs("$workingDir/$STARTER_JSON_FILE").getOrNull() ?: return null
+        return Json.decodeFromString(raw)
+    }
+
+    private suspend fun writeStarterJson(workingDir: String, starterJson: StarterJson) {
+        fileManager.writeFile(
+            path = "$workingDir/$STARTER_JSON_FILE",
+            content = Json.encodeToString(starterJson).encodeToByteArray(),
+        ).getOrThrow()
+    }
+
+    private suspend fun bumpStarterVersionInToml(workingDir: String, version: String) {
+        val tomlPath = "$workingDir/gradle/libs.versions.toml"
+        var toml = fileManager.getFileAs(tomlPath).getOrThrow()
+        toml = if (Regex("""(?m)^starter\s*=""").containsMatchIn(toml)) {
+            toml.replace(Regex("""(?m)^starter\s*=\s*".*?""""), """starter="$version"""")
+        } else {
+            toml.replaceFirst(
+                Regex("""(?m)^\[versions]$"""),
+                """
+                [versions]
+                starter="$version"
+                """.trimIndent(),
+            )
+        }
+        fileManager.writeFile(path = tomlPath, content = toml.encodeToByteArray()).getOrThrow()
+    }
+
+    private suspend fun discoverIncludedStarterModules(workingDir: String): List<StarterModules> {
+        val settings = fileManager.getFileAs("$workingDir/settings.gradle.kts").getOrThrow()
+        return StarterModules.all().filter { module ->
+            """include("${module.moduleGradlePath()}")""" in settings
+        }
+    }
+
+    private suspend fun isModuleDirty(moduleDir: String, templateDir: String): Boolean {
+        if (fileManager.getFile("$templateDir/build.gradle.kts").isFailure) return true
+        val existing = fileManager.getFilesRecursively(moduleDir)
+            .associate { path ->
+                path.removePrefix(moduleDir).trimStart('/') to
+                    fileManager.getFile(path).getOrThrow()
+            }
+        val template = fileManager.getFilesRecursively(templateDir)
+            .associate { path ->
+                path.removePrefix(templateDir).trimStart('/') to
+                    fileManager.getFile(path).getOrThrow()
+            }
+        if (existing.keys.any { it !in template.keys }) return true
+        return existing.any { (relative, bytes) ->
+            val expected = template[relative] ?: return@any true
+            !bytes.contentEquals(expected)
+        }
+    }
+
+    private suspend fun removeModuleDependencyFromTarget(
+        workingDir: String,
+        targetModule: String,
+        dependency: String,
+    ) {
+        val targetGradlePath = "$workingDir/$targetModule/build.gradle.kts"
+        val content = fileManager.getFileAs(path = targetGradlePath).getOrThrow()
+        val updated = content.lineSequence()
+            .filterNot { it.trim() == dependency }
+            .joinToString("\n")
+            .let { if (content.endsWith("\n") && !it.endsWith("\n")) it + "\n" else it }
+        if (updated != content) {
+            fileManager.writeFile(
+                path = targetGradlePath,
+                content = updated.encodeToByteArray(),
+            ).getOrThrow()
+        }
     }
 }

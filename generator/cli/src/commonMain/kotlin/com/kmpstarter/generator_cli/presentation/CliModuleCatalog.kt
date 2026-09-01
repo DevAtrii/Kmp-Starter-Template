@@ -85,8 +85,15 @@ object CliModuleCatalog {
         return ensureRequiredIncluded(resolved)
     }
 
-    fun ensureRequiredIncluded(selected: List<StarterModules>): List<StarterModules> =
-        (requiredModules() + selected).distinctBy { it::class }
+    fun ensureRequiredIncluded(selected: List<StarterModules>): List<StarterModules> {
+        val ordered = linkedSetOf<StarterModules>()
+        fun visit(current: StarterModules) {
+            current.dependencies().forEach(::visit)
+            ordered.add(current)
+        }
+        (requiredModules() + selected).forEach(::visit)
+        return ordered.toList()
+    }
 
     private fun option(
         module: StarterModules,

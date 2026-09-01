@@ -17,6 +17,13 @@ package com.kmpstarter.generator_domain
 
 typealias ProjectZip = ByteArray
 
+data class UpgradeResult(
+    val fromVersion: String,
+    val toVersion: String,
+    val upgraded: List<String>,
+    val skippedBecauseDirty: List<String>,
+)
+
 
 
 interface StarterProjectsRepository {
@@ -81,6 +88,7 @@ interface StarterProjectsRepository {
     suspend fun generate(
         project: StarterProject,
         onProgress: GenerateProgress = GenerateProgress { },
+        sourceZipPath: String? = null,
     ): Result<ProjectZip>
 
     suspend fun includeModule(
@@ -89,14 +97,21 @@ interface StarterProjectsRepository {
         mode: ProjectMode,
         packageName: String? = DEFAULT_PACKAGE_NAME,
         targetModule: String = DEFAULT_TARGET_MODULE,
+        sourceZipPath: String? = null,
     ): Result<Unit>
 
     suspend fun excludeModule(
+        workingDir: String,
         module: StarterModules,
         mode: ProjectMode,
-        packageName: String? = DEFAULT_PACKAGE_NAME,
         targetModule: String = DEFAULT_TARGET_MODULE,
     ): Result<Unit>
 
-
+    suspend fun upgrade(
+        workingDir: String,
+        modules: List<StarterModules>? = null,
+        targetVersion: String? = null,
+        force: Boolean = false,
+        sourceZipPath: String? = null,
+    ): Result<UpgradeResult>
 }

@@ -51,6 +51,8 @@ class IncludeCommand : CliktCommand(name = "include") {
     private val target: String by option("--target", help = "Gradle module to add the dependency to")
         .default("composeApp")
 
+    private val zipOption: String? by option("--zip", help = "Path to a local starter source zip")
+
     override fun run() {
         runBlocking {
         val viewModel = KoinPlatform.getKoin().get<IncludeViewModel>()
@@ -74,6 +76,7 @@ class IncludeCommand : CliktCommand(name = "include") {
             mode = resolvedMode,
             packageName = pkg,
             targetModule = target,
+            sourceZipPath = zipOption,
         ).onSuccess {
             val moduleId = CliModuleCatalog.findById(module.mavenArtifactId())?.id ?: module.mavenArtifactId()
             echo("Included module '$moduleId' into '$dir' (mode=$resolvedMode, target=$target)")
