@@ -19,96 +19,106 @@ import com.kmpstarter.utils.starter.AndroidOnlyStarterApi
 import kotlin.experimental.ExperimentalObjCName
 import kotlin.native.ObjCName
 
-
+/**
+ * Sends analytics events and user traits to the backends registered in
+ * [initAnalytics].
+ *
+ * Inject this in ViewModels. Prefer typed [AppEvent] over raw event names.
+ * Calls fan out to every **active** backend. Disabled backends no-op.
+ */
 @OptIn(ExperimentalObjCName::class)
 @ObjCName("EventsTracker", exact = true)
 interface EventsTracker {
 
+    /** `true` when at least one active backend is collecting. */
     val isEnabled: Boolean
 
+    /** Tracks a typed [event]. Preferred overload. */
     suspend fun track(
         event: AppEvent,
     )
 
+    /** Tracks [event] with no properties. */
     suspend fun track(
         event: String,
     )
 
+    /**
+     * Tracks [event] with a single optional property.
+     *
+     * @param pair `null` → same as [track] with no properties.
+     */
     suspend fun track(
         event: String,
         pair: Pair<String, Any>? = null,
     )
 
+    /**
+     * Tracks [event] with [properties].
+     *
+     * @param properties `null` or empty → same as [track] with no properties.
+     */
     suspend fun track(
         event: String,
         properties: Map<String, Any>? = null,
     )
 
+    /** Ties later events to this user. Call after sign-in. */
     suspend fun setUserId(userId: String)
 
+    /** Turns collection on. */
     suspend fun optIn()
 
+    /** Turns collection off. */
     suspend fun optOut()
 
+    /** Flips [hasOptedIn]. */
     suspend fun toggleOptInOut()
+
+    /** Whether the user is currently opted in. */
     suspend fun hasOptedIn(): Boolean
 
+    /** Sends any queued events now. */
     suspend fun flush()
 
+    /** Clears identity and local analytics state. Call on logout. */
     suspend fun reset()
 
-
+    /**
+     * Sets a trait on the current user (`plan`, `is_pro`, …).
+     *
+     * [value] may be a [String], [Boolean], [Int], [Long], or [Double].
+     */
     suspend fun setUserProperty(
         key: String,
-        value: String,
+        value: Any,
     )
 
+    /**
+     * Params attached to every later [track] call (`app_flavor`, …).
+     *
+     * Merges with existing defaults. Omitting a key does not remove it.
+     */
+    suspend fun setDefaultEventParameters(
+        params: Map<String, Any>,
+    )
 }
 
-
+/** Sets many user traits. Same as calling [setUserProperty] per entry. */
 suspend fun EventsTracker.setUserProperties(
-    values: Map<String, String>,
+    values: Map<String, Any>,
 ) {
     values.forEach { (key, value) ->
         setUserProperty(key = key, value = value)
     }
 }
 
-
-
 /**
- * Captures Play Install Referrer once and tracks it as `install_attribution`.
+ * Records where the install came from. Android only; other platforms no-op.
  *
- * **Android:** connects to Play Store, parses UTM / click ids from the referrer
- * string, tracks one event, then writes matching user properties
- * (`utm_source`, `gclid`, `install_version`, …). After a successful capture
- * (or `FEATURE_NOT_SUPPORTED`) later calls no-op.
- *
- * Play unavailable / timeout → no-op this launch, retries next cold start.
- * Call after Koin + [initAnalytics] so providers are registered.
- *
- * **Other platforms:** no-op. iOS has no Install Referrer API; use
- * App Store Connect / SKAdNetwork instead.
- *
- * Prefer [AnalyticsScope.enableInstallAttribution] on [initAnalytics] so this
- * runs once at app start. Safe to call manually; duplicates are ignored.
+ * Runs once. Later calls are ignored. Prefer
+ * [AnalyticsScope.enableInstallAttribution] on [initAnalytics] instead of
+ * calling this yourself.
  */
 @AndroidOnlyStarterApi
 expect suspend fun EventsTracker.trackInstallAttribution()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

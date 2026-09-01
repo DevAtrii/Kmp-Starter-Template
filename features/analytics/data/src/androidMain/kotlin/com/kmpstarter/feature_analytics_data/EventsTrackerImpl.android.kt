@@ -109,9 +109,17 @@ actual class EventsTrackerImpl(
         mixpanelAPI.reset()
     }
 
-    actual override suspend fun setUserProperty(key: String, value: String) = withContext(
+    actual override suspend fun setUserProperty(key: String, value: Any) = withContext(
         Dispatchers.IO
     ) {
         mixpanelAPI.people.set(key, value)
     }
+
+    actual override suspend fun setDefaultEventParameters(params: Map<String, Any>) =
+        withContext(Dispatchers.IO) {
+            if (params.isEmpty()) return@withContext
+            val props = JSONObject()
+            params.forEach { (key, value) -> props.put(key, value) }
+            mixpanelAPI.registerSuperProperties(props)
+        }
 }

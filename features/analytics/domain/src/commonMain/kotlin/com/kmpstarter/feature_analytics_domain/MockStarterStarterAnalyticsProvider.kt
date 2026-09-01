@@ -90,9 +90,14 @@ class MockStarterStarterAnalyticsProvider : StarterAnalyticsProvider {
         log("reset")
     }
 
-    override suspend fun setUserProperty(key: String, value: String) {
+    override suspend fun setUserProperty(key: String, value: Any) {
         if (!isEnabled || !isOpted) return
         log("setUserProperty $key=$value")
+    }
+
+    override suspend fun setDefaultEventParameters(params: Map<String, Any>) {
+        if (!isEnabled || !isOpted) return
+        log("setDefaultEventParameters $params")
     }
 
     private fun log(message: String) {

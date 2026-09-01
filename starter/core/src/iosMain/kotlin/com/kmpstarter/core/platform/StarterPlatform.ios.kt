@@ -17,4 +17,6 @@ package com.kmpstarter.core.platform
 
 actual typealias AndroidActivity = Unit
 
-actual typealias AndroidContext = Unit
+actual abstract class AndroidApplicationContext
+
+

@@ -88,10 +88,23 @@ import Mixpanel
 
     @objc public func setUserProperty(
         key: String,
-        value: String
+        value: Any
     ) {
         guard isEnabled else { return }
-        mixpanel.people.set(property: key, to: value)
+        guard let mixpanelValue = value as? MixpanelType else { return }
+        mixpanel.people.set(property: key, to: mixpanelValue)
+    }
+
+    @objc public func registerSuperProperties(properties: [String: Any]) {
+        guard isEnabled else { return }
+        var converted: Properties = [:]
+        for (key, value) in properties {
+            if let casted = value as? MixpanelType {
+                converted[key] = casted
+            }
+        }
+        guard !converted.isEmpty else { return }
+        mixpanel.registerSuperProperties(converted)
     }
 
     // MARK: - Opt In / Out

@@ -81,8 +81,12 @@ class SignInViewModel(
             )
             eventsTracker.setUserId(userId)
             eventsTracker.setUserProperty(key = "plan", value = "pro")
+            eventsTracker.setUserProperty(key = "is_pro", value = true)
             eventsTracker.setUserProperties(
-                values = mapOf("plan" to "pro", "locale" to "en"),
+                values = mapOf("plan" to "pro", "is_pro" to true, "login_count" to 3),
+            )
+            eventsTracker.setDefaultEventParameters(
+                params = mapOf("app_flavor" to "prod", "build_number" to 42),
             )
         }
     }
@@ -91,7 +95,7 @@ class SignInViewModel(
 
 Keep analytics calls in the presentation layer (ViewModel is best). Typed `AppEvent` is preferred over the string overloads `track(event)`, `track(event, pair)`, `track(event, properties)`.
 
-`EventsTracker` also exposes `setUserId`, `setUserProperty` / `setUserProperties` (`String` keys + values), `optIn`/`optOut`/`toggleOptInOut`/`hasOptedIn`, `flush`, `reset`.
+`EventsTracker` also exposes `setUserId`, `setUserProperty` / `setUserProperties` (`String` keys + `Any` values), `setDefaultEventParameters` (Mixpanel `registerSuperProperties` / Firebase `setDefaultEventParameters`), `optIn`/`optOut`/`toggleOptInOut`/`hasOptedIn`, `flush`, `reset`. Firebase user properties and GitLive default params stringify. Mixpanel keeps native types.
 
 Koin binds the same router as `Analytics` and `EventsTracker`. Inject `Analytics` only for lookup, `combine`, or `setActiveProviders`.
 

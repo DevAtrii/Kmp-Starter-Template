@@ -248,5 +248,7 @@ private class FakeStarterAnalyticsProvider(
         resetCount += 1
     }
 
-    override suspend fun setUserProperty(key: String, value: String) = Unit
+    override suspend fun setUserProperty(key: String, value: Any) = Unit
+
+    override suspend fun setDefaultEventParameters(params: Map<String, Any>) = Unit
 }

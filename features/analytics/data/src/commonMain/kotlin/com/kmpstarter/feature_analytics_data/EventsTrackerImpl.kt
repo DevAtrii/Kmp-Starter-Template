@@ -39,5 +39,6 @@ expect class EventsTrackerImpl : StarterAnalyticsProvider {
     override suspend fun hasOptedIn(): Boolean
     override suspend fun flush()
     override suspend fun reset()
-    override suspend fun setUserProperty(key: String, value: String)
+    override suspend fun setUserProperty(key: String, value: Any)
+    override suspend fun setDefaultEventParameters(params: Map<String, Any>)
 }

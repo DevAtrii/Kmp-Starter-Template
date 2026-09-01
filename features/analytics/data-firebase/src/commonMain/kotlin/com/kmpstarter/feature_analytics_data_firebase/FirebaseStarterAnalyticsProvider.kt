@@ -19,7 +19,6 @@ import com.kmpstarter.feature_analytics_domain.AppEvent
 import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProvider
 import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProviderId
 import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProviderIds
-import com.kmpstarter.utils.datastore.AppDataStore
 import com.kmpstarter.utils.logging.Log
 import dev.gitlive.firebase.analytics.FirebaseAnalytics
 import kotlin.concurrent.atomics.AtomicBoolean
@@ -106,8 +105,15 @@ class FirebaseStarterAnalyticsProvider(
         analytics.resetAnalyticsData()
     }
 
-    override suspend fun setUserProperty(key: String, value: String) {
-        analytics.setUserProperty(name = key, value = value)
+    override suspend fun setUserProperty(key: String, value: Any) {
+        analytics.setUserProperty(name = key, value = value.toString())
+    }
+
+    override suspend fun setDefaultEventParameters(params: Map<String, Any>) {
+        if (params.isEmpty()) return
+        analytics.setDefaultEventParameters(
+            parameters = params.mapValues { it.value.toString() },
+        )
     }
 
 }

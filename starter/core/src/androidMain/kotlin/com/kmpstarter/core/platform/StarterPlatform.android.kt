@@ -21,4 +21,4 @@ import android.content.Context
 
 actual typealias AndroidActivity = Activity
 
-actual typealias AndroidContext = Context
+actual typealias AndroidApplicationContext = Context

@@ -249,15 +249,25 @@ Set a user id and user properties on the same tracker (fans out to active provid
 ```kotlin
 eventsTracker.setUserId(userId)
 eventsTracker.setUserProperty(key = "plan", value = "pro")
+eventsTracker.setUserProperty(key = "is_pro", value = true)
 eventsTracker.setUserProperties(
     values = mapOf(
         "plan" to "pro",
-        "locale" to "en",
+        "is_pro" to true,
+        "login_count" to 3,
+    ),
+)
+eventsTracker.setDefaultEventParameters(
+    params = mapOf(
+        "app_flavor" to "prod",
+        "build_number" to 42,
     ),
 )
 ```
 
-`setUserProperty` / `setUserProperties` take `String` keys and values. Mixpanel maps them to people properties. Firebase maps them to `setUserProperty`.
+`setUserProperty` / `setUserProperties` take `String` keys and `Any` values (`Boolean`, `Int`, `Long`, `Double`, `String`). Mixpanel keeps native types (people properties). Firebase user properties are **string-only** → `toString()`.
+
+`setDefaultEventParameters` attaches params to every later `track`. Mixpanel: `registerSuperProperties`. Firebase: `setDefaultEventParameters` (GitLive is `Map<String, String>` → values stringified). Merges; does not clear omitted keys.
 
 Koin binds the same router as both `Analytics` and `EventsTracker`. ViewModels can keep injecting `EventsTracker`. Inject `Analytics` only when you need lookup, combining, or runtime swaps.
 
@@ -329,7 +339,7 @@ Implement `StarterAnalyticsProvider` in a **data** module. Mixpanel is `analytic
 class PostHogEventsTracker : StarterAnalyticsProvider {
 
     override val id = StarterAnalyticsProviderId("posthog")
-    // ... EventsTracker methods, including setUserProperty
+    // ... EventsTracker methods, including setUserProperty + setDefaultEventParameters
 }
 
 fun initPostHog(...) { /* SDK init */ }

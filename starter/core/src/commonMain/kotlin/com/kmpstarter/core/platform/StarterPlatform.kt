@@ -25,7 +25,7 @@ import com.kmpstarter.utils.starter.ExperimentalStarterApi
  *
  * On iOS, this represents the platform-specific context required by the implementation.
  */
-expect abstract class AndroidContext
+expect abstract class AndroidApplicationContext
 
 /**
  * Platform-specific Activity.
@@ -33,7 +33,7 @@ expect abstract class AndroidContext
  * On Android, this maps to [android.app.Activity].
  *
  * This type should only be used when an Activity instance is required.
- * Do not obtain it by casting [AndroidContext], since application context
+ * Do not obtain it by casting [AndroidApplicationContext], since application context
  * is not an Activity.
  */
 @ExperimentalStarterApi

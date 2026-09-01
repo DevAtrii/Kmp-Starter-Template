@@ -104,8 +104,16 @@ actual class EventsTrackerImpl(
         mixPanelBridge.reset()
     }
 
-    actual override suspend fun setUserProperty(key: String, value: String) =
+    actual override suspend fun setUserProperty(key: String, value: Any) =
         withContext(Dispatchers.IO) {
             mixPanelBridge.setUserPropertyWithKey(key = key, value = value)
+        }
+
+    actual override suspend fun setDefaultEventParameters(params: Map<String, Any>) =
+        withContext(Dispatchers.IO) {
+            if (params.isEmpty()) return@withContext
+            mixPanelBridge.registerSuperPropertiesWithProperties(
+                properties = params as Map<Any?, *>,
+            )
         }
 }
