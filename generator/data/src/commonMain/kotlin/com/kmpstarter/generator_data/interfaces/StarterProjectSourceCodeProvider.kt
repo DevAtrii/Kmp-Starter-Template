@@ -32,5 +32,15 @@ interface StarterProjectSourceCodeProvider {
 
     suspend fun getSourceCode(version: String? = null): Result<SourceCode>
 
-
+    /**
+     * Whether this CLI's [MAX_VERSION] covers the newest published starter source.
+     * Default: assume latest is supported (local zip / unknown providers).
+     */
+    suspend fun getSourceVersionSupport(): Result<SourceVersionSupport> = Result.success(
+        SourceVersionSupport(
+            newestAvailable = MAX_VERSION,
+            maxSupported = MAX_VERSION,
+            cliSupportsLatest = true,
+        ),
+    )
 }

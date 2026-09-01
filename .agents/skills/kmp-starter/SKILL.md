@@ -16,7 +16,7 @@ Build and evolve apps **on top of** the KMP Starter Template. Do not reinvent it
 
 This skill applies in two situations:
 
-- **New project** — if the user wants a *brand-new app*, first run the [create-fresh-app](create-fresh-app/SKILL.md) skill to research + plan + get approval. Then scaffold with the CLI (`starter create`, see docs below) and build features on the generated structure.
+- **New project** — if the user wants a *brand-new app*, first run the [create-fresh-app](create-fresh-app/SKILL.md) skill to research + plan + get approval. Before `starter create`, if the installed CLI cannot use the latest starter source, ask yes/no (**Yes recommended**) to run `npm update -g @devatrii/starter`. If yes: run that command yourself (do not wait for the user), then continue scaffolding. Then scaffold with the CLI (`starter create`, see docs below) and build features on the generated structure.
 - **Existing project** — you are already inside a Kmp-Starter-Template project and need to add a feature, screen, module, or change existing code. Skip scaffolding; go straight to "Phase 1 — Understand the project", then implement.
 
 ## Documentation (search + read via script)

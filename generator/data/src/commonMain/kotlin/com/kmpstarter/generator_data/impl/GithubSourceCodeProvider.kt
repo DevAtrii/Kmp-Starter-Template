@@ -16,6 +16,7 @@
 package com.kmpstarter.generator_data.impl
 
 import com.kmpstarter.generator_data.interfaces.SourceCode
+import com.kmpstarter.generator_data.interfaces.SourceVersionSupport
 import com.kmpstarter.generator_data.interfaces.StarterProjectFileManager
 import com.kmpstarter.generator_data.interfaces.StarterProjectSourceCodeProvider
 import com.kmpstarter.generator_data.interfaces.StarterProjectSourceCodeProvider.Companion.MAX_VERSION
@@ -37,7 +38,8 @@ import kotlinx.serialization.json.Json
  *
  * When [version] is provided, fetches that exact release.
  * Otherwise selects the newest release within [MIN_VERSION]..[MAX_VERSION]. If a newer release
- * exists beyond [MAX_VERSION], logs a yellow warning that the CLI only supports up to [MAX_VERSION].
+ * exists beyond [MAX_VERSION], the CLI prompts to run `npm update -g @devatrii/starter`
+ * (and this provider logs a yellow warning as a fallback).
  *
  * GitHub zipballs nest content under a single root folder (`repo.zip/repo-sha/...`).
  * This provider normalizes that to root entries (`repo.zip/...`) via [StarterProjectFileManager].
@@ -49,16 +51,10 @@ class GithubSourceCodeProvider(
     private val repo: String = DEFAULT_REPO,
 ) : StarterProjectSourceCodeProvider {
 
-    override suspend fun getSourceCode(version: String?): Result<SourceCode> = runCatching {
-        val releases = fetchReleases()
-        val versioned = releases.mapNotNull { release ->
-            val parsed = SemanticVersion.parse(release.tagName) ?: return@mapNotNull null
-            parsed to release
-        }
+    private var cachedVersionedReleases: List<Pair<SemanticVersion, GitHubRelease>>? = null
 
-        if (versioned.isEmpty()) {
-            error("No semantic-versioned releases found for $owner/$repo")
-        }
+    override suspend fun getSourceCode(version: String?): Result<SourceCode> = runCatching {
+        val versioned = fetchVersionedReleases()
 
         val selected = if (version != null) {
             selectExactVersion(versioned = versioned, requestedVersion = version)
@@ -112,6 +108,33 @@ class GithubSourceCodeProvider(
         }
 
         return selected
+    }
+
+    override suspend fun getSourceVersionSupport(): Result<SourceVersionSupport> = runCatching {
+        val versioned = fetchVersionedReleases()
+        val maxVersion = SemanticVersion.parse(MAX_VERSION)
+            ?: error("Invalid MAX_VERSION: $MAX_VERSION")
+        val newestAvailable = versioned.maxBy { it.first }
+
+        SourceVersionSupport(
+            newestAvailable = newestAvailable.first.toString(),
+            maxSupported = MAX_VERSION,
+            cliSupportsLatest = newestAvailable.first <= maxVersion,
+        )
+    }
+
+    private suspend fun fetchVersionedReleases(): List<Pair<SemanticVersion, GitHubRelease>> {
+        cachedVersionedReleases?.let { return it }
+
+        val versioned = fetchReleases().mapNotNull { release ->
+            val parsed = SemanticVersion.parse(release.tagName) ?: return@mapNotNull null
+            parsed to release
+        }
+        if (versioned.isEmpty()) {
+            error("No semantic-versioned releases found for $owner/$repo")
+        }
+        cachedVersionedReleases = versioned
+        return versioned
     }
 
     private suspend fun fetchReleases(): List<GitHubRelease> {

@@ -93,6 +93,14 @@ Derive the `{project}` slug from the app/package name (see the memory skill). Ne
 
 Then, when the user is ready to build, return to the parent skill flow: `starter create` → then "Phase 1 — Understand the project".
 
+**CLI vs latest source:** if the installed `@devatrii/starter` CLI cannot generate from the newest starter source, **ask yes/no first (Yes recommended)** to update:
+
+```bash
+npm update -g @devatrii/starter
+```
+
+If yes: run that command yourself immediately, then continue project initialization. If no: continue with the version this CLI supports.
+
 ## Rules
 
 - Never scaffold/write code before approval.

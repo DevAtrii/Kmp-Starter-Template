@@ -23,6 +23,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.choice
 import com.kmpstarter.generator_cli.commands.viewmodels.InitViewModel
 import com.kmpstarter.generator_cli.prompts.InteractivePrompts
+import com.kmpstarter.generator_cli.util.CliUpdateGuard
 import com.kmpstarter.generator_domain.ProjectMode
 import kotlinx.coroutines.runBlocking
 import org.koin.mp.KoinPlatform
@@ -42,6 +43,7 @@ class InitCommand : CliktCommand(name = "init") {
 
     override fun run() {
         runBlocking {
+        CliUpdateGuard.offerUpdateIfNeeded()
         val viewModel = KoinPlatform.getKoin().get<InitViewModel>()
         val interactive = dirOption == null || pkgOption == null || modeOption == null
 

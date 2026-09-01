@@ -29,6 +29,11 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import kotlin.system.exitProcess
 
+object CliInvocation {
+    var args: Array<String> = emptyArray()
+        internal set
+}
+
 class KmpStarterCli : CliktCommand(name = "kmp-starter") {
     init {
         versionOption(CliVersion.VALUE, names = setOf("--version", "-v"))
@@ -38,6 +43,7 @@ class KmpStarterCli : CliktCommand(name = "kmp-starter") {
 }
 
 fun main(args: Array<String>) {
+    CliInvocation.args = args
     startKoin {
         modules(cliDiModule)
     }

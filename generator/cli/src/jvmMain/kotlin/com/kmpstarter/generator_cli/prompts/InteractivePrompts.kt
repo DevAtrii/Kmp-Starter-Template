@@ -62,6 +62,29 @@ object InteractivePrompts {
         }
     }
 
+    /** Arrow-key Yes/No. [default] option is labeled Recommended and listed first. */
+    fun promptYesNoChoice(message: String, default: Boolean = true): Boolean {
+        val yesLabel = if (default) "Yes (Recommended)" else "Yes"
+        val noLabel = if (!default) "No (Recommended)" else "No"
+        val first = if (default) yesLabel else noLabel
+        val second = if (default) noLabel else yesLabel
+
+        if (!supportsArrowSelect()) {
+            return promptYesNo(message, default)
+        }
+
+        val selected = try {
+            terminal.interactiveSelectList(
+                entries = listOf(first, second),
+                title = message,
+            )
+        } catch (_: IllegalStateException) {
+            return promptYesNo(message, default)
+        } ?: return default
+
+        return selected.startsWith("Yes")
+    }
+
     fun promptProjectMode(default: ProjectMode = ProjectMode.LIB): ProjectMode {
         while (true) {
             when (readInput("Project mode [lib/module] (${default.name.lowercase()}): ").lowercase()) {

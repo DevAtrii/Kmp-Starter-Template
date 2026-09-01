@@ -25,6 +25,7 @@ import com.github.ajalt.clikt.parameters.types.choice
 import com.kmpstarter.generator_cli.commands.viewmodels.CreateViewModel
 import com.kmpstarter.generator_cli.presentation.CliModuleCatalog
 import com.kmpstarter.generator_cli.prompts.InteractivePrompts
+import com.kmpstarter.generator_cli.util.CliUpdateGuard
 import com.kmpstarter.generator_domain.ProjectMode
 import com.kmpstarter.generator_domain.StarterProject
 import kotlinx.coroutines.runBlocking
@@ -61,6 +62,7 @@ class CreateCommand : CliktCommand(name = "create") {
 
     override fun run() {
         runBlocking {
+        CliUpdateGuard.offerUpdateIfNeeded()
         val interactive = nameOption == null || pkgOption == null || featureOption == null || modulesOption == null
         if (interactive) {
             echo("Create a new KMP starter project")
