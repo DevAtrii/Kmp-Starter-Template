@@ -35,16 +35,16 @@ import kotlin.native.ObjCName
 interface Analytics : EventsTracker {
     companion object
 
-    val availableProviders: List<AnalyticsProviderId>
-    val activeProviders: List<AnalyticsProviderId>
+    val availableProviders: List<StarterAnalyticsProviderId>
+    val activeProviders: List<StarterAnalyticsProviderId>
 
-    fun provider(id: AnalyticsProviderId): AnalyticsProvider
+    fun provider(id: StarterAnalyticsProviderId): StarterAnalyticsProvider
 
-    fun combine(vararg ids: AnalyticsProviderId): EventsTracker
+    fun combine(vararg ids: StarterAnalyticsProviderId): EventsTracker
 
-    fun setActiveProviders(vararg ids: AnalyticsProviderId)
+    fun setActiveProviders(vararg ids: StarterAnalyticsProviderId)
 }
 
-fun Analytics.Companion.get(vararg providers: AnalyticsProvider): Analytics {
+fun Analytics.Companion.get(vararg providers: StarterAnalyticsProvider): Analytics {
     return AnalyticsRouter.create(providers.toList())
 }

@@ -15,7 +15,7 @@
 
 package com.kmpstarter.feature_analytics_data
 
-import com.kmpstarter.feature_analytics_domain.AnalyticsProvider
+import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProvider
 import com.kmpstarter.utils.logging.Log
 import org.koin.core.scope.Scope
 
@@ -26,7 +26,7 @@ context(scope: Scope)
 expect fun MixPanelAnalyticsScope.get(): MixPanelPlatform
 
 
-expect fun MixPanelAnalyticsScope.getProvider(): AnalyticsProvider
+expect fun MixPanelAnalyticsScope.getProvider(): StarterAnalyticsProvider
 
 
 object MixPanelAnalyticsScope {

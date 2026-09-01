@@ -28,11 +28,11 @@ class AnalyticsRouterTest {
 
     @Test
     fun providerReturnsSpecificBackend() = runBlocking {
-        val mixpanel = FakeAnalyticsProvider(AnalyticsProviderIds.Mixpanel)
-        val firebase = FakeAnalyticsProvider(FIREBASE)
+        val mixpanel = FakeStarterAnalyticsProvider(StarterAnalyticsProviderIds.Mixpanel)
+        val firebase = FakeStarterAnalyticsProvider(FIREBASE)
         val analytics = AnalyticsRouter.create(listOf(mixpanel, firebase))
 
-        assertSame(mixpanel, analytics.provider(AnalyticsProviderIds.Mixpanel))
+        assertSame(mixpanel, analytics.provider(StarterAnalyticsProviderIds.Mixpanel))
         analytics.provider(FIREBASE).track("only_firebase")
 
         assertEquals(emptyList(), mixpanel.events)
@@ -41,12 +41,12 @@ class AnalyticsRouterTest {
 
     @Test
     fun combineFansOutToSelectedProvidersOnly() = runBlocking {
-        val mixpanel = FakeAnalyticsProvider(AnalyticsProviderIds.Mixpanel)
-        val firebase = FakeAnalyticsProvider(FIREBASE)
-        val extra = FakeAnalyticsProvider(EXTRA)
+        val mixpanel = FakeStarterAnalyticsProvider(StarterAnalyticsProviderIds.Mixpanel)
+        val firebase = FakeStarterAnalyticsProvider(FIREBASE)
+        val extra = FakeStarterAnalyticsProvider(EXTRA)
         val analytics = AnalyticsRouter.create(listOf(mixpanel, firebase, extra))
 
-        analytics.combine(AnalyticsProviderIds.Mixpanel, FIREBASE).track("combo")
+        analytics.combine(StarterAnalyticsProviderIds.Mixpanel, FIREBASE).track("combo")
 
         assertEquals(listOf("combo"), mixpanel.events)
         assertEquals(listOf("combo"), firebase.events)
@@ -55,10 +55,10 @@ class AnalyticsRouterTest {
 
     @Test
     fun combineSnapshotIgnoresLaterSwaps() = runBlocking {
-        val mixpanel = FakeAnalyticsProvider(AnalyticsProviderIds.Mixpanel)
-        val firebase = FakeAnalyticsProvider(FIREBASE)
+        val mixpanel = FakeStarterAnalyticsProvider(StarterAnalyticsProviderIds.Mixpanel)
+        val firebase = FakeStarterAnalyticsProvider(FIREBASE)
         val analytics = AnalyticsRouter.create(listOf(mixpanel, firebase))
-        val combined = analytics.combine(AnalyticsProviderIds.Mixpanel, FIREBASE)
+        val combined = analytics.combine(StarterAnalyticsProviderIds.Mixpanel, FIREBASE)
 
         analytics.setActiveProviders(FIREBASE)
         combined.track("fixed")
@@ -69,8 +69,8 @@ class AnalyticsRouterTest {
 
     @Test
     fun setActiveProvidersReroutesExistingTrackerInstance() = runBlocking {
-        val mixpanel = FakeAnalyticsProvider(AnalyticsProviderIds.Mixpanel)
-        val firebase = FakeAnalyticsProvider(FIREBASE)
+        val mixpanel = FakeStarterAnalyticsProvider(StarterAnalyticsProviderIds.Mixpanel)
+        val firebase = FakeStarterAnalyticsProvider(FIREBASE)
         val analytics = AnalyticsRouter.create(listOf(mixpanel, firebase))
         val tracker: EventsTracker = analytics
 
@@ -85,7 +85,7 @@ class AnalyticsRouterTest {
 
     @Test
     fun emptyActiveProvidersDisablesRoutedTracking() = runBlocking {
-        val mixpanel = FakeAnalyticsProvider(AnalyticsProviderIds.Mixpanel)
+        val mixpanel = FakeStarterAnalyticsProvider(StarterAnalyticsProviderIds.Mixpanel)
         val analytics = AnalyticsRouter.create(listOf(mixpanel))
 
         analytics.setActiveProviders()
@@ -98,10 +98,10 @@ class AnalyticsRouterTest {
 
     @Test
     fun unknownAndDuplicateIdsFailFast() {
-        val mixpanel = FakeAnalyticsProvider(AnalyticsProviderIds.Mixpanel)
-        val firebase = FakeAnalyticsProvider(FIREBASE)
+        val mixpanel = FakeStarterAnalyticsProvider(StarterAnalyticsProviderIds.Mixpanel)
+        val firebase = FakeStarterAnalyticsProvider(FIREBASE)
         assertFailsWith<IllegalArgumentException> {
-            AnalyticsRouter.create(listOf(mixpanel, FakeAnalyticsProvider(AnalyticsProviderIds.Mixpanel)))
+            AnalyticsRouter.create(listOf(mixpanel, FakeStarterAnalyticsProvider(StarterAnalyticsProviderIds.Mixpanel)))
         }
 
         val analytics = AnalyticsRouter.create(listOf(mixpanel, firebase))
@@ -109,7 +109,7 @@ class AnalyticsRouterTest {
             analytics.provider(EXTRA)
         }
         assertFailsWith<IllegalArgumentException> {
-            analytics.combine(AnalyticsProviderIds.Mixpanel, AnalyticsProviderIds.Mixpanel)
+            analytics.combine(StarterAnalyticsProviderIds.Mixpanel, StarterAnalyticsProviderIds.Mixpanel)
         }
         assertFailsWith<IllegalArgumentException> {
             analytics.setActiveProviders(EXTRA)
@@ -121,8 +121,8 @@ class AnalyticsRouterTest {
 
     @Test
     fun fanOutStateMethodsHitActiveProviders() = runBlocking {
-        val mixpanel = FakeAnalyticsProvider(AnalyticsProviderIds.Mixpanel)
-        val firebase = FakeAnalyticsProvider(FIREBASE)
+        val mixpanel = FakeStarterAnalyticsProvider(StarterAnalyticsProviderIds.Mixpanel)
+        val firebase = FakeStarterAnalyticsProvider(FIREBASE)
         val analytics = AnalyticsRouter.create(listOf(mixpanel, firebase))
 
         analytics.setUserId("user-1")
@@ -143,25 +143,25 @@ class AnalyticsRouterTest {
 
     @Test
     fun isEnabledIsTrueWhenAnyActiveProviderIsEnabled() {
-        val mixpanel = FakeAnalyticsProvider(
-            id = AnalyticsProviderIds.Mixpanel,
+        val mixpanel = FakeStarterAnalyticsProvider(
+            id = StarterAnalyticsProviderIds.Mixpanel,
             isEnabled = false,
         )
-        val firebase = FakeAnalyticsProvider(FIREBASE)
+        val firebase = FakeStarterAnalyticsProvider(FIREBASE)
         val analytics = AnalyticsRouter.create(listOf(mixpanel, firebase))
 
         assertTrue(analytics.isEnabled)
-        analytics.setActiveProviders(AnalyticsProviderIds.Mixpanel)
+        analytics.setActiveProviders(StarterAnalyticsProviderIds.Mixpanel)
         assertFalse(analytics.isEnabled)
     }
 
     @Test
     fun nonCancellationFailureStillAttemptsRemainingProviders() = runBlocking {
-        val failing = FakeAnalyticsProvider(
-            id = AnalyticsProviderIds.Mixpanel,
+        val failing = FakeStarterAnalyticsProvider(
+            id = StarterAnalyticsProviderIds.Mixpanel,
             onTrack = { error("mixpanel down") },
         )
-        val firebase = FakeAnalyticsProvider(FIREBASE)
+        val firebase = FakeStarterAnalyticsProvider(FIREBASE)
         val analytics = AnalyticsRouter.create(listOf(failing, firebase))
 
         val error = assertFailsWith<IllegalStateException> {
@@ -173,11 +173,11 @@ class AnalyticsRouterTest {
 
     @Test
     fun cancellationStopsRemainingProviders() = runBlocking {
-        val cancelling = FakeAnalyticsProvider(
-            id = AnalyticsProviderIds.Mixpanel,
+        val cancelling = FakeStarterAnalyticsProvider(
+            id = StarterAnalyticsProviderIds.Mixpanel,
             onTrack = { throw CancellationException("cancelled") },
         )
-        val firebase = FakeAnalyticsProvider(FIREBASE)
+        val firebase = FakeStarterAnalyticsProvider(FIREBASE)
         val analytics = AnalyticsRouter.create(listOf(cancelling, firebase))
 
         assertFailsWith<CancellationException> {
@@ -187,16 +187,16 @@ class AnalyticsRouterTest {
     }
 
     private companion object {
-        val FIREBASE = AnalyticsProviderId("firebase")
-        val EXTRA = AnalyticsProviderId("extra")
+        val FIREBASE = StarterAnalyticsProviderId("firebase")
+        val EXTRA = StarterAnalyticsProviderId("extra")
     }
 }
 
-private class FakeAnalyticsProvider(
-    override val id: AnalyticsProviderId,
+private class FakeStarterAnalyticsProvider(
+    override val id: StarterAnalyticsProviderId,
     override val isEnabled: Boolean = true,
     private val onTrack: (suspend (String) -> Unit)? = null,
-) : AnalyticsProvider {
+) : StarterAnalyticsProvider {
     val events = mutableListOf<String>()
     val userIds = mutableListOf<String>()
     var optedIn: Boolean = true

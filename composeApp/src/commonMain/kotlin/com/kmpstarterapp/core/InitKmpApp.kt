@@ -81,7 +81,8 @@ private fun initAppAnalytics() {
         providers(
             MixPanelAnalyticsScope.getProvider(),
             /*Dummy Analytics provider to showcase multiple providers feature*/
-            // StarterAnalyticsProvider.create(),
+            // FirebaseAnalyticsScope.getProvider(),
+            // MockStarterAnalyticsProvider.create(),
         )
     }
 }

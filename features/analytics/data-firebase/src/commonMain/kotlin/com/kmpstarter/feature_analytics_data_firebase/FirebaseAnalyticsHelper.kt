@@ -15,7 +15,7 @@
 
 package com.kmpstarter.feature_analytics_data_firebase
 
-import com.kmpstarter.feature_analytics_domain.AnalyticsProvider
+import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProvider
 import com.kmpstarter.utils.datastore.AppDataStore
 import com.kmpstarter.utils.logging.Log
 import dev.gitlive.firebase.Firebase
@@ -55,7 +55,7 @@ fun initFirebaseAnalytics(
     FirebaseAnalyticsScope.markInitialized()
 }
 
-fun FirebaseAnalyticsScope.get(): FirebaseAnalytics {
+internal fun FirebaseAnalyticsScope.get(): FirebaseAnalytics {
     val analytics = Firebase.analytics
     analytics.setAnalyticsCollectionEnabled(enabled)
     analytics.setSessionTimeoutInterval(sessionTimeoutInterval)
@@ -85,9 +85,9 @@ fun FirebaseAnalyticsScope.get(): FirebaseAnalytics {
     return analytics
 }
 
-fun FirebaseAnalyticsScope.getProvider(): AnalyticsProvider {
+fun FirebaseAnalyticsScope.getProvider(): StarterAnalyticsProvider {
     val koin = getKoin()
-    return FirebaseAnalyticsProvider(
+    return FirebaseStarterAnalyticsProvider(
         analytics = koin.get(),
         appDataStore = koin.get<AppDataStore>(),
     )

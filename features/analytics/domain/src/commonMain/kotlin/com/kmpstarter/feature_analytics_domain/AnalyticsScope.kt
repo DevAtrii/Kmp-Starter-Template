@@ -18,7 +18,7 @@ package com.kmpstarter.feature_analytics_domain
 import org.koin.mp.KoinPlatform.getKoin
 
 /**
- * Declares which [AnalyticsProvider]s the app uses.
+ * Declares which [StarterAnalyticsProvider]s the app uses.
  *
  * Call [initAnalytics] after Koin and after each provider's own init
  * (e.g. `initMixPanel`). Library consumers pass only the backends they want.
@@ -31,16 +31,16 @@ import org.koin.mp.KoinPlatform.getKoin
  * ```
  */
 object AnalyticsScope {
-    private val registeredProviders = mutableListOf<AnalyticsProvider>()
+    private val registeredProviders = mutableListOf<StarterAnalyticsProvider>()
     internal var isInitialized: Boolean = false
         private set
 
-    fun providers(vararg providers: AnalyticsProvider) {
+    fun providers(vararg providers: StarterAnalyticsProvider) {
         registeredProviders.clear()
         registeredProviders.addAll(providers)
     }
 
-    internal fun snapshot(): List<AnalyticsProvider> = registeredProviders.toList()
+    internal fun snapshot(): List<StarterAnalyticsProvider> = registeredProviders.toList()
 
     internal fun markInitialized() {
         isInitialized = true

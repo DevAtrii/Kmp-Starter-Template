@@ -18,7 +18,7 @@ package com.kmpstarter.feature_analytics_domain
 import kotlin.coroutines.cancellation.CancellationException
 
 internal class CompositeEventsTracker(
-    private val providers: () -> List<AnalyticsProvider>,
+    private val providers: () -> List<StarterAnalyticsProvider>,
 ) : EventsTracker {
 
     override val isEnabled: Boolean
@@ -99,11 +99,11 @@ internal class CompositeEventsTracker(
         forEachProvider(currentProviders()) { it.reset() }
     }
 
-    private fun currentProviders(): List<AnalyticsProvider> = providers()
+    private fun currentProviders(): List<StarterAnalyticsProvider> = providers()
 
     private suspend inline fun forEachProvider(
-        current: List<AnalyticsProvider>,
-        action: suspend (AnalyticsProvider) -> Unit,
+        current: List<StarterAnalyticsProvider>,
+        action: suspend (StarterAnalyticsProvider) -> Unit,
     ) {
         var firstError: Throwable? = null
         for (provider in current) {

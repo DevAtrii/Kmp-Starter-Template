@@ -16,7 +16,7 @@
 package com.kmpstarter.feature_analytics_data
 
 import android.content.Context
-import com.kmpstarter.feature_analytics_domain.AnalyticsProvider
+import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProvider
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import org.koin.core.scope.Scope
 import org.koin.mp.KoinPlatform
@@ -44,7 +44,7 @@ actual fun MixPanelAnalyticsScope.get(): MixPanelPlatform {
 }
 
 
-actual fun MixPanelAnalyticsScope.getProvider(): AnalyticsProvider {
+actual fun MixPanelAnalyticsScope.getProvider(): StarterAnalyticsProvider {
     return EventsTrackerImpl(
         mixpanelAPI = KoinPlatform.getKoin().get<MixPanelPlatform>()
     )

@@ -16,16 +16,16 @@
 package com.kmpstarter.feature_analytics_domain
 
 /**
- * Stable identifier for an [AnalyticsProvider].
+ * Stable identifier for an [StarterAnalyticsProvider].
  *
- * Built-in Mixpanel uses [AnalyticsProviderIds.Mixpanel]. Custom / future
+ * Built-in Mixpanel uses [StarterAnalyticsProviderIds.Mixpanel]. Custom / future
  * data modules (Firebase, …) pick their own unique value.
  */
-data class AnalyticsProviderId(
+data class StarterAnalyticsProviderId(
     val value: String,
 )
 
-object AnalyticsProviderIds {
-    val Mixpanel = AnalyticsProviderId("mixpanel")
-    val Firebase = AnalyticsProviderId("firebase")
+object StarterAnalyticsProviderIds {
+    val Mixpanel = StarterAnalyticsProviderId("mixpanel")
+    val Firebase = StarterAnalyticsProviderId("firebase")
 }

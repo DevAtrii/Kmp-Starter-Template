@@ -15,19 +15,19 @@
 
 package com.kmpstarter.feature_analytics_data_firebase
 
-import com.kmpstarter.feature_analytics_domain.AnalyticsProvider
-import com.kmpstarter.feature_analytics_domain.AnalyticsProviderId
-import com.kmpstarter.feature_analytics_domain.AnalyticsProviderIds
+import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProvider
+import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProviderId
+import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProviderIds
 import com.kmpstarter.feature_analytics_domain.AppEvent
 import com.kmpstarter.utils.datastore.AppDataStore
 import com.kmpstarter.utils.datastore.booleanDataStore
 import com.kmpstarter.utils.logging.Log
 import dev.gitlive.firebase.analytics.FirebaseAnalytics
 
-class FirebaseAnalyticsProvider(
+class FirebaseStarterAnalyticsProvider(
     private val analytics: FirebaseAnalytics,
     appDataStore: AppDataStore,
-) : AnalyticsProvider {
+) : StarterAnalyticsProvider {
     companion object {
         private const val TAG = "FirebaseAnalyticsProvider"
     }
@@ -37,8 +37,12 @@ class FirebaseAnalyticsProvider(
         default = true
     )
 
-    override val id: AnalyticsProviderId
-        get() = AnalyticsProviderIds.Firebase
+    suspend fun setEnabled(enabled: Boolean) {
+        analyticsEnabledDs.set(enabled)
+    }
+
+    override val id: StarterAnalyticsProviderId
+        get() = StarterAnalyticsProviderIds.Firebase
 
     override suspend fun track(event: AppEvent) {
         track(event = event.event, properties = event.properties)

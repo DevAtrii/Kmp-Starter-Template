@@ -15,7 +15,7 @@
 
 package com.kmpstarter.feature_analytics_data
 
-import com.kmpstarter.feature_analytics_domain.AnalyticsProvider
+import com.kmpstarter.feature_analytics_domain.StarterAnalyticsProvider
 import interop.MixPanelBridge
 import kotlinx.cinterop.ExperimentalForeignApi
 import org.koin.core.scope.Scope
@@ -38,7 +38,7 @@ actual fun MixPanelAnalyticsScope.get(): MixPanelPlatform {
 }
 
 @OptIn(ExperimentalForeignApi::class)
-actual fun MixPanelAnalyticsScope.getProvider(): AnalyticsProvider {
+actual fun MixPanelAnalyticsScope.getProvider(): StarterAnalyticsProvider {
     return EventsTrackerImpl(
         mixPanelBridge = KoinPlatform.getKoin().get<MixPanelPlatform>()
     )
