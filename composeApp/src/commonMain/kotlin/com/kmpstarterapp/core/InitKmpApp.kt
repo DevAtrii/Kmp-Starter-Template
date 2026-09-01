@@ -23,6 +23,7 @@ import com.kmpstarter.feature_analytics_domain.initAnalytics
 import com.kmpstarter.feature_purchases_data.initRevenueCat
 import com.kmpstarter.feature_remote_config_domain.RemoteConfig
 import com.kmpstarter.utils.logging.StarterLogger
+import com.kmpstarter.utils.starter.AndroidOnlyStarterApi
 import com.kmpstarterapp.core.di.initKoin
 import com.revenuecat.purchases.kmp.LogLevel
 import kotlinx.coroutines.CoroutineScope
@@ -68,6 +69,7 @@ fun initKmpApp(
     initRemoteConfig()
 }
 
+@OptIn(AndroidOnlyStarterApi::class)
 private fun initAppAnalytics() {
     /*initialize all providers before calling initAnalytics{}*/
     initMixPanel(
@@ -78,6 +80,7 @@ private fun initAppAnalytics() {
 
     /*registering all providers*/
     initAnalytics {
+        enableInstallAttribution = true
         providers(
             MixPanelAnalyticsScope.getProvider(),
             /*Dummy Analytics provider to showcase multiple providers feature*/

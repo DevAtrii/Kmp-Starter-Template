@@ -25,6 +25,7 @@ initFirebaseAnalytics {
     enabled = true
 }
 initAnalytics {
+    enableInstallAttribution = true
     providers(
         MixPanelAnalyticsScope.getProvider(),
         FirebaseAnalyticsScope.getProvider(),
@@ -33,6 +34,8 @@ initAnalytics {
 ```
 
 Omit a backend from `providers(...)` (and skip its `init*` / Koin data module) if you do not want it. A library consumer has full control.
+
+`enableInstallAttribution = true` runs Play Install Referrer once on Android (`install_attribution` event + UTM user properties). iOS no-ops. Default `false`.
 
 Register the matching Koin modules:
 

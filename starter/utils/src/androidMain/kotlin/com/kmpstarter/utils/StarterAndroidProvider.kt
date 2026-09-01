@@ -18,6 +18,7 @@ package com.kmpstarter.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import com.kmpstarter.utils.StarterAndroidProvider.activity
 import com.kmpstarter.utils.StarterAndroidProvider.application
@@ -102,19 +103,13 @@ object StarterAndroidProvider : Application.ActivityLifecycleCallbacks {
     }
 }
 
-/**
- * Non-null [Application], or an error that explains how to keep `androidx.startup` in the manifest.
- *
- * @throws IllegalStateException if [StarterApplicationProvider] never ran
- */
-fun StarterAndroidProvider.requireApplication(): Application =
-    application ?: error(
-        "KMP-Starter-Template has no reference to the Application. Please make sure you have not removed " +
-                "the androidx.startup.InitializationProvider from your AndroidManifest.xml. If you " +
-                "need to remove specific initializers, such as " +
-                "androidx.work.WorkManagerInitializer, do so as follows:" +
-                "\n\n" +
-                $$"""
+private val PROVIDER_ERR =
+    "KMP-Starter-Template has no reference to the Application. Please make sure you have not removed " +
+            "the androidx.startup.InitializationProvider from your AndroidManifest.xml. If you " +
+            "need to remove specific initializers, such as " +
+            "androidx.work.WorkManagerInitializer, do so as follows:" +
+            "\n\n" +
+            $$"""
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:exported="false"
@@ -128,9 +123,21 @@ fun StarterAndroidProvider.requireApplication(): Application =
         
         </provider>
         """.trimIndent() +
-                "\n\n" +
-                "Stack trace:"
+            "\n\n" +
+            "Stack trace:"
+
+/**
+ * Non-null [Application], or an error that explains how to keep `androidx.startup` in the manifest.
+ *
+ * @throws IllegalStateException if [StarterApplicationProvider] never ran
+ */
+fun StarterAndroidProvider.requireApplication(): Application =
+    application ?: error(
+        PROVIDER_ERR
     )
+
+fun StarterAndroidProvider.requireApplicationContext(): Context =
+    application?.applicationContext ?: error(PROVIDER_ERR)
 
 /**
  * Non-null foreground [Activity].

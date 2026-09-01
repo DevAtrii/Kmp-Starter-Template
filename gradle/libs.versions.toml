@@ -12,7 +12,7 @@ app-version-patch = "0"
 # starter libs versions
 lib-version-major = "0"
 lib-version-minor = "6"
-lib-version-patch = "0"
+lib-version-patch = "1"
 # cli versions
 cli-version-major = "0"
 cli-version-minor = "5"
@@ -56,6 +56,7 @@ navigation3-lifecycle-viewmodel = "2.10.0"
 # Google Play Services
 play-services-ads = "25.4.0"
 play-update-ktx = "2.1.0"
+play-instsall-referrer = "2.2"
 play-review-ktx = "2.0.2"
 
 # RevenueCat Purchases
@@ -187,6 +188,7 @@ purchases-core = { module = "com.revenuecat.purchases:purchases-kmp-core", versi
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "play-services-ads" }
 play-app-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "play-review-ktx" }
 play-app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "play-update-ktx" }
+play-install-referrer = { module = "com.android.installreferrer:installreferrer", version.ref = "play-instsall-referrer" }
 
 # Data Storage
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "data-store" }

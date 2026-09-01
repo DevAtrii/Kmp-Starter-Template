@@ -57,6 +57,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
+                implementation(projects.starter.core)
             }
         }
 
@@ -68,7 +69,7 @@ kotlin {
 
         androidMain {
             dependencies {
-
+                implementation(libs.play.install.referrer)
             }
         }
 

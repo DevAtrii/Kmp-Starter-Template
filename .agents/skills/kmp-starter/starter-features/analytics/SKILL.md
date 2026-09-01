@@ -114,6 +114,7 @@ initFirebaseAnalytics {
     analyticsStorage = FirebaseAnalytics.ConsentStatus.GRANTED
 }
 initAnalytics {
+    enableInstallAttribution = true
     providers(
         MixPanelAnalyticsScope.getProvider(),
         FirebaseAnalyticsScope.getProvider(),
@@ -122,6 +123,8 @@ initAnalytics {
 ```
 
 `initFirebaseAnalytics` options: `enabled`, `sessionTimeoutInterval`, `defaultEventParameters: Map<String, String>`, consent fields. **No** `userProperties` on init — use `setUserProperty` after `initAnalytics`.
+
+`enableInstallAttribution = true` → Android Play Install Referrer once (`install_attribution` event + UTM user properties). iOS no-op.
 
 Skip a backend (and its data module) if the consumer does not want it.
 
