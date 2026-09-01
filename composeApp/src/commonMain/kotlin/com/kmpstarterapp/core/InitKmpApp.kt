@@ -83,9 +83,9 @@ private fun initAppAnalytics() {
         enableInstallAttribution = true
         providers(
             MixPanelAnalyticsScope.getProvider(),
-            /*Dummy Analytics provider to showcase multiple providers feature*/
-            // FirebaseAnalyticsScope.getProvider(),
+            // Add More Providers like:
             // MockStarterAnalyticsProvider.create(),
+            // FirebaseAnalyticsScope.getProvider(),
         )
     }
 }
