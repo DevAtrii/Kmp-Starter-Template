@@ -12,7 +12,7 @@ app-version-patch = "0"
 # starter libs versions
 lib-version-major = "0"
 lib-version-minor = "6"
-lib-version-patch = "1"
+lib-version-patch = "2"
 # cli versions
 cli-version-major = "0"
 cli-version-minor = "5"
@@ -61,7 +61,7 @@ play-review-ktx = "2.0.2"
 
 # RevenueCat Purchases
 #noinspection GradleDependency
-purchases-kmp = "3.2.1"
+purchases-kmp = "3.15.0"
 
 # Data Storage
 data-store = "1.2.1"
